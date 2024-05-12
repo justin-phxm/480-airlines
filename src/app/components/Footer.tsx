@@ -1,9 +1,10 @@
 export default function Footer() {
+  const year = new Date().getFullYear();
   return (
     <footer className=" bg-indigo-300 text-white dark:bg-gray-800">
       <div className="mx-auto w-full max-w-screen-xl p-4 md:flex md:items-center md:justify-between">
         <span className="text-sm sm:text-center dark:text-gray-400">
-          © 2023{" "}
+          © {year}{" "}
           <a href="#" className="hover:underline">
             480Airlines™
           </a>
