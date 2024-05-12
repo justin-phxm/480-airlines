@@ -1,15 +1,24 @@
 export default function Searchbar() {
+  async function handleSubmit(formData: FormData) {
+    "use server";
+    const rawFormData = Object.fromEntries(formData.entries());
+    const { origin, destination, date, time } = rawFormData;
+    console.log(origin, destination, date, time);
+  }
+  const INPUT_STYLES =
+    "flex-1 rounded-none rounded-e-lg border border-gray-300 bg-gray-50 p-2.5  text-gray-900 focus:outline-indigo-500";
+  const LABEL_STYLES =
+    "rounded-e-0 inline-flex items-center rounded-s-md border border-gray-300 bg-gray-200 px-3 text-sm text-gray-900 dark:border-gray-600 dark:bg-gray-600 dark:text-gray-400";
   return (
-    <>
-      <form
-        //  onSubmit={handleSubmit}
-
-        data-aos="fade-up"
-        className="flex"
-      >
+    <form
+      action={handleSubmit}
+      data-aos="fade-up"
+      className="flex flex-col items-center justify-center gap-1"
+    >
+      <div className="flex flex-row">
         {/* Origin Code */}
         <div className="flex">
-          <span className="rounded-e-0 inline-flex items-center rounded-s-md border border-gray-300 bg-gray-200 px-3 text-sm text-gray-900 dark:border-gray-600 dark:bg-gray-600 dark:text-gray-400">
+          <label htmlFor="origin" className={LABEL_STYLES}>
             <svg
               width="32"
               height="33"
@@ -24,19 +33,18 @@ export default function Searchbar() {
                 fill="#6E7491"
               />
             </svg>
-          </span>
+          </label>
           <input
             type="text"
-            id="website-admin"
-            className="block w-full min-w-0 flex-1 rounded-none rounded-e-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500  dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
+            name="origin"
+            id="origin"
+            className={INPUT_STYLES}
             placeholder="From where?"
-            // value={origin}
-            // onChange={(e) => setOrigin(e.target.value)}
           />
         </div>
         {/* Destination Code */}
         <div className="flex">
-          <span className="rounded-e-0 inline-flex items-center rounded-s-md border border-gray-300 bg-gray-200 px-3 text-sm text-gray-900 dark:border-gray-600 dark:bg-gray-600 dark:text-gray-400">
+          <label htmlFor="destination" className={LABEL_STYLES}>
             <svg
               width="33"
               height="33"
@@ -51,19 +59,18 @@ export default function Searchbar() {
                 fill="#6E7491"
               />
             </svg>
-          </span>
+          </label>
           <input
             type="text"
-            id="website-admin"
-            className="block w-full min-w-0 flex-1 rounded-none rounded-e-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500  dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
+            name="destination"
+            id="destination"
+            className={INPUT_STYLES}
             placeholder="Where to?"
-            // value={destination}
-            // onChange={(e) => setDestination(e.target.value)}
           />
         </div>
         {/* Departure date */}
         <div className="flex">
-          <span className="rounded-e-0 inline-flex items-center rounded-s-md border border-gray-300 bg-gray-200 px-3 text-sm text-gray-900 dark:border-gray-600 dark:bg-gray-600 dark:text-gray-400">
+          <label htmlFor="date" className={LABEL_STYLES}>
             <svg
               width="32"
               height="33"
@@ -94,19 +101,19 @@ export default function Searchbar() {
                 fill="#6E7491"
               />
             </svg>
-          </span>
+          </label>
           <input
+            name="date"
             type="date"
-            id="website-admin"
-            className="block w-full min-w-0 flex-1 rounded-none rounded-e-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500  dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
+            id="date"
+            className={INPUT_STYLES}
             placeholder="Depart - Return"
-            // value={depart}
-            // onChange={handleDateChange}
+            defaultValue={new Date().toISOString().split("T")[0]}
           />
         </div>
         {/* Departure Time */}
         <div className="flex">
-          <span className="rounded-e-0 inline-flex items-center rounded-s-md border border-gray-300 bg-gray-200 px-3 text-sm text-gray-900 dark:border-gray-600 dark:bg-gray-600 dark:text-gray-400">
+          <label htmlFor="time" className={LABEL_STYLES}>
             <svg
               width="32"
               height="33"
@@ -137,23 +144,23 @@ export default function Searchbar() {
                 fill="#6E7491"
               />
             </svg>
-          </span>
+          </label>
           <input
             type="time"
-            id="website-admin"
-            className="block w-full min-w-0 flex-1 rounded-none rounded-e-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500  dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
+            name="time"
+            id="time"
+            className={INPUT_STYLES}
             placeholder="Depart - time"
-            // value={departTime}
-            // onChange={handleTimeChange}
+            defaultValue={new Date().toISOString().split("T")[1]?.slice(0, 5)}
           />
         </div>
-        <button
-          type="submit"
-          className="inline-flex h-12 w-24 items-center justify-start gap-2 rounded bg-indigo-500 px-5 py-3 hover:opacity-70"
-        >
-          <div className="text-lg text-neutral-50">Search</div>
-        </button>
-      </form>
-    </>
+      </div>
+      <button
+        type="submit"
+        className=" rounded  bg-indigo-500 px-8 py-3 text-lg hover:opacity-70"
+      >
+        Book your trip
+      </button>
+    </form>
   );
 }
