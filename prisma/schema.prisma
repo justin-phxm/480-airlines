@@ -11,16 +11,10 @@ datasource db {
     directUrl = env("DIRECT_URL")
 }
 
-model Post {
-    id        Int      @id @default(autoincrement())
-    name      String
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
-
-    createdBy   User   @relation(fields: [createdById], references: [id])
-    createdById String
-
-    @@index([name])
+enum Role {
+    ADMIN
+    CUSTOMER
+    EMPLOYEE
 }
 
 // Necessary for Next auth
@@ -52,14 +46,15 @@ model Session {
 }
 
 model User {
-    id            String    @id @default(cuid())
+    id            String        @id @default(cuid())
     name          String?
-    email         String?   @unique
+    email         String?       @unique
     emailVerified DateTime?
     image         String?
     accounts      Account[]
     sessions      Session[]
-    posts         Post[]
+    Transactions  Transaction[]
+    role          Role          @default(CUSTOMER)
 }
 
 model VerificationToken {
@@ -68,4 +63,61 @@ model VerificationToken {
     expires    DateTime
 
     @@unique([identifier, token])
+}
+
+model Aircraft {
+    id     Int      @id @default(autoincrement())
+    name   String
+    Flight Flight[]
+    Seat   Seat[]
+}
+
+model Flight {
+    id                   Int      @id @default(autoincrement())
+    departureAirportCode String
+    arrivalAirportCode   String
+    departureTime        DateTime
+    arrivalTime          DateTime
+    arrivalCity          String
+    departureCity        String
+    aircraft             Aircraft @relation(fields: [aircraftId], references: [id])
+    aircraftId           Int
+    createdAt            DateTime @default(now())
+    updatedAt            DateTime @updatedAt
+    Ticket               Ticket[]
+}
+
+enum SeatType {
+    ECONOMY
+    BUSINESS
+    FIRST
+}
+
+model Seat {
+    id           Int      @id @default(autoincrement())
+    seatCode     String
+    availability Boolean
+    seatType     SeatType
+    aircraft     Aircraft @relation(fields: [aircraftId], references: [id])
+    aircraftId   Int
+    Ticket       Ticket[]
+}
+
+model Ticket {
+    id        Int      @id @default(autoincrement())
+    seat      Seat     @relation(fields: [seatId], references: [id])
+    seatId    Int
+    flight    Flight   @relation(fields: [flightId], references: [id])
+    flightId  Int
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+}
+
+model Transaction {
+    id        Int      @id @default(autoincrement())
+    price     Float
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+    user      User     @relation(fields: [userId], references: [id])
+    userId    String
 }
