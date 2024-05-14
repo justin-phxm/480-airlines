@@ -1,5 +1,5 @@
 import { db } from "../src/server/db";
-import { type Flight, Role, SeatType, type User } from "@prisma/client";
+import { Role, SeatType, type User } from "@prisma/client";
 import { faker } from "@faker-js/faker";
 const SEED_NUM = 123;
 const NUM_FAKE_DATA = 10;
