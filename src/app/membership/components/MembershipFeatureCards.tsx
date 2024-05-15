@@ -8,14 +8,14 @@ export default function MembershipFeatureCards(props: {
   return (
     <li
       key={index}
-      className="bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-8 md:p-12"
+      className="rounded-lg  border border-gray-200 bg-gray-50 p-8 md:p-12 "
     >
       <a
         href="#"
-        className="bg-green-100 text-green-800 text-xs font-medium inline-flex items-center px-2.5 py-0.5 rounded-md dark:bg-gray-700 dark:text-green-400 mb-2"
+        className="mb-2 inline-flex items-center rounded-md bg-green-100 px-2.5 py-0.5 text-xs font-medium text-green-800 "
       >
         <svg
-          className="w-2.5 h-2.5 me-1.5"
+          className="me-1.5 h-2.5 w-2.5"
           aria-hidden="true"
           xmlns="http://www.w3.org/2000/svg"
           fill="currentColor"
@@ -25,19 +25,17 @@ export default function MembershipFeatureCards(props: {
         </svg>
         Members Only
       </a>
-      <h2 className="text-gray-900 dark:text-white text-3xl font-extrabold mb-2">
+      <h2 className="mb-2 text-3xl font-extrabold text-gray-900 ">
         {benefit.title}
       </h2>
-      <p className="text-lg font-normal text-gray-500 dark:text-gray-400 mb-4">
-        {benefit.body}
-      </p>
+      <p className="mb-4 text-lg font-normal text-gray-500">{benefit.body}</p>
       <a
         href="#"
-        className="text-blue-600 dark:text-blue-500 hover:underline font-medium text-lg inline-flex items-center"
+        className="inline-flex items-center text-lg font-medium text-blue-600 hover:underline "
       >
         Signup Now!
         <svg
-          className="w-3.5 h-3.5 ms-2 rtl:rotate-180"
+          className="ms-2 h-3.5 w-3.5 rtl:rotate-180"
           aria-hidden="true"
           xmlns="http://www.w3.org/2000/svg"
           fill="none"

@@ -2,7 +2,7 @@ import React from "react";
 // import { signupMonthlyEmail } from "@/app/api/email/membershipEmail";
 export default function MembershipFeatureCardLarge() {
   return (
-    <div className="mb-8 rounded-lg border border-gray-200 bg-gray-50 p-8 md:p-12 dark:border-gray-700 dark:bg-gray-800">
+    <div className=" rounded-lg border border-gray-200 bg-gray-50 p-8 md:p-12 dark:border-gray-700 dark:bg-gray-800">
       {/* For Members Label */}
       <a
         href="#"

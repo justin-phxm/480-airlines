@@ -697,8 +697,8 @@ export default function page() {
   return (
     <>
       <MembershipHero />
-      <section className="bg-gradient-to-t from-indigo-300 to-white text-white">
-        <div className="mx-auto max-w-screen-xl px-4 py-8 lg:py-16">
+      <section className="bg-gradient-to-t from-indigo-300 to-white p-4 text-white">
+        <div className="mx-auto flex max-w-screen-xl flex-col items-center gap-8">
           <MembershipFeatureCardLarge />
           <ul className="grid gap-8 md:grid-cols-2">
             {memberBenefits.map((benefit, index) => (
@@ -709,13 +709,13 @@ export default function page() {
               />
             ))}
           </ul>
+          <section className="flex w-fit justify-center rounded-lg border border-gray-200 bg-gray-50 p-8 ">
+            <h2 className="mb-2 text-3xl font-extrabold text-gray-900">
+              Pack Your Bags!
+            </h2>
+            {luggageImage}
+          </section>
         </div>
-        <section className="flex justify-center rounded-lg border border-gray-200 bg-gray-50 p-8 md:p-12 ">
-          <h2 className="mb-2 text-3xl font-extrabold text-gray-900">
-            Pack Your Bags!
-          </h2>
-          {luggageImage}
-        </section>
       </section>
     </>
   );
