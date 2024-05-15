@@ -1,5 +1,4 @@
 import Link from "next/link";
-import SigninButton from "@/components/SigninButton";
 export default function Navbar() {
   const routes = [
     { name: "Home", href: "/" },
@@ -23,9 +22,6 @@ export default function Navbar() {
                 <Link href={route.href}>{route.name}</Link>
               </li>
             ))}
-            <li>
-              <SigninButton />
-            </li>
           </ul>
         </div>
       </nav>
