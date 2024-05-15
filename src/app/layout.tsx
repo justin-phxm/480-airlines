@@ -19,7 +19,7 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${GeistSans.variable}`}>
       <AOSinit />
-      <body>
+      <body className="flex h-full min-h-screen w-full flex-col">
         <Providers>
           <Navbar />
           {children}
