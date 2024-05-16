@@ -1,6 +1,7 @@
 # TODO:
 
 - [ ] Create Profile View
+- [ ] Add Toasts
 - [ ] Create Admin view
 - [ ] Create Employee View
 - [ ] Update Membership Logic
