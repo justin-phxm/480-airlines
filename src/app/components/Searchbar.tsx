@@ -1,3 +1,5 @@
+import { searchFlights } from "../actions";
+
 type InputField = {
   name: string;
   inputType: string;
@@ -11,7 +13,14 @@ export default function Searchbar() {
     "use server";
     const rawFormData = Object.fromEntries(formData.entries());
     const { origin, destination, date, time } = rawFormData;
-    console.log(origin, destination, date, time);
+    const searchInput = {
+      origin: String(origin),
+      destination: String(destination),
+      date: new Date(String(date)),
+      time: String(time),
+    };
+    const flights = await searchFlights(searchInput);
+    console.log(flights);
   }
   const INPUT_STYLES =
     "flex-1 rounded-none rounded-e-lg border border-gray-300 bg-gray-50 p-2.5  text-gray-900 focus:outline-indigo-500";
