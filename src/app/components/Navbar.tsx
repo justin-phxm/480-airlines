@@ -3,7 +3,7 @@ export default function Navbar() {
   const routes = [
     { name: "Home", href: "/" },
     { name: "Admin", href: "/admin" },
-    { name: "Airline Employee", href: "/airlineEmployee" },
+    { name: "Airline Employee", href: "/employee" },
     { name: "Membership", href: "/membership" },
     { name: "Profile", href: "/profile" },
   ];

@@ -1,15 +1,27 @@
-import { NextResponse } from "next/server";
-import type { NextRequest } from "next/server";
+// import { Role } from "@prisma/client";
+// import { withAuth } from "next-auth/middleware";
 
-const isLoggedIn = true;
-// This function can be marked `async` if using `await` inside
-export function middleware(request: NextRequest) {
-  if (isLoggedIn) {
-    return NextResponse.next();
-  }
-  return NextResponse.redirect(new URL("/", request.url));
-}
-
+/* default protects routes by checking if user is logged in*/
+export { default } from "next-auth/middleware";
 export const config = {
-  matcher: ["/profile"],
+  matcher: ["/profile", "/admin", "/employee"],
 };
+
+/* Protect routes based on role */
+// export default withAuth({
+//   callbacks: {
+//     authorized: ({ req, token }) => {
+//       const { pathname } = req.nextUrl;
+//       if (token) {
+//         const { role } = token;
+//         if (pathname === "/admin") {
+//           return role === Role.ADMIN;
+//         }
+//         if (pathname === "/employee") {
+//           return role === Role.EMPLOYEE || role === Role.ADMIN;
+//         }
+//       }
+//       return Boolean(token);
+//     },
+//   },
+// });
