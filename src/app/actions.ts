@@ -26,7 +26,6 @@ export async function searchFlights({
     date: new Date(date),
     time,
   });
-  console.log(res);
   if (!res.success) {
     return "Invalid input. Please try again.";
   }
