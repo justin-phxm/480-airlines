@@ -9,6 +9,7 @@
 - [ ] Update Seat selection Feature
 - [ ] Update payment Feature
 - [ ] Figure out how to move from SSR->SSG
+- [ ] Add Zod validation
 
 # Create T3 App
 

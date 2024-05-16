@@ -6,6 +6,7 @@ type InputField = {
   placeholder?: string;
   icon?: JSX.Element;
   defaultValue?: string;
+  maxLength?: number;
 };
 
 export default function Searchbar() {
@@ -20,6 +21,7 @@ export default function Searchbar() {
       time: String(time),
     };
     const flights = await searchFlights(searchInput);
+    // TODO: Display the flights
     console.log(flights);
   }
   const INPUT_STYLES =
@@ -96,12 +98,14 @@ export default function Searchbar() {
       inputType: "text",
       placeholder: "From where?",
       icon: OriginIcon,
+      maxLength: 50,
     },
     {
       name: "destination",
       inputType: "text",
       placeholder: "Where to?",
       icon: DestinationIcon,
+      maxLength: 50,
     },
     {
       name: "date",
@@ -131,6 +135,7 @@ export default function Searchbar() {
               {field.icon}
             </label>
             <input
+              maxLength={field.maxLength}
               id={field.name}
               type={field.inputType}
               name={field.name}
