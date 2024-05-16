@@ -5,6 +5,7 @@ export default function Navbar() {
     { name: "Admin", href: "/admin" },
     { name: "Airline Employee", href: "/airlineEmployee" },
     { name: "Membership", href: "/membership" },
+    { name: "Profile", href: "/profile" },
   ];
   return (
     <>

@@ -1,4 +1,5 @@
 import { PrismaAdapter } from "@auth/prisma-adapter";
+import type { Role } from "@prisma/client";
 import {
   getServerSession,
   type DefaultSession,
@@ -8,7 +9,7 @@ import { type Adapter } from "next-auth/adapters";
 import DiscordProvider from "next-auth/providers/discord";
 import Google from "next-auth/providers/google";
 import { env } from "~/env";
-import { db } from "~/server/db";
+import { db, getUserByID } from "~/server/db";
 
 /**
  * Module augmentation for `next-auth` types. Allows us to add custom properties to the `session`
@@ -21,7 +22,7 @@ declare module "next-auth" {
     user: {
       id: string;
       // ...other properties
-      // role: UserRole;
+      role: Role;
     } & DefaultSession["user"];
   }
 
@@ -37,14 +38,26 @@ declare module "next-auth" {
  * @see https://next-auth.js.org/configuration/options
  */
 export const authOptions: NextAuthOptions = {
+  session: {
+    strategy: "jwt",
+  },
+
   callbacks: {
-    session: ({ session, user }) => ({
+    session: ({ session, token }) => ({
       ...session,
       user: {
         ...session.user,
-        id: user.id,
+        id: token.sub,
+        role: token.role,
       },
     }),
+    jwt: async ({ token }) => {
+      if (!token.sub) return token;
+      const existingUser = await getUserByID(token.sub);
+      if (!existingUser) return token;
+      token.role = existingUser.role;
+      return token;
+    },
   },
   adapter: PrismaAdapter(db) as Adapter,
   providers: [

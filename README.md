@@ -1,3 +1,14 @@
+# TODO:
+
+- [ ] Create Profile View
+- [ ] Create Admin view
+- [ ] Create Employee View
+- [ ] Update Membership Logic
+- [ ] Add search feature
+- [ ] Update Seat selection Feature
+- [ ] Update payment Feature
+- [ ] Figure out how to move from SSR->SSG
+
 # Create T3 App
 
 This is a [T3 Stack](https://create.t3.gg/) project bootstrapped with `create-t3-app`.
