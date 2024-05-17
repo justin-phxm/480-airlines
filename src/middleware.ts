@@ -1,12 +1,10 @@
 // import { Role } from "@prisma/client";
 // import { withAuth } from "next-auth/middleware";
 
-import { protectedRoutes } from "./app/(protected)/protected";
-
 /* default protects routes by checking if user is logged in*/
 export { default } from "next-auth/middleware";
 export const config = {
-  matcher: [...protectedRoutes],
+  matcher: ["/admin", "/employee", "/profile"],
 };
 
 /* Protect routes based on role */
