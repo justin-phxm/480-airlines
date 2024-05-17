@@ -38,7 +38,7 @@ export default function FlightRow({ flight }: { flight: Flight }) {
     </div>
   );
   return (
-    <Link href="/seatSelection">
+    <Link href={`/booking/${flight.id}`}>
       <li className="inline-flex w-full cursor-pointer gap-2 rounded border-b-2 border-violet-500 px-4 py-1 shadow transition duration-300 ease-in hover:-translate-y-1 hover:bg-indigo-200">
         {planeIcon}
         <div className="flex w-full flex-col whitespace-nowrap text-slate-800">
