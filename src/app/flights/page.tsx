@@ -1,5 +1,6 @@
 import { searchFlights } from "../actions";
-
+import Searchbar from "../components/Searchbar";
+import FlightTable from "./components/FlightTable";
 export default async function page({
   searchParams,
 }: {
@@ -14,11 +15,12 @@ export default async function page({
     },
   );
   return (
-    <div className="flex flex-1">
-      {flights.length !== 0 ? (
-        <div>{JSON.stringify(flights)}</div>
+    <div className="flex flex-1 flex-col items-center gap-4 bg-gradient-to-t from-indigo-300 to-white py-12">
+      <Searchbar />
+      {flights && flights.length !== 0 ? (
+        <FlightTable flights={flights} />
       ) : (
-        <div>Loading...</div>
+        <div className="text-2xl font-bold">No flights found</div>
       )}
     </div>
   );
