@@ -1,4 +1,4 @@
-import { searchFlights } from "../actions";
+import { redirect } from "next/navigation";
 
 type InputField = {
   name: string;
@@ -17,12 +17,12 @@ export default function Searchbar() {
     const searchInput = {
       origin: String(origin),
       destination: String(destination),
-      date: new Date(String(date)),
+      date: String(date),
       time: String(time),
     };
-    const flights = await searchFlights(searchInput);
-    // TODO: Display the flights
-    console.log(flights);
+    redirect(
+      `/flights?origin=${searchInput.origin}&destination=${searchInput.destination}&date=${searchInput.date}&time=${searchInput.time}`,
+    );
   }
   const INPUT_STYLES =
     "flex-1 rounded-none rounded-e-lg border border-gray-300 bg-gray-50 p-2.5  text-gray-900 focus:outline-indigo-500";

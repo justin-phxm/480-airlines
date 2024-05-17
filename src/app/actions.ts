@@ -11,49 +11,52 @@ export async function searchFlights({
 }: {
   origin: string;
   destination: string;
-  date: Date;
+  date: string;
   time: string;
 }) {
   const FormData = z.object({
     origin: z.string().max(50),
     destination: z.string().max(50),
-    date: z.date(),
+    date: z.string().refine((val) => !isNaN(Date.parse(val)), {
+      message: "Invalid date format",
+    }),
     time: z.string(),
   });
   const res = FormData.safeParse({
     origin,
     destination,
-    date: new Date(date),
+    date,
     time,
   });
   if (!res.success) {
     return "Invalid input. Please try again.";
   }
+  const parsedDate = new Date(date);
   const flights = await db.flight.findMany({
     where: {
       OR: [
         {
           AND: {
             departureCity: { contains: origin },
-            departureTime: { gte: date },
+            departureTime: { gte: parsedDate },
           },
         },
         {
           AND: {
             arrivalCity: { contains: destination },
-            departureTime: { gte: date },
+            departureTime: { gte: parsedDate },
           },
         },
         {
           AND: {
             departureAirportCode: { contains: origin },
-            departureTime: { gte: date },
+            departureTime: { gte: parsedDate },
           },
         },
         {
           AND: {
             arrivalAirportCode: { contains: destination },
-            departureTime: { gte: date },
+            departureTime: { gte: parsedDate },
           },
         },
       ],
