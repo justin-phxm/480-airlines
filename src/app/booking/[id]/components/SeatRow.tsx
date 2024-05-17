@@ -11,6 +11,14 @@ export default function SeatRow({
   seatType?: SeatType;
 }) {
   const numRows = Math.ceil(seats.length / seatsPerRow);
+
+  function padSeats<T>(array: T[]): (T | undefined)[] {
+    const paddedSeats: (T | undefined)[] = [...array];
+    while (paddedSeats.length !== seatsPerRow / 2) {
+      paddedSeats.push(undefined);
+    }
+    return paddedSeats;
+  }
   return (
     <>
       {Array.from({
@@ -20,32 +28,34 @@ export default function SeatRow({
           key={rowIndex}
           className="inline-flex items-center justify-between gap-1 self-stretch bg-white p-1"
         >
-          {/* Render first seats */}
-          {seats
-            .slice(
+          {padSeats(
+            seats.slice(
               rowIndex * seatsPerRow,
-              rowIndex * seatsPerRow + seatsPerRow / 2,
-            )
-            .map((seat, index) => (
+              rowIndex * seatsPerRow + Math.ceil(seatsPerRow / 2),
+            ),
+          ).map((seat, index) =>
+            seat ? (
               <PlaneSeat seat={seat} seatType={seatType} key={index} />
-            ))}
+            ) : (
+              <div className="h-10 w-7" key={index} />
+            ),
+          )}
 
-          {/* Row Number */}
-          <div className="inline-flex h-8 w-7 flex-col items-center justify-center">
-            <div className="h-8 w-7 text-center text-sm font-normal text-slate-400">
-              {rowIndex + 1}
-            </div>
+          <div className="inline-flex size-8 flex-col justify-center text-center text-sm text-slate-400">
+            {rowIndex + 1}
           </div>
-
-          {/* Render second seats */}
-          {seats
-            .slice(
-              rowIndex * seatsPerRow + seatsPerRow / 2,
+          {padSeats(
+            seats.slice(
+              rowIndex * seatsPerRow + Math.ceil(seatsPerRow / 2),
               rowIndex * seatsPerRow + seatsPerRow,
-            )
-            .map((seat, index) => (
+            ),
+          ).map((seat, index) =>
+            seat ? (
               <PlaneSeat seat={seat} seatType={seatType} key={index} />
-            ))}
+            ) : (
+              <div className="h-10 w-7" key={index} />
+            ),
+          )}
         </div>
       ))}
     </>

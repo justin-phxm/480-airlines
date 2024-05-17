@@ -87,7 +87,6 @@ export default function Plane({ seats }: { seats: Seat[] }) {
       {planeModel}
       {cabin}
       <div className=" absolute left-[295px] top-[600px] flex h-96 w-64 flex-col py-4">
-        {/* Place Front section */}
         <div className="inline-flex w-52 flex-col items-center justify-start gap-3 rounded-lg bg-white py-3">
           <SeatRow
             seats={firstSeats}
@@ -95,8 +94,6 @@ export default function Plane({ seats }: { seats: Seat[] }) {
             seatType={SeatType.FIRST}
           />
         </div>
-
-        {/* Plane back section */}
         <div className=" inline-flex w-52 flex-col items-center justify-start gap-1 rounded-lg bg-white py-2">
           {exitRow}
           <SeatRow seats={businessSeats} seatType={SeatType.BUSINESS} />

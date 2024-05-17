@@ -33,13 +33,9 @@ export default function Seat({
 
   return (
     <div
-      className={`h-10 w-7 ${
+      className={`h-10 w-7 rounded bg-gradient-to-b ${
         seat.available && "cursor-pointer"
-      } inline-flex flex-col items-center justify-center`}
-    >
-      <div
-        className={`relative h-10 w-7 rounded bg-gradient-to-b ${seatColor}`}
-      />
-    </div>
+      } ${seatColor} `}
+    />
   );
 }
