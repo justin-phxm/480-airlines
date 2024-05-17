@@ -148,7 +148,7 @@ export default function Searchbar() {
       </ul>
       <button
         type="submit"
-        className=" rounded  bg-indigo-500 px-8 py-3 text-lg hover:opacity-70"
+        className=" rounded  bg-indigo-500 px-8 py-3 text-lg text-white hover:opacity-70"
       >
         Book your trip
       </button>

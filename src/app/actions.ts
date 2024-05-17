@@ -29,7 +29,8 @@ export async function searchFlights({
     time,
   });
   if (!res.success) {
-    return "Invalid input. Please try again.";
+    return;
+    // return "Invalid input. Please try again.";
   }
   const parsedDate = new Date(date);
   const flights = await db.flight.findMany({
