@@ -1,4 +1,5 @@
 import { type Seat, SeatType } from "@prisma/client";
+import SeatUnit from "./SeatUnit";
 export default function Seat({
   seat,
   selectedSeat,
@@ -31,11 +32,5 @@ export default function Seat({
     return SeatColor.AVAILABLE;
   })();
 
-  return (
-    <div
-      className={`h-10 w-7 rounded bg-gradient-to-b ${
-        seat.available && "cursor-pointer"
-      } ${seatColor} `}
-    />
-  );
+  return <SeatUnit seat={seat} seatColor={seatColor} />;
 }

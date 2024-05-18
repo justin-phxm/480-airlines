@@ -52,9 +52,7 @@ function SeatInfo({
               key={index}
               className="flex flex-row items-center gap-2 px-1 py-2"
             >
-              <div
-                className={`h-2.5 w-2.5 rounded-full ${benefitColorClass}`}
-              />
+              <div className={`size-2.5 rounded-full ${benefitColorClass}`} />
               <p className="text-sm text-slate-500">{benefit}</p>
             </li>
           ))}
