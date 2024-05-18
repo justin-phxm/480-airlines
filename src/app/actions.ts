@@ -30,7 +30,6 @@ export async function searchFlights({
   });
   if (!res.success) {
     return;
-    // return "Invalid input. Please try again.";
   }
   const parsedDate = new Date(date);
   const flights = await db.flight.findMany({
@@ -38,25 +37,25 @@ export async function searchFlights({
       OR: [
         {
           AND: {
-            departureCity: { contains: origin },
+            departureCity: { contains: origin, mode: "insensitive" },
             departureTime: { gte: parsedDate },
           },
         },
         {
           AND: {
-            arrivalCity: { contains: destination },
+            arrivalCity: { contains: destination, mode: "insensitive" },
             departureTime: { gte: parsedDate },
           },
         },
         {
           AND: {
-            departureAirportCode: { contains: origin },
+            departureAirportCode: { contains: origin, mode: "insensitive" },
             departureTime: { gte: parsedDate },
           },
         },
         {
           AND: {
-            arrivalAirportCode: { contains: destination },
+            arrivalAirportCode: { contains: destination, mode: "insensitive" },
             departureTime: { gte: parsedDate },
           },
         },
