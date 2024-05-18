@@ -33,7 +33,7 @@ const createTransaction = () => {
     arrivalTime: faker.date.soon({ days: 1, refDate: departureTime }),
     arrivalCity: faker.location.city(),
     departureCity: faker.location.city(),
-    seatCode: faker.helpers.arrayElement(generateSeatCodes(6, 7, 10)).seatCode,
+    seatCode: faker.helpers.arrayElement(generateSeatCodes(7, 8, 11)).seatCode,
   };
   return transaction;
 };
@@ -75,7 +75,7 @@ const createAircraft = (numFlights = 10) => {
     flights: Array.from({ length: numFlights }).map(() => {
       return createFlight();
     }),
-    seats: generateSeatCodes(6, 7, 10),
+    seats: generateSeatCodes(7, 8, 11),
   };
 };
 async function seedUsers(numUsers: number) {

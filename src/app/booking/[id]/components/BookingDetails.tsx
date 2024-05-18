@@ -4,10 +4,13 @@ import SeatOptions from "./SeatOptions";
 
 export default function BookingDetails({ flight }: { flight: Flight }) {
   return (
-    <div className=" fixed right-0 top-20 inline-flex h-[650px] flex-col items-start justify-start self-stretch border-b border-l bg-opacity-50 backdrop-blur-xl">
+    <div className=" fixed right-0 top-20 inline-flex flex-1 flex-col items-start justify-start self-stretch border-l bg-opacity-50 backdrop-blur-xl">
       <FlightInformation flight={flight} />
       <SeatOptions />
-      {/* <UserSelection selectedSeat={selectedSeat} /> */}
+      <ol
+        className="flex max-h-96 w-full list-decimal flex-col overflow-y-auto text-black"
+        id="portalExit"
+      />
     </div>
   );
 }
