@@ -1,7 +1,7 @@
 import { db } from "../src/server/db";
 import { Role, SeatType, type User } from "@prisma/client";
 import { faker } from "@faker-js/faker";
-const SEED_NUM = 123;
+const SEED_NUM = 0;
 const NUM_FAKE_DATA = 10;
 faker.seed(SEED_NUM);
 const createCustomerInformation = () => {
@@ -33,7 +33,7 @@ const createTransaction = () => {
     arrivalTime: faker.date.soon({ days: 1, refDate: departureTime }),
     arrivalCity: faker.location.city(),
     departureCity: faker.location.city(),
-    seatCode: faker.helpers.arrayElement(generateSeatCodes(40, "A", 4).seats),
+    seatCode: faker.helpers.arrayElement(generateSeatCodes(6, 7, 10)).seatCode,
   };
   return transaction;
 };
@@ -57,14 +57,16 @@ const createUser = () => {
   return user;
 };
 const createFlight = () => {
+  const departureTime = faker.date.soon({ days: 180 });
   return {
     departureAirportCode: faker.airline.airport().iataCode,
     arrivalAirportCode: faker.airline.airport().iataCode,
-    departureTime: faker.date.future(),
-    arrivalTime: faker.date.future(),
+    departureTime: departureTime,
+    arrivalTime: faker.date.soon({ days: 1, refDate: departureTime }),
     arrivalCity: faker.location.city(),
     departureCity: faker.location.city(),
     airline: faker.airline.airline().name,
+    price: Number(faker.finance.amount({ min: 250, max: 1000 })),
   };
 };
 const createAircraft = (numFlights = 10) => {
@@ -73,17 +75,7 @@ const createAircraft = (numFlights = 10) => {
     flights: Array.from({ length: numFlights }).map(() => {
       return createFlight();
     }),
-    seats: (() => {
-      const seatCodes = generateSeatCodes(40, "A", 4);
-      const seatCodes2 = generateSeatCodes(80, seatCodes.endingCharCode, 6);
-      return [...seatCodes.seats, ...seatCodes2.seats];
-    })().map((seatCode) => {
-      const seat = {
-        seatCode: seatCode,
-        seatType: faker.helpers.enumValue(SeatType),
-      };
-      return seat;
-    }),
+    seats: generateSeatCodes(6, 7, 10),
   };
 };
 async function seedUsers(numUsers: number) {
@@ -175,36 +167,67 @@ async function seedTickets(numTickets: number, users: User[]) {
 }
 async function main() {
   const users: User[] = await seedUsers(NUM_FAKE_DATA);
-  /* @ts-expect-error: Unreachable code error */
   if (SEED_NUM === 0) {
     await seedAircrafts(NUM_FAKE_DATA);
   }
   await seedTransactions(NUM_FAKE_DATA, users);
   await seedTickets(NUM_FAKE_DATA, users);
 }
+type Seats = { seatCode: string; seatType: SeatType }[];
 /** generate seats for num people
- * @param numPassengers number of passengers
+ * @param firstPassengerRows number of first class rows in the plane
+ * @param businessPassengerRows number of business rows in the plane
+ * @param economyPassengerRows number of economy rows in the plane
  * @param startChar starting character for seat code
- * @param seatsPerRow number of seats per row
- * @example generateSeatCodes(40, "A", 4) // { seats: [ 'A1', 'A2', 'A3', 'A4', 'B1', 'B2', 'B3', 'B4', 'C1', ...], endingCharCode: 'K' }
- */
+ * @param firstClassRange number of seats in a first class row
+ * @param businessClassRange number of seats in a business class row
+ * @param economyClassRange number of seats in an economy class row
+ * @example generateSeatCodes(6, 7, 10)
+ * (126)[{seatCode: "A1", seatClass: "FIRST"}, {seatCode: "A2", seatClass: "FIRST"}]
+ * Ratios should be around 20/30/50 for first/business/economy
+ **/
 function generateSeatCodes(
-  numPassengers: number,
-  startChar: string,
-  seatsPerRow: number,
-): { seats: string[]; endingCharCode: string } {
-  const seatCodes: string[] = [];
-  for (let i = 0; i < Math.ceil(numPassengers / seatsPerRow); i++) {
+  firstPassengerRows: number,
+  businessPassengerRows: number,
+  economyPassengerRows: number,
+  startChar = "A",
+  firstClassRange = 4,
+  businessClassRange = 6,
+  economyClassRange = 6,
+) {
+  const seats: Seats = [];
+  for (let i = 0; i < firstPassengerRows; i++) {
     const charCode = startChar.charCodeAt(0) + i;
     const letter = String.fromCharCode(charCode);
-    for (let number = 1; number <= seatsPerRow; number++) {
-      seatCodes.push(letter + number.toString());
+    for (let number = 1; number <= firstClassRange; number++) {
+      seats.push({
+        seatCode: letter + number.toString(),
+        seatType: SeatType.FIRST,
+      });
     }
   }
-  const endingCharCode = String.fromCharCode(
-    startChar.charCodeAt(0) + Math.floor(numPassengers / seatsPerRow),
-  );
-  return { seats: seatCodes, endingCharCode: endingCharCode };
+  for (let i = 0; i < businessPassengerRows; i++) {
+    const charCode = startChar.charCodeAt(0) + i + firstPassengerRows;
+    const letter = String.fromCharCode(charCode);
+    for (let number = 1; number <= businessClassRange; number++) {
+      seats.push({
+        seatCode: letter + number.toString(),
+        seatType: SeatType.BUSINESS,
+      });
+    }
+  }
+  for (let i = 0; i < economyPassengerRows; i++) {
+    const charCode =
+      startChar.charCodeAt(0) + i + firstPassengerRows + businessPassengerRows;
+    const letter = String.fromCharCode(charCode);
+    for (let number = 1; number <= economyClassRange; number++) {
+      seats.push({
+        seatCode: letter + number.toString(),
+        seatType: SeatType.ECONOMY,
+      });
+    }
+  }
+  return seats;
 }
 main()
   .then(async () => {

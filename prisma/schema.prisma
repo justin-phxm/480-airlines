@@ -106,6 +106,7 @@ model Flight {
     updatedAt            DateTime @updatedAt
     tickets              Ticket[]
     airline              String
+    price                Float
 }
 
 enum SeatType {
