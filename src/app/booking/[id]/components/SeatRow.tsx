@@ -41,7 +41,7 @@ export default function SeatRow({
             ),
           )}
 
-          <div className="inline-flex size-8 flex-col justify-center text-center text-sm text-slate-400">
+          <div className="size-8 justify-center text-center text-sm text-slate-400">
             {rowIndex + 1}
           </div>
           {padSeats(
