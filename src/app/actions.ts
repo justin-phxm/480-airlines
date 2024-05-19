@@ -64,3 +64,7 @@ export async function searchFlights({
   });
   return flights;
 }
+export async function bookFlights(formData: FormData) {
+  const data = Object.fromEntries(formData.entries());
+  console.log(data);
+}

@@ -1,12 +1,16 @@
 "use client";
 
+import Button from "@mui/material/Button";
+
 export default function CancelSeats() {
   return (
-    <button
+    <Button
+      color="secondary"
       onClick={() => window.location.reload()}
-      className=" mr-4 rounded border border-violet-500 p-2 text-lg font-bold text-violet-500"
+      variant="outlined"
+      className=" border-violet-500 text-lg font-bold normal-case text-violet-500"
     >
       Cancel
-    </button>
+    </Button>
   );
 }
