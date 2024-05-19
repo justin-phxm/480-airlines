@@ -1,6 +1,7 @@
 import { db } from "~/server/db";
 import BookingDetails from "./components/BookingDetails";
 import Plane from "./components/Plane";
+import { FlightProvider } from "./FlightContext";
 
 export async function generateStaticParams() {
   const flights = await db.flight.findMany();
@@ -20,8 +21,10 @@ export default async function page({ params }: { params: { id: string } }) {
     <div className="flex flex-1 flex-col overflow-x-hidden">
       {flight ? (
         <div className="flex h-[3000px] flex-row justify-between overflow-hidden px-4">
-          <Plane flight={flight} seats={seats} />
-          <BookingDetails flight={flight} />
+          <FlightProvider flight={flight}>
+            <Plane flight={flight} seats={seats} />
+            <BookingDetails flight={flight} />
+          </FlightProvider>
         </div>
       ) : (
         <div>Flight not found</div>
