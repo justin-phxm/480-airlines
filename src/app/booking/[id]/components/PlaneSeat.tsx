@@ -1,4 +1,4 @@
-import { type Seat, SeatType } from "@prisma/client";
+import { type Seat, SeatType, Flight } from "@prisma/client";
 import SeatUnit from "./SeatUnit";
 
 export enum SeatColor {
@@ -9,9 +9,11 @@ export enum SeatColor {
 }
 export default function Seat({
   seat,
+  flight,
   selectedSeat,
   seatType = SeatType.ECONOMY,
 }: {
+  flight: Flight;
   seat: Seat;
   selectedSeat?: Seat;
   seatType?: SeatType;
@@ -33,5 +35,5 @@ export default function Seat({
     return SeatColor.AVAILABLE;
   })();
 
-  return <SeatUnit seat={seat} seatColor={seatColor} />;
+  return <SeatUnit flight={flight} seat={seat} seatColor={seatColor} />;
 }

@@ -1,11 +1,13 @@
-import { SeatType, type Seat } from "@prisma/client";
+import { Flight, SeatType, type Seat } from "@prisma/client";
 import PlaneSeat from "./PlaneSeat";
 
 export default function SeatRow({
+  flight,
   seats,
   seatsPerRow = 6,
   seatType = SeatType.ECONOMY,
 }: {
+  flight: Flight;
   seats: Seat[];
   seatsPerRow?: number;
   seatType?: SeatType;
@@ -35,7 +37,12 @@ export default function SeatRow({
             ),
           ).map((seat, index) =>
             seat ? (
-              <PlaneSeat seat={seat} seatType={seatType} key={index} />
+              <PlaneSeat
+                flight={flight}
+                seat={seat}
+                seatType={seatType}
+                key={index}
+              />
             ) : (
               <div className="h-10 w-7" key={index} />
             ),
@@ -51,7 +58,12 @@ export default function SeatRow({
             ),
           ).map((seat, index) =>
             seat ? (
-              <PlaneSeat seat={seat} seatType={seatType} key={index} />
+              <PlaneSeat
+                flight={flight}
+                seat={seat}
+                seatType={seatType}
+                key={index}
+              />
             ) : (
               <div className="h-10 w-7" key={index} />
             ),

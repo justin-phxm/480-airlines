@@ -20,7 +20,7 @@ export default async function page({ params }: { params: { id: string } }) {
     <div className="flex flex-1 flex-col overflow-x-hidden">
       {flight ? (
         <div className="flex h-[3000px] flex-row justify-between overflow-hidden px-4">
-          <Plane seats={seats} />
+          <Plane flight={flight} seats={seats} />
           <BookingDetails flight={flight} />
         </div>
       ) : (
