@@ -53,10 +53,11 @@ model User {
     image               String?
     accounts            Account[]
     sessions            Session[]
-    transactions        Transaction[]
     role                Role          @default(CUSTOMER)
     customerInformation Customer?
     employee            Employee?
+    // Only customers should have transactions and tickets, should probably move it down to the Customer model
+    transactions        Transaction[]
     tickets             Ticket[]
 }
 
@@ -65,6 +66,7 @@ model Customer {
     newsletter     Boolean @default(false)
     loungeDiscount Boolean @default(false)
     address        String
+    // Probably a redundant field
     onFlight       Boolean @default(false)
     flightCoupon   Boolean @default(false)
     user           User    @relation(fields: [userId], references: [id])
