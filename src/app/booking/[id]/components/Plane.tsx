@@ -1,14 +1,8 @@
-import type { Flight, Seat } from "@prisma/client";
+import type { Seat } from "@prisma/client";
 
 import { SeatType } from "@prisma/client";
 import SeatRow from "./SeatRow";
-export default function Plane({
-  seats,
-  flight,
-}: {
-  seats: Seat[];
-  flight: Flight;
-}) {
+export default function Plane({ seats }: { seats: Seat[] }) {
   const businessSeats = seats.filter(
     (seat) => seat.seatType === SeatType.BUSINESS,
   );
@@ -95,7 +89,6 @@ export default function Plane({
       <div className=" absolute left-[295px] top-[600px] flex h-96 w-64 flex-col py-4">
         <div className="inline-flex w-52 flex-col items-center justify-start gap-3 rounded-lg bg-white py-3">
           <SeatRow
-            flight={flight}
             seats={firstSeats}
             seatsPerRow={4}
             seatType={SeatType.FIRST}
@@ -103,17 +96,9 @@ export default function Plane({
         </div>
         <div className=" inline-flex w-52 flex-col items-center justify-start gap-1 rounded-lg bg-white py-2">
           {exitRow}
-          <SeatRow
-            flight={flight}
-            seats={businessSeats}
-            seatType={SeatType.BUSINESS}
-          />
+          <SeatRow seats={businessSeats} seatType={SeatType.BUSINESS} />
           {exitRow}
-          <SeatRow
-            flight={flight}
-            seats={economySeats}
-            seatType={SeatType.ECONOMY}
-          />
+          <SeatRow seats={economySeats} seatType={SeatType.ECONOMY} />
           {exitRow}
         </div>
       </div>

@@ -22,7 +22,7 @@ export default async function page({ params }: { params: { id: string } }) {
       {flight ? (
         <div className="flex h-[3000px] flex-row justify-between overflow-hidden px-4">
           <FlightProvider flight={flight}>
-            <Plane flight={flight} seats={seats} />
+            <Plane seats={seats} />
             <BookingDetails flight={flight} />
           </FlightProvider>
         </div>

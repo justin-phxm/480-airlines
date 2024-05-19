@@ -1,34 +1,51 @@
 "use client";
 
-import type { Flight, Seat } from "@prisma/client";
-import { useState } from "react";
+import type { Seat } from "@prisma/client";
 import { SeatColor } from "./PlaneSeat";
-import { createPortal } from "react-dom";
+import { useFlight } from "../FlightContext";
 
 export default function SeatUnit({
   seat,
   seatColor,
-  flight,
 }: {
-  flight: Flight;
   seat: Seat;
   seatColor: string;
 }) {
-  const [selected, setSelected] = useState(false);
+  const { setChosenSeats, chosenSeats } = useFlight();
   const handleClick = () => {
     if (!seat.available) return;
-    setSelected(!selected);
+
+    setChosenSeats((prevChosenSeats) => {
+      if (
+        !prevChosenSeats.find(
+          (chosenSeat) => chosenSeat.seatCode === seat.seatCode,
+        )
+      ) {
+        return [...prevChosenSeats, seat];
+      } else {
+        return prevChosenSeats.filter(
+          (chosenSeat) => chosenSeat.seatCode !== seat.seatCode,
+        );
+      }
+    });
   };
-  const priceMultiplier =
-    seat.seatType === "FIRST" ? 1.5 : seat.seatType === "BUSINESS" ? 1.25 : 1;
-  const seatPrice = flight.price * priceMultiplier;
+
+  // const priceMultiplier =
+  //   seat.seatType === "FIRST" ? 1.5 : seat.seatType === "BUSINESS" ? 1.25 : 1;
+  // const seatPrice = flight.price * priceMultiplier;
   return (
     <>
       <div
         onClick={handleClick}
-        className={`h-10 w-7 rounded bg-gradient-to-b ${seat.available && "cursor-pointer"} ${selected ? SeatColor.SELECTED : seatColor}`}
+        className={`h-10 w-7 rounded bg-gradient-to-b ${seat.available && "cursor-pointer"} ${
+          chosenSeats.find(
+            (chosenSeat) => chosenSeat.seatCode === seat.seatCode,
+          )
+            ? SeatColor.SELECTED
+            : seatColor
+        }`}
       />
-      {selected &&
+      {/* {selected &&
         createPortal(
           <li
             data-aos="fade-right"
@@ -64,7 +81,7 @@ export default function SeatUnit({
             </button>
           </li>,
           document.getElementById("portalExit")!,
-        )}
+        )} */}
     </>
   );
 }

@@ -11,6 +11,8 @@ import React, {
 interface FlightContextType {
   flight: Flight;
   seats: Seat[];
+  chosenSeats: Seat[];
+  setChosenSeats: React.Dispatch<React.SetStateAction<Seat[]>>;
   setSeats: React.Dispatch<React.SetStateAction<Seat[]>>;
 }
 
@@ -26,9 +28,12 @@ export const FlightProvider = ({
   flight: Flight;
 }) => {
   const [seats, setSeats] = useState<Seat[]>([]);
+  const [chosenSeats, setChosenSeats] = useState<Seat[]>([]);
 
   return (
-    <FlightContext.Provider value={{ flight, seats, setSeats }}>
+    <FlightContext.Provider
+      value={{ flight, seats, setSeats, chosenSeats, setChosenSeats }}
+    >
       {children}
     </FlightContext.Provider>
   );
