@@ -34,6 +34,14 @@ export default function SeatUnit({
             data-aos="fade-right"
             className="flex w-full flex-row justify-around border-b bg-opacity-50 p-4 backdrop-blur-xl transition-opacity"
           >
+            {selected && (
+              <input
+                type="text"
+                className="hidden"
+                name={seat.seatCode}
+                value={seatPrice.toFixed(2)}
+              />
+            )}
             <div className="flex flex-col">
               <p className="font-light">Seat Type</p>
               <div className=" font-bold">{seat.seatType}</div>

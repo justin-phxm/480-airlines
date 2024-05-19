@@ -1,4 +1,4 @@
-import { Flight, SeatType, type Seat } from "@prisma/client";
+import { type Flight, SeatType, type Seat } from "@prisma/client";
 import PlaneSeat from "./PlaneSeat";
 
 export default function SeatRow({

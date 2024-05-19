@@ -1,4 +1,4 @@
-import { type Seat, SeatType, Flight } from "@prisma/client";
+import { type Seat, SeatType, type Flight } from "@prisma/client";
 import SeatUnit from "./SeatUnit";
 
 export enum SeatColor {
