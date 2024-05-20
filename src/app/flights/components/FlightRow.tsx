@@ -1,8 +1,18 @@
 import type { Flight } from "@prisma/client";
 import Link from "next/link";
-
+import airlineImages from "./airlineImage";
+import Image from "next/image";
 export default function FlightRow({ flight }: { flight: Flight }) {
-  const { arrivalTime, departureTime, departureCity, arrivalCity, id } = flight;
+  const {
+    arrivalTime,
+    departureTime,
+    departureCity,
+    arrivalCity,
+    departureAirportCode,
+    arrivalAirportCode,
+    price,
+    airline,
+  } = flight;
   const flightDuration = new Date(
     arrivalTime.getTime() - departureTime.getTime(),
   );
@@ -37,26 +47,33 @@ export default function FlightRow({ flight }: { flight: Flight }) {
       </svg>
     </div>
   );
+  const randomAirlineImage =
+    airlineImages[Math.floor(Math.random() * airlineImages.length)];
   return (
     <Link href={`/booking/${flight.id}`}>
-      <li className="inline-flex w-full cursor-pointer gap-2 rounded border-b-2 border-violet-500 px-4 py-1 shadow transition duration-300 ease-in hover:-translate-y-1 hover:bg-indigo-200">
-        {planeIcon}
-        <div className="flex w-full flex-col whitespace-nowrap text-slate-800">
-          <section className="flex w-full flex-row justify-between rounded-full bg-indigo-300 px-4 py-2">
-            <div>ID: {id}</div>
-            <div>
-              Duration: {flightDurationHours}h {flightDurationMinutes}m
-            </div>
-            <div>
-              {formattedDepartureTime} - {formattedArrivalTime}
-            </div>
-            <div>$500</div>
-          </section>
-          <div className="flex flex-row justify-between gap-2">
-            <div>Origin City: {departureCity}</div>
-            <div>Destination: {arrivalCity}</div>
+      <li className=" grid w-full cursor-pointer grid-cols-4 gap-2 rounded border-b-2 border-violet-500 px-4 py-1 shadow transition duration-300 ease-in hover:-translate-y-1 hover:bg-indigo-200">
+        <section className="flex w-auto  gap-4 ">
+          {randomAirlineImage ? (
+            <Image src={randomAirlineImage} alt={""} placeholder="blur" />
+          ) : (
+            <div className=" w-1/5">{planeIcon}</div>
+          )}
+          <div className="flex w-3/5 flex-col">
+            <p>{`${flightDurationHours}h ${flightDurationMinutes}m`}</p>
+            <p className=" truncate font-light">{airline}</p>
           </div>
-        </div>
+        </section>
+        <section className="flex flex-col ">
+          <p>{`${formattedDepartureTime} - ${formattedArrivalTime}`}</p>
+        </section>
+        <section className="flex flex-col ">
+          <p>{`${departureCity} - ${arrivalCity}`}</p>
+          <p> {`${departureAirportCode} - ${arrivalAirportCode}`}</p>
+        </section>
+        <section className="flex flex-col text-end ">
+          <p>${price.toFixed(0)}</p>
+          <p className=" font-light">round trip</p>
+        </section>
       </li>
     </Link>
   );
