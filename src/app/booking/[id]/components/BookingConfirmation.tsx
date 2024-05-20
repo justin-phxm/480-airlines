@@ -1,6 +1,5 @@
 "use client";
 
-import { useRef } from "react";
 import PaymentModal from "./PaymentModal";
 import { bookFlight } from "~/app/actions";
 import { useFlight } from "../FlightContext";
@@ -8,7 +7,6 @@ import ChosenSeatItem from "./ChosenSeatItem";
 import { Button } from "@mui/material";
 
 export default function BookingConfirmation() {
-  const portalRef = useRef<HTMLButtonElement>(null);
   const handleFlightBooking = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const flightBooking: Parameters<typeof bookFlight>[0] = {
@@ -43,7 +41,7 @@ export default function BookingConfirmation() {
           >
             Cancel
           </Button>
-          <PaymentModal portalRef={portalRef} />
+          <PaymentModal />
         </div>
       </div>
       <ol className="flex max-h-[15vh] w-full flex-col overflow-y-auto text-black">
@@ -51,7 +49,6 @@ export default function BookingConfirmation() {
           return <ChosenSeatItem key={seat.id} index={index} seat={seat} />;
         })}
       </ol>
-      <button type="submit" ref={portalRef} className="hidden" />
     </form>
   );
 }

@@ -1,5 +1,6 @@
 import { type Seat } from "@prisma/client";
 import { useFlight } from "../FlightContext";
+import { Button } from "@mui/material";
 
 export default function ChosenSeatItem({
   seat,
@@ -38,7 +39,8 @@ export default function ChosenSeatItem({
         <p className="font-light">Price</p>
         <div className=" font-bold">${seatPrice.toFixed(2)}</div>
       </div>
-      <button
+      <Button
+        color="error"
         onClick={() =>
           setChosenSeats((prevChosenSeats) =>
             prevChosenSeats.filter(
@@ -46,10 +48,10 @@ export default function ChosenSeatItem({
             ),
           )
         }
-        className=" flex items-center justify-center"
+        className=" flex items-center justify-center normal-case"
       >
         Remove
-      </button>
+      </Button>
     </li>
   );
 }
