@@ -46,7 +46,7 @@ export default function BookingConfirmation() {
           <PaymentModal portalRef={portalRef} />
         </div>
       </div>
-      <ol className="flex max-h-72 w-full flex-col overflow-y-auto text-black">
+      <ol className="flex max-h-[15vh] w-full flex-col overflow-y-auto text-black">
         {chosenSeats.map((seat, index) => {
           return <ChosenSeatItem key={seat.id} index={index} seat={seat} />;
         })}
