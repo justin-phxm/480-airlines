@@ -71,8 +71,8 @@ export default function FlightRow({ flight }: { flight: Flight }) {
         <section className="flex flex-col ">
           <p>{`${formattedDepartureTime} - ${formattedArrivalTime}`}</p>
         </section>
-        <section className="flex flex-col ">
-          <p>{`${departureCity} - ${arrivalCity}`}</p>
+        <section className="flex w-full flex-col ">
+          <p className="truncate ">{`${departureCity} - ${arrivalCity}`}</p>
           <p> {`${departureAirportCode} - ${arrivalAirportCode}`}</p>
         </section>
         <section className="flex flex-col text-end ">
