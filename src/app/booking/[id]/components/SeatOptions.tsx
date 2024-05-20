@@ -1,36 +1,34 @@
-import type { ReactNode } from "react";
-
-type SeatInfo = {
+import IconButton from "@mui/material/IconButton";
+import Tooltip from "@mui/material/Tooltip";
+type SeatInfoProps = {
   title: string;
   description: string;
   benefits: string[];
-  icon: ReactNode;
+  icon: JSX.Element;
   badge?: string;
   badgeClass?: string;
   benefitColorClass: string;
+  toolTipInfo?: string;
 };
-function SeatInfo({
-  icon,
-  title,
-  description,
-  benefits,
-  badge,
-  badgeClass,
-  benefitColorClass,
-}: {
-  icon: ReactNode;
-  title: string;
-  description: string;
-  benefits: string[];
-  badge?: string;
-  badgeClass?: string;
-  benefitColorClass: string;
-}) {
+function SeatInfo({ seatClass }: { seatClass: SeatInfoProps }) {
+  const {
+    title,
+    description,
+    benefits,
+    icon,
+    badge,
+    badgeClass,
+    benefitColorClass,
+    toolTipInfo,
+  } = seatClass;
   return (
     <div className="inline-flex w-96 flex-col items-center justify-start gap-4 rounded-lg px-2 py-8">
       {icon}
       <div className="flex h-60 flex-col gap-4">
-        <div className="inline-flex w-36 items-start justify-start gap-4">
+        <div className="inline-flex w-36 items-center justify-start gap-4">
+          <Tooltip placement="top" title={toolTipInfo}>
+            <IconButton size="small">i</IconButton>
+          </Tooltip>
           <div className="text-lg font-semibold text-slate-500">{title}</div>
           {badge && (
             <div
@@ -580,7 +578,7 @@ export default function SeatOptions() {
     </svg>
   );
 
-  const seatInfo: SeatInfo[] = [
+  const seatInfo: SeatInfoProps[] = [
     {
       title: "Economy",
       description:
@@ -607,6 +605,8 @@ export default function SeatOptions() {
 
       badgeClass: "bg-gradient-to-b from-indigo-500 to-indigo-700",
       icon: economySeatIcon,
+      toolTipInfo:
+        "Business Seat class is an additional 1.25x the base flight cost",
     },
     {
       title: "First",
@@ -621,21 +621,14 @@ export default function SeatOptions() {
       badge: "Premium",
       badgeClass: "bg-gradient-to-b from-yellow-300 to-yellow-500",
       icon: firstClassSeatIcon,
+      toolTipInfo:
+        "First Seat class is an additional 1.5x the base flight cost",
     },
   ];
   return (
     <div className="inline-flex max-w-7xl shrink grow basis-0 items-start justify-center gap-1 self-stretch px-4 py-2 backdrop-blur-xl">
       {seatInfo.map((seat) => (
-        <SeatInfo
-          key={seat.title}
-          icon={seat.icon}
-          title={seat.title}
-          description={seat.description}
-          benefits={seat.benefits}
-          badge={seat.badge}
-          badgeClass={seat.badgeClass}
-          benefitColorClass={seat.benefitColorClass}
-        />
+        <SeatInfo key={seat.title} seatClass={seat} />
       ))}
     </div>
   );
