@@ -84,12 +84,12 @@ const createTicket = (
   customers: Prisma.UserGetPayload<{
     include: { customerInformation: true; employee: true };
   }>[],
-  possibleSeats: Seat[],
+  bookedSeat: Seat,
   flight: Flight,
 ) => {
   const ticket: Prisma.TicketCreateInput = {
     seat: {
-      connect: { id: faker.helpers.arrayElement(possibleSeats).id },
+      connect: { id: bookedSeat.id },
     },
     flight: {
       connect: { id: flight.id },
@@ -202,8 +202,13 @@ async function seedTickets(
       include: { seats: true },
     });
     const possibleSeats = aircraft.seats;
+    const bookedSeat = faker.helpers.arrayElement(possibleSeats);
     const ticket = await db.ticket.create({
-      data: createTicket(customers, possibleSeats, flight),
+      data: createTicket(customers, bookedSeat, flight),
+    });
+    await db.seat.update({
+      where: { id: bookedSeat.id },
+      data: { available: false },
     });
     return ticket;
   });
