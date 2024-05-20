@@ -12,10 +12,12 @@ export default function BookingConfirmation() {
   const { data: session, status } = useSession();
   const handleFlightBooking = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (!(status === "authenticated")) {
+
+    if (status !== "authenticated") {
       toast.error("Please login to book a flight");
       return;
     }
+
     const seatIDs = chosenSeats.map((seat) => seat.id);
     const flightBooking: Parameters<typeof bookFlight>[0] = {
       seatIDs: seatIDs,
@@ -23,9 +25,17 @@ export default function BookingConfirmation() {
       flightCoupon: false,
       flightID: flight.id,
     };
-    console.log(flightBooking);
-    const response = await bookFlight(flightBooking);
-    console.log(response);
+
+    void toast.promise(bookFlight(flightBooking), {
+      pending: "Booking flight...",
+      success: {
+        render({ data }) {
+          setChosenSeats([]);
+          return data.message;
+        },
+      },
+      error: "Error booking flight. Please try again later.",
+    });
   };
   return (
     <form
@@ -45,7 +55,8 @@ export default function BookingConfirmation() {
             color="secondary"
             onClick={() => setChosenSeats([])}
             variant="outlined"
-            className=" border-violet-500 text-lg font-bold normal-case text-violet-500"
+            disabled={chosenSeats.length === 0}
+            className={` border-violet-500 text-lg font-bold normal-case text-violet-500 `}
           >
             Cancel
           </Button>

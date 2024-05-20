@@ -4,16 +4,18 @@ import Button from "@mui/material/Button";
 import Dialog from "@mui/material/Dialog";
 import { useState } from "react";
 import PaymentForm from "./PaymentForm";
+import { useFlight } from "../FlightContext";
 
 export default function PaymentModal() {
   const [open, setOpen] = useState(false);
-
+  const { chosenSeats } = useFlight();
   return (
     <>
       <Button
         color="secondary"
         className="border-violet-500 text-lg font-bold normal-case text-violet-500"
         variant="outlined"
+        disabled={chosenSeats.length === 0}
         onClick={() => setOpen(true)}
       >
         Checkout
