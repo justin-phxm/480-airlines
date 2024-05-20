@@ -1,9 +1,11 @@
 "use client";
 
 import { useRef } from "react";
-import CancelSeats from "./CancelSeats";
 import PaymentModal from "./PaymentModal";
 import { bookFlight } from "~/app/actions";
+import { useFlight } from "../FlightContext";
+import ChosenSeatItem from "./ChosenSeatItem";
+import { Button } from "@mui/material";
 
 export default function BookingConfirmation() {
   const portalRef = useRef<HTMLButtonElement>(null);
@@ -18,21 +20,38 @@ export default function BookingConfirmation() {
     const response = await bookFlight(flightBooking);
     console.log(response);
   };
+  const { chosenSeats, setChosenSeats } = useFlight();
   return (
     <form
       onSubmit={handleFlightBooking}
       className="flex w-full flex-col items-end gap-4"
     >
-      <div className="flex flex-row gap-4">
-        <CancelSeats />
-        <PaymentModal portalRef={portalRef} />
-        <div />
+      <div className="flex w-full flex-row justify-between px-4">
+        <Button
+          color="secondary"
+          variant="outlined"
+          className=" border-violet-500 text-lg font-bold normal-case text-violet-500"
+        >
+          Total Seats: {chosenSeats.length}
+        </Button>
+        <div className=" flex flex-row gap-4">
+          <Button
+            color="secondary"
+            onClick={() => setChosenSeats([])}
+            variant="outlined"
+            className=" border-violet-500 text-lg font-bold normal-case text-violet-500"
+          >
+            Cancel
+          </Button>
+          <PaymentModal portalRef={portalRef} />
+        </div>
       </div>
-      <div
-        className="flex max-h-72 w-full flex-col overflow-y-auto text-black"
-        id="portalExit"
-      />
-      <button type="submit" ref={portalRef} />
+      <ol className="flex max-h-72 w-full flex-col overflow-y-auto text-black">
+        {chosenSeats.map((seat, index) => {
+          return <ChosenSeatItem key={seat.id} index={index} seat={seat} />;
+        })}
+      </ol>
+      <button type="submit" ref={portalRef} className="hidden" />
     </form>
   );
 }
