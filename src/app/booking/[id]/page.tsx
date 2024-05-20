@@ -16,6 +16,7 @@ export default async function page({ params }: { params: { id: string } }) {
   const flight = await db.flight.findUnique({ where: { id: flightID } });
   const seats = await db.seat.findMany({
     where: { aircraftId: flight?.aircraftId },
+    orderBy: { id: "asc" },
   });
   return (
     <div className="flex flex-1 flex-col overflow-x-hidden">

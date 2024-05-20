@@ -41,8 +41,8 @@ export default function SeatRow({
             ),
           )}
 
-          <div className="size-8 justify-center text-center text-sm text-slate-400">
-            {rowIndex + 1}
+          <div className="flex size-8 items-center justify-center text-center text-sm text-slate-400">
+            {seats[rowIndex * seatsPerRow]?.seatCode[0]}
           </div>
           {padSeats(
             seats.slice(
