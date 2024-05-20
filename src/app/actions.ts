@@ -119,7 +119,7 @@ export async function bookFlight({
 
       const ticket = await db.ticket.create({
         data: {
-          userId: userID,
+          customerUserId: userID,
           seatId: seat.id,
           flightId: flightID,
         },

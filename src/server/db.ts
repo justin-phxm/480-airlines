@@ -15,13 +15,16 @@ const globalForPrisma = globalThis as unknown as {
 export const db = globalForPrisma.prisma ?? createPrismaClient();
 
 export const getUserByID = async (id: string) =>
-  db.user.findUnique({
+  db.user.findUniqueOrThrow({
     where: { id },
     include: {
       employee: true,
-      customerInformation: true,
-      tickets: true,
-      transactions: true,
+      customerInformation: {
+        include: {
+          tickets: true,
+          transactions: true,
+        },
+      },
     },
   });
 export const createCustomer = async (userID: string) => {

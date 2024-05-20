@@ -1,6 +1,6 @@
 # TODO:
 
-- [ ] Create Profile View -> convert Navbar to a client component -> use Flowbite components
+- [x] Create Profile View -> convert Navbar to a client component -> use Flowbite components
 - [x] Add Toasts
 - [ ] Create Admin Login
 - [ ] Create Employee Login

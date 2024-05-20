@@ -74,8 +74,6 @@ export const authOptions: NextAuthOptions = {
       token.role = existingUser.role;
       token.customerInformation = existingUser.customerInformation;
       token.employee = existingUser.employee;
-      token.tickets = existingUser.tickets;
-      token.transactions = existingUser.transactions;
       return token;
     },
   },
