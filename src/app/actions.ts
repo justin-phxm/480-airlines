@@ -3,6 +3,7 @@
 import { z } from "zod";
 import { db } from "~/server/db";
 import { type SearchParams } from "./flights/page";
+import type { Flight, Prisma, Seat } from "@prisma/client";
 export async function searchFlights({
   searchParams,
 }: {
@@ -137,5 +138,42 @@ export async function bookFlight({
   } catch (error) {
     console.error("Error booking flight:", error);
     return { success: false, message: "An error occurred during booking" };
+  }
+}
+export async function createTransaction({
+  userID,
+  flight,
+  seats,
+}: {
+  userID: string;
+  flight: Flight;
+  seats: Seat[];
+  payment?: { amount: number; method: string };
+}): Promise<{ success: boolean; message: string }> {
+  try {
+    // Create a transaction record
+    const transactionPromises = seats.map(async (seat) => {
+      const transaction: Prisma.TransactionCreateInput = {
+        price: flight.price,
+        aircraftID: flight.aircraftId,
+        seatType: seat.seatType,
+        seatCode: seat.seatCode,
+        departureAirportCode: flight.departureAirportCode,
+        arrivalAirportCode: flight.arrivalAirportCode,
+        departureTime: flight.departureTime,
+        arrivalTime: flight.arrivalTime,
+        departureCity: flight.departureCity,
+        arrivalCity: flight.arrivalCity,
+        customer: { connect: { userId: userID } },
+      };
+      await db.transaction.create({
+        data: transaction,
+      });
+    });
+    await Promise.all(transactionPromises);
+    return { success: true, message: "Transaction successful" };
+  } catch (error) {
+    console.error("Error creating transaction:", error);
+    return { success: false, message: "An error occurred during transaction" };
   }
 }
