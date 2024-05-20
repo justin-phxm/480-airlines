@@ -15,7 +15,7 @@ import { type Adapter } from "next-auth/adapters";
 import DiscordProvider from "next-auth/providers/discord";
 import Google from "next-auth/providers/google";
 import { env } from "~/env";
-import { db, getUserByID } from "~/server/db";
+import { createCustomer, db, getUserByID } from "~/server/db";
 
 /**
  * Module augmentation for `next-auth` types. Allows us to add custom properties to the `session`
@@ -66,7 +66,10 @@ export const authOptions: NextAuthOptions = {
     }),
     jwt: async ({ token }) => {
       if (!token.sub) return token;
-      const existingUser = await getUserByID(token.sub);
+      const [existingUser] = await Promise.all([
+        getUserByID(token.sub),
+        createCustomer(token.sub),
+      ]);
       if (!existingUser) return token;
       token.role = existingUser.role;
       token.customerInformation = existingUser.customerInformation;
