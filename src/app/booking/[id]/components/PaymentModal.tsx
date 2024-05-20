@@ -2,15 +2,12 @@
 import { DialogContent, DialogContentText, DialogTitle } from "@mui/material";
 import Button from "@mui/material/Button";
 import Dialog from "@mui/material/Dialog";
-import React from "react";
+import { useState } from "react";
 import PaymentForm from "./PaymentForm";
 
 export default function PaymentModal() {
-  const [open, setOpen] = React.useState(false);
+  const [open, setOpen] = useState(false);
 
-  const handleCancel = () => {
-    setOpen(false);
-  };
   return (
     <>
       <Button
@@ -25,7 +22,7 @@ export default function PaymentModal() {
         fullWidth
         maxWidth="md"
         open={open}
-        onClose={handleCancel}
+        onClose={() => setOpen(false)}
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
       >

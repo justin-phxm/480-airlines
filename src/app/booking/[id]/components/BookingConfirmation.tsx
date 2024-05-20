@@ -5,20 +5,24 @@ import { bookFlight } from "~/app/actions";
 import { useFlight } from "../FlightContext";
 import ChosenSeatItem from "./ChosenSeatItem";
 import { Button } from "@mui/material";
+import { useSession } from "next-auth/react";
 
 export default function BookingConfirmation() {
+  const { chosenSeats, setChosenSeats, flight } = useFlight();
+  const { data: session } = useSession();
   const handleFlightBooking = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    const seatIDs = chosenSeats.map((seat) => seat.id);
     const flightBooking: Parameters<typeof bookFlight>[0] = {
-      seatIDs: [],
-      userID: "",
+      seatIDs: seatIDs,
+      userID: String(session?.user.id),
       flightCoupon: false,
-      flightID: 0,
+      flightID: flight.id,
     };
+    console.log(flightBooking);
     const response = await bookFlight(flightBooking);
     console.log(response);
   };
-  const { chosenSeats, setChosenSeats } = useFlight();
   return (
     <form
       onSubmit={handleFlightBooking}
