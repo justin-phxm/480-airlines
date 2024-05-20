@@ -1,5 +1,11 @@
 import { PrismaAdapter } from "@auth/prisma-adapter";
-import type { Role } from "@prisma/client";
+import type {
+  Role,
+  Customer,
+  Employee,
+  Ticket,
+  Transaction,
+} from "@prisma/client";
 import {
   getServerSession,
   type DefaultSession,
@@ -22,6 +28,10 @@ declare module "next-auth" {
     user: {
       id: string;
       role: Role;
+      customerInformation: Customer;
+      employee: Employee;
+      tickets: Ticket[];
+      transactions: Transaction[];
     } & DefaultSession["user"];
   }
 
@@ -48,6 +58,10 @@ export const authOptions: NextAuthOptions = {
         ...session.user,
         id: token.sub,
         role: token.role,
+        customerInformation: token.customerInformation,
+        employee: token.employee,
+        tickets: token.tickets,
+        transactions: token.transactions,
       },
     }),
     jwt: async ({ token }) => {
@@ -55,6 +69,10 @@ export const authOptions: NextAuthOptions = {
       const existingUser = await getUserByID(token.sub);
       if (!existingUser) return token;
       token.role = existingUser.role;
+      token.customerInformation = existingUser.customerInformation;
+      token.employee = existingUser.employee;
+      token.tickets = existingUser.tickets;
+      token.transactions = existingUser.transactions;
       return token;
     },
   },

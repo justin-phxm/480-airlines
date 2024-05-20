@@ -15,6 +15,27 @@ const globalForPrisma = globalThis as unknown as {
 export const db = globalForPrisma.prisma ?? createPrismaClient();
 
 export const getUserByID = async (id: string) =>
-  db.user.findUnique({ where: { id } });
-
+  db.user.findUnique({
+    where: { id },
+    include: {
+      employee: true,
+      customerInformation: true,
+      tickets: true,
+      transactions: true,
+    },
+  });
+export const createCustomer = async (userID: string) => {
+  try {
+    const res = await db.customer.upsert({
+      where: {
+        userId: userID,
+      },
+      create: { userId: userID },
+      update: {},
+    });
+    return res;
+  } catch (e) {
+    console.error(e);
+  }
+};
 if (env.NODE_ENV !== "production") globalForPrisma.prisma = db;
