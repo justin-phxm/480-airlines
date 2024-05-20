@@ -51,10 +51,15 @@ export default function FlightRow({ flight }: { flight: Flight }) {
     airlineImages[Math.floor(Math.random() * airlineImages.length)];
   return (
     <Link href={`/booking/${flight.id}`}>
-      <li className=" grid w-full cursor-pointer grid-cols-4 gap-2 rounded border-b-2 border-violet-500 px-4 py-1 shadow transition duration-300 ease-in hover:-translate-y-1 hover:bg-indigo-200">
+      <li className=" grid w-full cursor-pointer grid-cols-4 gap-2 rounded border-b-2 border-violet-500 p-4 shadow transition duration-300 ease-in hover:-translate-y-1 hover:bg-indigo-200">
         <section className="flex w-auto  gap-4 ">
           {randomAirlineImage ? (
-            <Image src={randomAirlineImage} alt={""} placeholder="blur" />
+            <Image
+              src={randomAirlineImage}
+              alt={""}
+              className="object-contain"
+              placeholder="blur"
+            />
           ) : (
             <div className=" w-1/5">{planeIcon}</div>
           )}

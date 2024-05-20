@@ -2,37 +2,32 @@
 
 import { z } from "zod";
 import { db } from "~/server/db";
-// TODO: Add pagination, allow optional parameters
+import { type SearchParams } from "./flights/page";
 export async function searchFlights({
-  origin,
-  destination,
-  date,
-  time,
+  searchParams,
 }: {
-  origin: string;
-  destination: string;
-  date: string;
-  time: string;
+  searchParams: SearchParams;
 }) {
   const FormData = z.object({
-    origin: z.string().max(50),
-    destination: z.string().max(50),
+    origin: z.string().max(50).optional(),
+    destination: z.string().max(50).optional(),
     date: z.string().refine((val) => !isNaN(Date.parse(val)), {
       message: "Invalid date format",
     }),
-    time: z.string(),
+    time: z.string().optional(),
+    page: z.string().optional(),
   });
-  const res = FormData.safeParse({
-    origin,
-    destination,
-    date,
-    time,
-  });
+  const res = FormData.safeParse(searchParams);
   if (!res.success) {
     return;
   }
+  const { origin, destination, date, page } = res.data;
+  const cursorObj = page ? { id: parseInt(page) } : undefined;
   const parsedDate = new Date(date);
   const flights = await db.flight.findMany({
+    take: 10,
+    skip: page ? 1 : 0,
+    cursor: cursorObj,
     where: {
       OR: [
         {
@@ -62,8 +57,12 @@ export async function searchFlights({
       ],
     },
   });
-  return flights;
+  const nextCursor =
+    flights.length === 10 ? flights[flights.length - 1]?.id : null;
+
+  return { flights, nextCursor };
 }
+
 /* 
 Check if seat is available
 Check if customer has companion ticket
