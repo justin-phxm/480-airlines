@@ -46,18 +46,16 @@ model Session {
 }
 
 model User {
-    id                  String        @id @default(cuid())
-    name                String?
-    email               String        @unique
+    id                  String    @id @default(cuid())
+    name                String
+    email               String    @unique
     emailVerified       DateTime?
-    image               String?
+    image               String
     accounts            Account[]
     sessions            Session[]
-    role                Role          @default(CUSTOMER)
+    role                Role      @default(CUSTOMER)
     customerInformation Customer?
     employee            Employee?
-    tickets             Ticket[]
-    transactions        Transaction[]
 }
 
 model Customer {
@@ -87,7 +85,7 @@ model VerificationToken {
 }
 
 model Aircraft {
-    id      Int      @id @default(autoincrement())
+    id      String   @id @default(cuid())
     name    String
     flights Flight[]
     seats   Seat[]
@@ -102,7 +100,7 @@ model Flight {
     arrivalCity          String
     departureCity        String
     aircraft             Aircraft @relation(fields: [aircraftId], references: [id])
-    aircraftId           Int
+    aircraftId           String
     createdAt            DateTime @default(now())
     updatedAt            DateTime @updatedAt
     tickets              Ticket[]
@@ -122,40 +120,36 @@ model Seat {
     available  Boolean  @default(true)
     seatType   SeatType
     aircraft   Aircraft @relation(fields: [aircraftId], references: [id])
-    aircraftId Int
+    aircraftId String
     tickets    Ticket[]
 }
 
 model Ticket {
-    id             Int       @id @default(autoincrement())
-    seat           Seat      @relation(fields: [seatId], references: [id])
+    id             Int      @id @default(autoincrement())
+    seat           Seat     @relation(fields: [seatId], references: [id])
     seatId         Int
-    flight         Flight    @relation(fields: [flightId], references: [id])
+    flight         Flight   @relation(fields: [flightId], references: [id])
     flightId       Int
-    createdAt      DateTime  @default(now())
-    updatedAt      DateTime  @updatedAt
-    user           User?     @relation(fields: [userId], references: [id])
-    userId         String?
-    Customer       Customer? @relation(fields: [customerUserId], references: [userId])
-    customerUserId String?
+    createdAt      DateTime @default(now())
+    updatedAt      DateTime @updatedAt
+    customer       Customer @relation(fields: [customerUserId], references: [userId])
+    customerUserId String
 }
 
 model Transaction {
-    id                   Int       @id @default(autoincrement())
+    id                   Int      @id @default(autoincrement())
     price                Float
-    createdAt            DateTime  @default(now())
-    updatedAt            DateTime  @updatedAt
-    user                 User      @relation(fields: [userId], references: [id])
-    userId               String
+    createdAt            DateTime @default(now())
+    updatedAt            DateTime @updatedAt
     seatType             SeatType
     seatCode             String
-    aircraftID           Int
+    aircraftID           String
     departureAirportCode String
     arrivalAirportCode   String
     departureTime        DateTime
     arrivalTime          DateTime
     arrivalCity          String
     departureCity        String
-    Customer             Customer? @relation(fields: [customerUserId], references: [userId])
-    customerUserId       String?
+    customer             Customer @relation(fields: [customerUserId], references: [userId])
+    customerUserId       String
 }

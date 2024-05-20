@@ -1,64 +1,65 @@
 import { db } from "../src/server/db";
-import { Role, SeatType, type User } from "@prisma/client";
+import {
+  type Prisma,
+  Role,
+  SeatType,
+  type Flight,
+  type Ticket,
+  type Seat,
+} from "@prisma/client";
 import { faker } from "@faker-js/faker";
 const SEED_NUM = 0;
 const NUM_FAKE_DATA = 10;
 faker.seed(SEED_NUM);
 const createCustomerInformation = () => {
-  return {
-    isMember: faker.datatype.boolean(),
-    newsletter: faker.datatype.boolean(),
-    loungeDiscount: faker.datatype.boolean(),
-    address: faker.location.streetAddress({ useFullAddress: true }),
-    onFlight: faker.datatype.boolean(),
-    flightCoupon: faker.datatype.boolean(),
+  const customer: Prisma.CustomerCreateNestedOneWithoutUserInput = {
+    create: {
+      isMember: faker.datatype.boolean(),
+      newsletter: faker.datatype.boolean(),
+      loungeDiscount: faker.datatype.boolean(),
+      address: faker.location.streetAddress({ useFullAddress: true }),
+      flightCoupon: faker.datatype.boolean(),
+    },
   };
+  return customer;
 };
-/** create a transaction
- * Departure time is within the last 30 days
- * Price is at least 250
- * Aircraft ID is between 1 and 10
- * seatCode is between A1 and J4
- * @returns a transaction object
- */
-const createTransaction = () => {
-  const departureTime = faker.date.recent({ days: 30 });
-  const transaction = {
-    price: Number(faker.finance.amount({ min: 250 })),
-    aircraftID: faker.number.int({ min: 1, max: 10 }),
-    seatType: faker.helpers.enumValue(SeatType),
-    departureAirportCode: faker.airline.airport().iataCode,
-    arrivalAirportCode: faker.airline.airport().iataCode,
-    departureTime: departureTime,
-    arrivalTime: faker.date.soon({ days: 1, refDate: departureTime }),
-    arrivalCity: faker.location.city(),
-    departureCity: faker.location.city(),
-    seatCode: faker.helpers.arrayElement(generateSeatCodes(7, 8, 11)).seatCode,
-  };
-  return transaction;
-};
+
 const createUser = () => {
   const role = faker.helpers.enumValue(Role);
-  const user = {
+  const baseUser = {
     email: faker.internet.email(),
     name: faker.person.fullName(),
     role: role,
     emailVerified: faker.datatype.boolean() ? faker.date.past() : null,
     image: faker.image.avatar(),
-    customerInformation:
-      role === Role.CUSTOMER ? createCustomerInformation() : undefined,
-    employee:
-      role === Role.EMPLOYEE
-        ? {
-            role: faker.person.jobTitle(),
-          }
-        : undefined,
   };
-  return user;
+  if (role === Role.CUSTOMER) {
+    const user: Prisma.UserCreateWithoutEmployeeInput = {
+      ...baseUser,
+      customerInformation: createCustomerInformation(),
+    };
+    return user;
+  } else if (role === Role.EMPLOYEE) {
+    const user: Prisma.UserCreateWithoutCustomerInformationInput = {
+      ...baseUser,
+      employee: {
+        create: {
+          role: faker.person.jobTitle(),
+        },
+      },
+    };
+    return user;
+  } else {
+    return baseUser;
+  }
 };
-const createFlight = () => {
+const createFlight = (
+  aircrafts: Prisma.AircraftGetPayload<{
+    include: { seats: true };
+  }>[],
+) => {
   const departureTime = faker.date.soon({ days: 180 });
-  return {
+  const flight: Prisma.FlightCreateInput = {
     departureAirportCode: faker.airline.airport().iataCode,
     arrivalAirportCode: faker.airline.airport().iataCode,
     departureTime: departureTime,
@@ -67,111 +68,158 @@ const createFlight = () => {
     departureCity: faker.location.city(),
     airline: faker.airline.airline().name,
     price: Number(faker.finance.amount({ min: 250, max: 1000 })),
+    aircraft: {
+      connect: { id: faker.helpers.arrayElement(aircrafts).id },
+    },
   };
+  return flight;
 };
-const createAircraft = (numFlights = 10) => {
-  return {
+const createAircraft = () => {
+  const aircraft: Prisma.AircraftCreateInput = {
     name: faker.airline.airplane().name,
-    flights: Array.from({ length: numFlights }).map(() => {
-      return createFlight();
-    }),
-    seats: generateSeatCodes(7, 8, 11),
   };
+  return aircraft;
+};
+const createTicket = (
+  customers: Prisma.UserGetPayload<{
+    include: { customerInformation: true; employee: true };
+  }>[],
+  possibleSeats: Seat[],
+  flight: Flight,
+) => {
+  const ticket: Prisma.TicketCreateInput = {
+    seat: {
+      connect: { id: faker.helpers.arrayElement(possibleSeats).id },
+    },
+    flight: {
+      connect: { id: flight.id },
+    },
+    customer: {
+      connect: { userId: faker.helpers.arrayElement(customers).id },
+    },
+  };
+  return ticket;
+};
+
+/** create a transaction
+ * Departure time is within the last 30 days
+ * Price is at least 250
+ * Aircraft ID is between 1 and 10
+ * seatCode is between A1 and J4
+ * @returns a transaction object
+ */
+const createTransaction = (seat: Seat, flights: Flight[], ticket: Ticket) => {
+  const flight = faker.helpers.arrayElement(flights);
+  const transaction: Prisma.TransactionCreateInput = {
+    price: flight.price,
+    aircraftID: flight.aircraftId,
+    seatType: seat.seatType,
+    departureAirportCode: flight.departureAirportCode,
+    arrivalAirportCode: flight.arrivalAirportCode,
+    departureTime: flight.departureTime,
+    arrivalTime: flight.arrivalTime,
+    arrivalCity: flight.arrivalCity,
+    departureCity: flight.departureCity,
+    seatCode: seat.seatCode,
+    customer: { connect: { userId: ticket.customerUserId } },
+  };
+  return transaction;
 };
 async function seedUsers(numUsers: number) {
-  const users = Array.from({ length: numUsers }).map(() => {
-    return createUser();
-  });
-  const newUsers = [];
-  for (const user of users) {
-    const newUser = await db.user.upsert({
-      where: {
-        email: user.email,
-      },
-      create: {
-        ...user,
-        customerInformation: {
-          create: user.customerInformation,
-        },
-        employee: {
-          create: user.employee,
-        },
-      },
-      update: {},
+  const userPromises = Array.from({ length: numUsers }).map(async () => {
+    const user: Prisma.UserGetPayload<{
+      include: { customerInformation: true; employee: true };
+    }> = await db.user.create({
+      data: createUser(),
+      include: { customerInformation: true, employee: true },
     });
-    newUsers.push(newUser);
-  }
-  return newUsers;
+    return user;
+  });
+  const users = await Promise.all(userPromises);
+  const customers = users.filter((user) => user.role === Role.CUSTOMER);
+  return customers;
 }
 async function seedAircrafts(numAircrafts: number) {
-  const aircrafts = Array.from({ length: numAircrafts }).map(() => {
-    return createAircraft();
-  });
-  for (const aircraft of aircrafts) {
-    await db.aircraft.create({
-      data: {
-        ...aircraft,
-        flights: {
-          createMany: { data: aircraft.flights },
-        },
-        seats: {
-          createMany: { data: aircraft.seats },
-        },
-      },
-    });
-  }
+  const aircraftPromises = Array.from({ length: numAircrafts }).map(
+    async () => {
+      const aircraft = createAircraft();
+      const newAircraft: Prisma.AircraftGetPayload<{
+        include: { seats: true };
+      }> = await db.aircraft.create({
+        data: { ...aircraft, seats: { create: generateSeatCodes(7, 8, 11) } },
+        include: { seats: true },
+      });
+      return newAircraft;
+    },
+  );
+
+  const aircrafts = await Promise.all(aircraftPromises);
+  return aircrafts;
 }
-async function seedTransactions(numTransactions: number, users: User[]) {
-  const transactions = Array.from({
-    length: numTransactions,
-  }).map(() => {
-    return createTransaction();
-  });
-  for (const transaction of transactions) {
-    await db.transaction.create({
-      data: {
-        ...transaction,
-        user: {
-          connect: faker.helpers.arrayElement(users),
-        },
-      },
-    });
-  }
+
+async function seedFlights(
+  aircrafts: Prisma.AircraftGetPayload<{
+    include: { seats: true };
+  }>[],
+) {
+  const flightPromises = Array.from({ length: aircrafts.length * 10 }).map(
+    async () => {
+      const flight = await db.flight.create({
+        data: createFlight(aircrafts),
+      });
+      return flight;
+    },
+  );
+  const flights = await Promise.all(flightPromises);
+  return flights;
 }
-async function seedTickets(numTickets: number, users: User[]) {
-  const tickets = Array.from({ length: numTickets }).map(() => {
-    return {};
-  });
-  for (const ticket of tickets) {
-    await db.ticket.create({
-      data: {
-        ...ticket,
-        seat: {
-          connect: {
-            id: faker.number.int({ min: 1, max: 1000 }),
-          },
-        },
-        flight: {
-          connect: {
-            id: faker.number.int({ min: 1, max: NUM_FAKE_DATA }),
-          },
-        },
-        user: {
-          connect: {
-            email: faker.helpers.arrayElement(users).email,
-          },
-        },
-      },
+async function seedTransactions(flights: Flight[], tickets: Ticket[]) {
+  const transactionPromises = tickets.map(async (ticket) => {
+    const seat = await db.seat.findUniqueOrThrow({
+      where: { id: ticket.seatId },
     });
-  }
+    const transaction = await db.transaction.create({
+      data: createTransaction(seat, flights, ticket),
+    });
+    return transaction;
+  });
+  const transactions = await Promise.all(transactionPromises);
+  return transactions;
+}
+async function seedTickets(
+  numTickets: number,
+  customers: Prisma.UserGetPayload<{
+    include: { customerInformation: true; employee: true };
+  }>[],
+  flights: Flight[],
+) {
+  const ticketPromises = Array.from({
+    length: numTickets,
+  }).map(async () => {
+    const flight = faker.helpers.arrayElement(flights);
+    const aircraft = await db.aircraft.findUniqueOrThrow({
+      where: { id: flight.aircraftId },
+      include: { seats: true },
+    });
+    const possibleSeats = aircraft.seats;
+    const ticket = await db.ticket.create({
+      data: createTicket(customers, possibleSeats, flight),
+    });
+    return ticket;
+  });
+  const tickets = await Promise.all(ticketPromises);
+  return tickets;
 }
 async function main() {
-  const users: User[] = await seedUsers(NUM_FAKE_DATA);
-  if (SEED_NUM === 0) {
-    await seedAircrafts(NUM_FAKE_DATA);
-  }
-  await seedTransactions(NUM_FAKE_DATA, users);
-  await seedTickets(NUM_FAKE_DATA, users);
+  const customers: Prisma.UserGetPayload<{
+    include: { customerInformation: true; employee: true };
+  }>[] = await seedUsers(NUM_FAKE_DATA);
+  const aircrafts: Prisma.AircraftGetPayload<{
+    include: { seats: true };
+  }>[] = await seedAircrafts(NUM_FAKE_DATA);
+  const flights = await seedFlights(aircrafts);
+  const tickets = await seedTickets(NUM_FAKE_DATA, customers, flights);
+  await seedTransactions(flights, tickets);
 }
 type Seats = { seatCode: string; seatType: SeatType }[];
 /** generate seats for num people
