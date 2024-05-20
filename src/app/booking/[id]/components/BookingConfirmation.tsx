@@ -6,12 +6,16 @@ import { useFlight } from "../FlightContext";
 import ChosenSeatItem from "./ChosenSeatItem";
 import { Button } from "@mui/material";
 import { useSession } from "next-auth/react";
-
+import { toast } from "react-toastify";
 export default function BookingConfirmation() {
   const { chosenSeats, setChosenSeats, flight } = useFlight();
-  const { data: session } = useSession();
+  const { data: session, status } = useSession();
   const handleFlightBooking = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    if (!(status === "authenticated")) {
+      toast.error("Please login to book a flight");
+      return;
+    }
     const seatIDs = chosenSeats.map((seat) => seat.id);
     const flightBooking: Parameters<typeof bookFlight>[0] = {
       seatIDs: seatIDs,

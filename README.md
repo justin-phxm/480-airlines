@@ -1,15 +1,17 @@
 # TODO:
 
-- [ ] Create Profile View
-- [ ] Add Toasts
+- [ ] Create Profile View -> convert Navbar to a client component -> use Flowbite components
+- [x] Add Toasts
+- [ ] Create Admin Login
+- [ ] Create Employee Login
 - [ ] Create Admin view
 - [ ] Create Employee View
 - [ ] Update Membership Logic
-- [ ] Add search feature
-- [ ] Update Seat selection Feature
-- [ ] Update payment Feature
-- [ ] Figure out how to move from SSR->SSG
-- [ ] Add Zod validation
+- [x] Add search feature
+- [x] Update Seat selection Feature
+- [x] Update payment Feature
+- [x] Figure out how to move from SSR->SSG
+- [x] Add Zod validation
 
 # Create T3 App
 
@@ -24,9 +26,7 @@ If you are not familiar with the different technologies used in this project, pl
 - [Next.js](https://nextjs.org)
 - [NextAuth.js](https://next-auth.js.org)
 - [Prisma](https://prisma.io)
-- [Drizzle](https://orm.drizzle.team)
 - [Tailwind CSS](https://tailwindcss.com)
-- [tRPC](https://trpc.io)
 
 ## Learn More
 

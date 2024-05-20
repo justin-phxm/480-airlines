@@ -88,19 +88,21 @@ export async function bookFlight({
   flightID: number;
 }): Promise<{ success: boolean; message: string }> {
   try {
+    console.log({ seatIDs, userID, flightCoupon, flightID });
+    // Get Customer
+    const customer = await db.customer.findUnique({
+      where: { userId: userID },
+    });
+    if (!customer) {
+      return { success: false, message: "User not found" };
+    }
+
     // Check if seats are available
     for (const seatID of seatIDs) {
       const seat = await db.seat.findUnique({ where: { id: seatID } });
       if (!seat?.available) {
         return { success: false, message: `Seat ${seatID} not available` };
       }
-    }
-
-    const customer = await db.customer.findUnique({
-      where: { userId: userID },
-    });
-    if (!customer) {
-      return { success: false, message: "User not found" };
     }
 
     if (flightCoupon && !customer.flightCoupon) {
