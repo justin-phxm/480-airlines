@@ -1,11 +1,11 @@
 import Link from "next/link";
+import LoginStatus from "./LoginStatus";
 export default function Navbar() {
   const routes = [
     { name: "Home", href: "/" },
     { name: "Admin", href: "/admin" },
     { name: "Airline Employee", href: "/employee" },
     { name: "Membership", href: "/membership" },
-    { name: "Profile", href: "/profile" },
   ];
   return (
     <>
@@ -17,12 +17,13 @@ export default function Navbar() {
           >
             480 Airlines
           </Link>
-          <ul className="flex flex-col font-medium md:flex-row md:space-x-8 rtl:space-x-reverse dark:text-white">
+          <ul className="flex flex-col items-center font-medium md:flex-row md:space-x-8 rtl:space-x-reverse dark:text-white">
             {routes.map((route) => (
               <li key={route.name} className=" hover:text-indigo-500">
                 <Link href={route.href}>{route.name}</Link>
               </li>
             ))}
+            <LoginStatus />
           </ul>
         </div>
       </nav>
