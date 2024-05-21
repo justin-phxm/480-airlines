@@ -47,6 +47,7 @@ export default function BookingOverview() {
       flight.price * { FIRST: 1.5, BUSINESS: 1.25, ECONOMY: 1 }[seat.seatType];
     return (
       <div
+        data-aos="fade-right"
         className={
           "inline-flex items-center gap-2 rounded-lg bg-gradient-to-r p-2.5 " +
           ticketColor
