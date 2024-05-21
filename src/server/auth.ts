@@ -1,5 +1,6 @@
 import { PrismaAdapter } from "@auth/prisma-adapter";
 import type {
+  Prisma,
   Role,
   Customer,
   Employee,
@@ -28,7 +29,9 @@ declare module "next-auth" {
     user: {
       id: string;
       role: Role;
-      customerInformation: Customer;
+      customerInformation: Prisma.CustomerGetPayload<{
+        include: { tickets: true; transactions: true };
+      }>;
       employee: Employee;
       tickets: Ticket[];
       transactions: Transaction[];
@@ -60,8 +63,6 @@ export const authOptions: NextAuthOptions = {
         role: token.role,
         customerInformation: token.customerInformation,
         employee: token.employee,
-        tickets: token.tickets,
-        transactions: token.transactions,
       },
     }),
     jwt: async ({ token }) => {
