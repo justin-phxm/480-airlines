@@ -29,7 +29,7 @@ export default function FlightRow({ flight }: { flight: Flight }) {
     minute: "2-digit",
   });
   return (
-    <Link href={`/booking/${flight.id}`}>
+    <Link data-aos="fade-right" href={`/booking/${flight.id}`}>
       <li className=" grid w-full cursor-pointer grid-cols-4 gap-2 rounded border-b-2 border-violet-500 p-4 shadow transition duration-300 ease-in hover:-translate-y-1 hover:bg-indigo-200">
         <section className="flex w-auto  gap-4 ">
           <RandomAirlineImage />
