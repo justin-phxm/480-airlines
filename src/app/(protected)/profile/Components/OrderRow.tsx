@@ -43,7 +43,7 @@ export default function OrderRow({
         <section className="flex w-auto items-center gap-4 text-sm">
           <RandomAirlineImage />
           <div className="flex w-3/5 flex-col">
-            <p>{`Transaction ID: ${transaction.id}`}</p>
+            <p>{`Confirmation Number: #${transaction.id}`}</p>
             <p className="truncate font-light">{`Aircraft ID: ${transaction.aircraftID}`}</p>
           </div>
         </section>

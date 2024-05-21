@@ -7,9 +7,13 @@ import ChosenSeatItem from "./ChosenSeatItem";
 import { Button } from "@mui/material";
 import { useSession } from "next-auth/react";
 import { toast } from "react-toastify";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
 export default function BookingConfirmation() {
   const { chosenSeats, setChosenSeats, flight } = useFlight();
   const { data: session, status } = useSession();
+  const router = useRouter();
+  const [open, setOpen] = useState(false);
   const handleFlightBooking = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
@@ -31,6 +35,8 @@ export default function BookingConfirmation() {
       success: {
         render({ data }) {
           setChosenSeats([]);
+          setOpen(false);
+          router.push("/profile");
           return data.message;
         },
       },
@@ -76,7 +82,7 @@ export default function BookingConfirmation() {
           >
             Cancel
           </Button>
-          <PaymentModal />
+          <PaymentModal open={open} setOpen={setOpen} />
         </div>
       </div>
       <ol className="flex max-h-[15vh] w-full flex-col overflow-y-auto text-black">

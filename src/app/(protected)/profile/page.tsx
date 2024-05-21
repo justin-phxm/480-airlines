@@ -1,6 +1,7 @@
 import { Suspense } from "react";
 import OrderHistory from "./Components/OrderHistory";
 import Heading from "./Heading";
+import Skeleton from "@mui/material/Skeleton";
 
 export default function page() {
   return (
@@ -16,7 +17,7 @@ export default function page() {
               -- Click on a flight to cancel
             </span>
           </h1>
-          <Suspense fallback="Loading...">
+          <Suspense fallback={<Skeleton variant="rounded" height={118} />}>
             <OrderHistory />
           </Suspense>
         </div>

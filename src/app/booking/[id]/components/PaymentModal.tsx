@@ -1,13 +1,16 @@
-"use client";
 import { DialogContent, DialogContentText, DialogTitle } from "@mui/material";
 import Button from "@mui/material/Button";
 import Dialog from "@mui/material/Dialog";
-import { useState } from "react";
 import PaymentForm from "./PaymentForm";
 import { useFlight } from "../FlightContext";
 
-export default function PaymentModal() {
-  const [open, setOpen] = useState(false);
+export default function PaymentModal({
+  open,
+  setOpen,
+}: {
+  open: boolean;
+  setOpen: React.Dispatch<React.SetStateAction<boolean>>;
+}) {
   const { chosenSeats } = useFlight();
   return (
     <>
@@ -22,7 +25,7 @@ export default function PaymentModal() {
       </Button>
       <Dialog
         fullWidth
-        maxWidth="md"
+        maxWidth="lg"
         open={open}
         onClose={() => setOpen(false)}
         aria-labelledby="alert-dialog-title"
