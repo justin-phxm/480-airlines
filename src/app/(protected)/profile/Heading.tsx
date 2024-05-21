@@ -1,10 +1,6 @@
-"use client";
+import { getServerAuthSession } from "~/server/auth";
 
-import { useSession } from "next-auth/react";
-
-export default function Heading() {
-  const session = useSession();
-  return (
-    <h1 className=" text-xl font-bold">Welcome, {session.data?.user.name}</h1>
-  );
+export default async function Heading() {
+  const session = await getServerAuthSession();
+  return <h1 className=" text-xl font-bold">Welcome, {session?.user.name}</h1>;
 }

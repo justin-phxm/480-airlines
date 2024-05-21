@@ -2,7 +2,6 @@ import { PrismaAdapter } from "@auth/prisma-adapter";
 import type {
   Prisma,
   Role,
-  Customer,
   Employee,
   Ticket,
   Transaction,
