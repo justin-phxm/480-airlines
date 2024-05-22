@@ -1,5 +1,4 @@
-"use client";
-import { Dropdown } from "flowbite-react";
+import { Dropdown, DropdownHeader, DropdownItem } from "flowbite-react";
 import type { Session } from "next-auth";
 import Image from "next/image";
 import Link from "next/link";
@@ -18,17 +17,19 @@ export default function UserProfile({ session }: { session: Session }) {
         />
       }
     >
-      <Dropdown.Header>
+      <DropdownHeader>
         <div className="font-bold capitalize">{session.user?.name}</div>
         <div> {session.user?.email}</div>
-      </Dropdown.Header>
+      </DropdownHeader>
 
-      <Dropdown.Item className=" hover:bg-slate-200/50">
-        <Link href="/profile"> Profile</Link>
-      </Dropdown.Item>
-      <Dropdown.Item className="text-red-500 hover:bg-slate-200/50">
-        <Link href="/api/auth/signout">Sign out</Link>
-      </Dropdown.Item>
+      <Link href="/profile">
+        <DropdownItem className=" hover:bg-slate-200/50">Profile</DropdownItem>
+      </Link>
+      <Link href="/api/auth/signout">
+        <DropdownItem className="text-red-500 hover:bg-slate-200/50">
+          Sign out
+        </DropdownItem>
+      </Link>
     </Dropdown>
   );
 }
