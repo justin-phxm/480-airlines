@@ -1,5 +1,6 @@
 import { type Transaction } from "@prisma/client";
 import RandomAirlineImage from "~/app/components/RandomAirlineImage";
+import CancelBookingButton from "./CancelBookingButton";
 
 export default function OrderRow({
   transaction,
@@ -66,6 +67,9 @@ export default function OrderRow({
         <section className="flex flex-col text-end ">
           <p>Seat Type: {transaction.seatType}</p>
           <p className=" font-light">Seat Code: {transaction.seatCode}</p>
+        </section>
+        <section className="flex items-center justify-center">
+          <CancelBookingButton transaction={transaction} />
         </section>
       </div>
     </li>
