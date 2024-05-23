@@ -30,34 +30,37 @@ export default function BookingConfirmation() {
       flightID: flight.id,
     };
 
-    void toast.promise(bookFlight(flightBooking), {
+    const flightPromise = bookFlight(flightBooking);
+    const transactionPromise = createTransaction({
+      userID: session?.user.id,
+      flight: flight,
+      seats: chosenSeats,
+    });
+
+    const submitBooking = async () => {
+      const [flightRes, transactionRes] = await Promise.all([
+        flightPromise,
+        transactionPromise,
+      ]);
+      if (flightRes.success && transactionRes.success) {
+        return { success: true, message: "Booking successful" };
+      } else {
+        throw new Error("Error booking flight. Please try again later.");
+      }
+    };
+    void toast.promise(submitBooking(), {
       pending: "Booking flight...",
       success: {
         render({ data }) {
           setChosenSeats([]);
           setOpen(false);
+          // TODO: Redirect to congratulations page
           router.push("/profile");
           return data.message;
         },
       },
       error: "Error booking flight. Please try again later.",
     });
-    void toast.promise(
-      createTransaction({
-        userID: session?.user.id,
-        flight: flight,
-        seats: chosenSeats,
-      }),
-      {
-        pending: "Processing transaction...",
-        success: {
-          render({ data }) {
-            return data.message;
-          },
-        },
-        error: "Error creating transaction. Please try again later.",
-      },
-    );
   };
   return (
     <form
