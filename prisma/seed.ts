@@ -122,6 +122,8 @@ const createTransaction = (seat: Seat, flights: Flight[], ticket: Ticket) => {
     departureCity: flight.departureCity,
     seatCode: seat.seatCode,
     customer: { connect: { userId: ticket.customerUserId } },
+    airline: flight.airline,
+    flightID: flight.id,
   };
   return transaction;
 };

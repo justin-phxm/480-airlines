@@ -150,6 +150,9 @@ model Transaction {
     arrivalTime          DateTime
     arrivalCity          String
     departureCity        String
+    airline              String
+    flightID             Int
+    canceled             Boolean  @default(false)
     customer             Customer @relation(fields: [customerUserId], references: [userId])
     customerUserId       String
 }

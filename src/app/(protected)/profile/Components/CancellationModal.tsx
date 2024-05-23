@@ -35,6 +35,7 @@ export default function CancellationModal() {
       departureCity,
       departureTime,
       arrivalTime,
+      airline,
     } = transaction;
     const formattedUpdateDate = new Date(updatedAt).toLocaleDateString(
       "en-US",
@@ -110,7 +111,7 @@ export default function CancellationModal() {
                     <div className="flex flex-col">
                       <div className="">{seatCode}</div>
                       <div className="capitalize">{seatType} Class</div>
-                      <div className="">Hawaiian Airlines</div>
+                      <div className="">{airline}</div>
                       <div className="">{formattedUpdateDate}</div>
                     </div>
                     <div className="flex flex-col">

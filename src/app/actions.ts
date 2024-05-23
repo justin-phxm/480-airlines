@@ -165,6 +165,8 @@ export async function createTransaction({
         departureCity: flight.departureCity,
         arrivalCity: flight.arrivalCity,
         customer: { connect: { userId: userID } },
+        airline: flight.airline,
+        flightID: flight.id,
       };
       await db.transaction.create({
         data: transaction,
@@ -175,5 +177,43 @@ export async function createTransaction({
   } catch (error) {
     console.error("Error creating transaction:", error);
     return { success: false, message: "An error occurred during transaction" };
+  }
+}
+export async function cancelTransaction({
+  transactionID,
+}: {
+  transactionID: number;
+}): Promise<{ success: boolean; message: string }> {
+  try {
+    const transaction = await db.transaction.findUnique({
+      where: { id: transactionID },
+    });
+    if (!transaction) {
+      return { success: false, message: "Transaction not found" };
+    }
+    await db.transaction.delete({ where: { id: transactionID } });
+    // call cancelFlight
+    // await cancelFlight({ ticketID: transaction.ticketId });
+    return { success: true, message: "Transaction cancelled" };
+  } catch (error) {
+    console.error("Error cancelling transaction:", error);
+    return { success: false, message: "An error occurred during cancellation" };
+  }
+}
+export async function cancelFlight({
+  ticketID,
+}: {
+  ticketID: number;
+}): Promise<{ success: boolean; message: string }> {
+  try {
+    const ticket = await db.ticket.findUnique({ where: { id: ticketID } });
+    if (!ticket) {
+      return { success: false, message: "Ticket not found" };
+    }
+    await db.ticket.delete({ where: { id: ticketID } });
+    return { success: true, message: "Flight cancelled" };
+  } catch (error) {
+    console.error("Error cancelling flight:", error);
+    return { success: false, message: "An error occurred during cancellation" };
   }
 }
