@@ -35,40 +35,50 @@ export default function OrderRow({
     },
   );
   return (
-    <li className="flex cursor-pointer flex-col gap-2 border-b-2 border-violet-500 p-4 shadow transition duration-300 ease-in hover:-translate-y-1 hover:bg-indigo-200">
+    <li className="flex flex-col gap-2 border-b-2 border-violet-500 p-4 shadow transition duration-300 ease-in hover:-translate-y-1 hover:bg-indigo-200">
       <div className="flex items-center gap-4">
         <p>{formattedTransactionTime}</p>
         <p className="font-light">${transaction.price.toFixed(0)}</p>
       </div>
       <div className=" grid w-full auto-cols-auto grid-flow-col gap-2 ">
-        <section className="flex w-auto items-center gap-4 text-sm">
+        <section className="flex items-center gap-4 text-sm">
           <RandomAirlineImage />
           <div className="flex w-3/5 flex-col">
-            <p>{`Confirmation Number: #${transaction.id}`}</p>
-            <p className="truncate font-light">{`Aircraft ID: ${transaction.aircraftID}`}</p>
+            <p>
+              <span className="hidden lg:block">Confirmation Number:</span>#
+              {transaction.id}
+            </p>
+            <p className="truncate font-light">
+              Aircraft ID: {transaction.aircraftID}
+            </p>
           </div>
         </section>
-        <section className="flex flex-row gap-4">
+        <section className="flex w-auto flex-row gap-4">
           <div className="flex flex-col">
-            <div className="">Departure Date:</div>
-            <div className="">Arrival Date:</div>
+            <div className=" text-nowrap">Departure Date:</div>
+            <div className=" text-nowrap">Arrival Date:</div>
           </div>
-          <div className="flex flex-col">
-            <div className="">{formattedDepartureTime}</div>
-            <div className="">{formattedArrivalTime}</div>
+          <div className="flex w-3/5 flex-col">
+            <div className="truncate">{formattedDepartureTime}</div>
+            <div className="truncate">{formattedArrivalTime}</div>
           </div>
         </section>
-        <section className="flex w-full flex-col ">
-          <p className="truncate ">{`${transaction.departureCity} - ${transaction.arrivalCity}`}</p>
+        <section className="flex w-auto flex-col ">
+          <p className=" w-11/12 truncate ">
+            {transaction.departureCity} - {transaction.arrivalCity}
+          </p>
           <p>
             {`${transaction.departureAirportCode} - ${transaction.arrivalAirportCode}`}
           </p>
         </section>
-        <section className="flex flex-col text-end ">
+        <section className="flex w-auto flex-col text-end ">
           <p>{transaction.seatType}</p>
-          <p className=" font-light">Seat Code: {transaction.seatCode}</p>
+          <p className=" font-light">
+            <span className="hidden lg:block">Seat Code:</span>
+            {transaction.seatCode}
+          </p>
         </section>
-        <section className="flex items-center justify-center">
+        <section className="flex w-auto items-center justify-center">
           <CancelBookingButton transaction={transaction} />
         </section>
       </div>
