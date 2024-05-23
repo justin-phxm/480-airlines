@@ -1,7 +1,7 @@
 "use client";
 
 import PaymentModal from "./PaymentModal";
-import { bookFlight, createTransaction } from "~/app/actions";
+import { bookFlight } from "~/app/actions";
 import { useFlight } from "../FlightContext";
 import ChosenSeatItem from "./ChosenSeatItem";
 import { Button } from "@mui/material";
@@ -40,26 +40,10 @@ export default function BookingConfirmation() {
       },
       error: "Error booking flight. Please try again later.",
     });
-    const { tickets } = req;
-    if (tickets) {
-      void toast.promise(
-        createTransaction({
-          tickets: tickets,
-        }),
-        {
-          pending: "Processing transaction...",
-          success: {
-            render({ data }) {
-              // TODO: redirect to congratulations/receipt page
-              router.push("/profile");
-              return data.message;
-            },
-          },
-          error: "Error creating transaction. Please try again later.",
-        },
-      );
+    if (req.success) {
+      router.push("/profile");
     } else {
-      toast.error("Error creating transaction. Please contact support.");
+      toast.error(req.message);
     }
   };
   return (

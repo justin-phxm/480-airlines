@@ -133,7 +133,7 @@ export async function bookFlight({
       }),
     );
     const tickets = await Promise.all(ticketPromises);
-
+    await createTransaction({ tickets });
     return { success: true, message: "Booking successful", tickets: tickets };
   } catch (error) {
     console.error("Error booking flight:", error);
