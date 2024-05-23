@@ -152,6 +152,7 @@ model Transaction {
     departureCity        String
     airline              String
     flightID             Int
+    ticketID             Int
     canceled             Boolean  @default(false)
     customer             Customer @relation(fields: [customerUserId], references: [userId])
     customerUserId       String

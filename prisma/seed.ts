@@ -108,8 +108,13 @@ const createTicket = (
  * seatCode is between A1 and J4
  * @returns a transaction object
  */
-const createTransaction = (seat: Seat, flights: Flight[], ticket: Ticket) => {
-  const flight = faker.helpers.arrayElement(flights);
+const createTransaction = (
+  seat: Seat,
+  ticket: Prisma.TicketGetPayload<{
+    include: { flight: true; seat: true };
+  }>,
+) => {
+  const flight = ticket.flight;
   const transaction: Prisma.TransactionCreateInput = {
     price: flight.price,
     aircraftID: flight.aircraftId,
@@ -124,6 +129,7 @@ const createTransaction = (seat: Seat, flights: Flight[], ticket: Ticket) => {
     customer: { connect: { userId: ticket.customerUserId } },
     airline: flight.airline,
     flightID: flight.id,
+    ticketID: ticket.id,
   };
   return transaction;
 };
@@ -175,13 +181,17 @@ async function seedFlights(
   const flights = await Promise.all(flightPromises);
   return flights;
 }
-async function seedTransactions(flights: Flight[], tickets: Ticket[]) {
+async function seedTransactions(
+  tickets: Prisma.TicketGetPayload<{
+    include: { flight: true; seat: true };
+  }>[],
+) {
   const transactionPromises = tickets.map(async (ticket) => {
     const seat = await db.seat.findUniqueOrThrow({
       where: { id: ticket.seatId },
     });
     const transaction = await db.transaction.create({
-      data: createTransaction(seat, flights, ticket),
+      data: createTransaction(seat, ticket),
     });
     return transaction;
   });
@@ -207,6 +217,7 @@ async function seedTickets(
     const bookedSeat = faker.helpers.arrayElement(possibleSeats);
     const ticket = await db.ticket.create({
       data: createTicket(customers, bookedSeat, flight),
+      include: { flight: true, seat: true },
     });
     await db.seat.update({
       where: { id: bookedSeat.id },
@@ -226,7 +237,7 @@ async function main() {
   }>[] = await seedAircrafts(NUM_FAKE_DATA);
   const flights = await seedFlights(aircrafts);
   const tickets = await seedTickets(NUM_FAKE_DATA, customers, flights);
-  await seedTransactions(flights, tickets);
+  await seedTransactions(tickets);
 }
 type Seats = { seatCode: string; seatType: SeatType }[];
 /** generate seats for num people
