@@ -4,7 +4,6 @@ import {
   Role,
   SeatType,
   type Flight,
-  type Ticket,
   type Seat,
 } from "@prisma/client";
 import { faker } from "@faker-js/faker";

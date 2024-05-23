@@ -3,7 +3,7 @@
 import { z } from "zod";
 import { db } from "~/server/db";
 import { type SearchParams } from "./flights/page";
-import type { Flight, Prisma, Seat } from "@prisma/client";
+import type { Prisma } from "@prisma/client";
 export async function searchFlights({
   searchParams,
 }: {
@@ -86,7 +86,17 @@ export async function bookFlight({
   userID: string;
   flightCoupon: boolean;
   flightID: number;
-}): Promise<{ success: boolean; message: string }> {
+}): Promise<{
+  success: boolean;
+  message: string;
+  tickets?: Prisma.TicketGetPayload<{
+    include: {
+      customer: true;
+      seat: true;
+      flight: true;
+    };
+  }>[];
+}> {
   try {
     console.log({ seatIDs, userID, flightCoupon, flightID });
     // Get Customer
@@ -110,7 +120,13 @@ export async function bookFlight({
     }
 
     // Create tickets, set seat availability, and add tickets to user and flight
-    const tickets = [];
+    const tickets: Prisma.TicketGetPayload<{
+      include: {
+        customer: true;
+        seat: true;
+        flight: true;
+      };
+    }>[] = [];
     for (const seatID of seatIDs) {
       const seat = await db.seat.update({
         where: { id: seatID },
@@ -123,6 +139,11 @@ export async function bookFlight({
           seatId: seat.id,
           flightId: flightID,
         },
+        include: {
+          customer: true,
+          seat: true,
+          flight: true,
+        },
       });
 
       tickets.push(ticket);
@@ -134,25 +155,28 @@ export async function bookFlight({
       });
     }
 
-    return { success: true, message: "Booking successful" };
+    return { success: true, message: "Booking successful", tickets: tickets };
   } catch (error) {
     console.error("Error booking flight:", error);
     return { success: false, message: "An error occurred during booking" };
   }
 }
 export async function createTransaction({
-  userID,
-  flight,
-  seats,
+  tickets,
 }: {
-  userID: string;
-  flight: Flight;
-  seats: Seat[];
+  tickets: Prisma.TicketGetPayload<{
+    include: {
+      customer: true;
+      seat: true;
+      flight: true;
+    };
+  }>[];
   payment?: { amount: number; method: string };
 }): Promise<{ success: boolean; message: string }> {
   try {
     // Create a transaction record
-    const transactionPromises = seats.map(async (seat) => {
+    const transactionPromises = tickets.map(async (ticket) => {
+      const { flight, seat, customerUserId } = ticket;
       const transaction: Prisma.TransactionCreateInput = {
         price: flight.price,
         aircraftID: flight.aircraftId,
@@ -164,9 +188,10 @@ export async function createTransaction({
         arrivalTime: flight.arrivalTime,
         departureCity: flight.departureCity,
         arrivalCity: flight.arrivalCity,
-        customer: { connect: { userId: userID } },
+        customer: { connect: { userId: customerUserId } },
         airline: flight.airline,
         flightID: flight.id,
+        ticketID: ticket.id,
       };
       await db.transaction.create({
         data: transaction,
@@ -185,16 +210,18 @@ export async function cancelTransaction({
   transactionID: number;
 }): Promise<{ success: boolean; message: string }> {
   try {
-    const transaction = await db.transaction.findUnique({
+    const transaction = await db.transaction.update({
       where: { id: transactionID },
+      data: { canceled: true },
     });
-    if (!transaction) {
-      return { success: false, message: "Transaction not found" };
+    const cancelFlightReq = await cancelFlight({
+      ticketID: transaction.ticketID,
+    });
+    if (cancelFlightReq.success) {
+      return { success: true, message: "Transaction cancelled" };
+    } else {
+      throw new Error("Error cancelling flight");
     }
-    await db.transaction.delete({ where: { id: transactionID } });
-    // call cancelFlight
-    // await cancelFlight({ ticketID: transaction.ticketId });
-    return { success: true, message: "Transaction cancelled" };
   } catch (error) {
     console.error("Error cancelling transaction:", error);
     return { success: false, message: "An error occurred during cancellation" };
@@ -206,14 +233,17 @@ export async function cancelFlight({
   ticketID: number;
 }): Promise<{ success: boolean; message: string }> {
   try {
-    const ticket = await db.ticket.findUnique({ where: { id: ticketID } });
-    if (!ticket) {
-      return { success: false, message: "Ticket not found" };
-    }
-    await db.ticket.delete({ where: { id: ticketID } });
+    const ticket = await db.ticket.delete({ where: { id: ticketID } });
+    await db.seat.update({
+      where: { id: ticket.seatId },
+      data: { available: true },
+    });
     return { success: true, message: "Flight cancelled" };
   } catch (error) {
     console.error("Error cancelling flight:", error);
-    return { success: false, message: "An error occurred during cancellation" };
+    return {
+      success: false,
+      message: "An error occurred while cancelling flight",
+    };
   }
 }

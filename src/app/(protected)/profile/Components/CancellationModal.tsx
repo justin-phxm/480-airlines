@@ -11,16 +11,12 @@ import { useTransaction } from "./TransactionContext";
 import { toast } from "react-toastify";
 import { TicketColor } from "~/app/booking/[id]/components/BookingOverview";
 import { twMerge } from "tailwind-merge";
+import { cancelTransaction } from "~/app/actions";
+import { useRouter } from "next/navigation";
 export default function CancellationModal() {
   const { isModalOpen, setIsModalOpen, transaction } = useTransaction();
-  const handleCancelFlight = async () => {
-    try {
-      // void toast.promise();
-      setIsModalOpen(false);
-    } catch (error) {
-      console.error("Error cancelling flight", error);
-    }
-  };
+
+  const router = useRouter();
   if (!transaction) {
     return <div className="">Error loading. Please try again later</div>;
   } else {
@@ -70,6 +66,19 @@ export default function CancellationModal() {
     const taxesAndFees = price * 0.05;
     const total = price + taxesAndFees;
     const ticketColor = TicketColor[seatType];
+    const handleCancelFlight = async () => {
+      void toast.promise(cancelTransaction({ transactionID: transaction.id }), {
+        pending: "Cancelling flight...",
+        success: {
+          render({ data }) {
+            router.refresh();
+            setIsModalOpen(false);
+            return data.message;
+          },
+        },
+        error: "Error cancelling flight. Please try again later.",
+      });
+    };
     return (
       <>
         <Dialog

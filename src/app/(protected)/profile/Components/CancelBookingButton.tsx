@@ -14,7 +14,12 @@ export default function CancelBookingButton({
     setTransaction(transaction);
     setIsModalOpen(true);
   }
-
+  if (transaction.canceled)
+    return (
+      <Button variant="outlined" color="error" disabled>
+        Cancelled
+      </Button>
+    );
   return (
     <Button variant="outlined" color="error" onClick={handleClick}>
       Cancel
