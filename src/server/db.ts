@@ -21,8 +21,16 @@ export const getUserByID = async (id: string) =>
       employee: true,
       customerInformation: {
         include: {
-          tickets: true,
-          transactions: true,
+          tickets: {
+            orderBy: {
+              createdAt: "desc",
+            },
+          },
+          transactions: {
+            orderBy: {
+              createdAt: "desc",
+            },
+          },
         },
       },
     },

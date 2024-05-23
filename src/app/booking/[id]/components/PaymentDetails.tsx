@@ -1,5 +1,3 @@
-"use client";
-
 import { Button } from "@mui/material";
 import Link from "next/link";
 import React, { useState, type ChangeEvent, type FormEvent } from "react";

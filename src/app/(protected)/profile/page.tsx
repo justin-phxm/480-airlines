@@ -11,12 +11,7 @@ export default function page() {
           <Heading />
         </Suspense>
         <div className=" gap-4 rounded py-2">
-          <h1 className="font-bold">
-            {"Order History  "}
-            <span className="text-sm font-normal">
-              -- Click on a flight to cancel
-            </span>
-          </h1>
+          <h1 className="font-bold">Order History</h1>
           <Suspense fallback={<Skeleton variant="rounded" height={118} />}>
             <OrderHistory />
           </Suspense>
