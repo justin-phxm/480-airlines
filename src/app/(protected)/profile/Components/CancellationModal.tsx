@@ -67,17 +67,23 @@ export default function CancellationModal() {
     const total = price + taxesAndFees;
     const ticketColor = TicketColor[seatType];
     const handleCancelFlight = async () => {
-      void toast.promise(cancelTransaction({ transactionID: transaction.id }), {
-        pending: "Cancelling flight...",
-        success: {
-          render({ data }) {
-            router.refresh();
-            setIsModalOpen(false);
-            return data.message;
+      const cancellationReq = await toast.promise(
+        cancelTransaction({ transactionID: transaction.id }),
+        {
+          pending: "Cancelling flight...",
+          success: {
+            render({ data }) {
+              router.refresh();
+              setIsModalOpen(false);
+              return data.message;
+            },
           },
+          error: "Error cancelling flight. Please try again later.",
         },
-        error: "Error cancelling flight. Please try again later.",
-      });
+      );
+      if (!cancellationReq.success) {
+        toast.error("Cancellation did not succeed. Please contact support.");
+      }
     };
     return (
       <>
