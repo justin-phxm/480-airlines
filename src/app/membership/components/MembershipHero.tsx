@@ -1,12 +1,12 @@
-// import MembershipRegistrationControl from "../membershipRegistrationControl";
+import CurrentMembershipDetails from "./CurrentMembershipDetails";
 
 export default function MembershipHero() {
   return (
-    <section className="relative bg-white bg-[url('https://flowbite.s3.amazonaws.com/docs/jumbotron/hero-pattern.svg')] dark:bg-gray-900 dark:bg-[url('https://flowbite.s3.amazonaws.com/docs/jumbotron/hero-pattern-dark.svg')]">
-      <div className="relative z-10 mx-auto max-w-screen-xl px-4 py-8 text-center lg:py-16">
+    <section className="flex flex-col items-center bg-[url('https://flowbite.s3.amazonaws.com/docs/jumbotron/hero-pattern.svg')]">
+      <div className="flex max-w-screen-xl flex-col items-center justify-center py-8 text-center">
         <a
           href="#"
-          className="mb-7 inline-flex items-center justify-between rounded-full bg-blue-100 px-1 py-1 pe-4 text-sm text-blue-700 hover:bg-blue-200 dark:bg-blue-900 dark:text-blue-300 dark:hover:bg-blue-800"
+          className="mb-7 inline-flex items-center justify-between rounded-full bg-blue-100 px-1 py-1 pe-4 text-sm text-blue-700 hover:bg-blue-200  "
         >
           <span className="me-3 rounded-full bg-blue-600 px-4 py-1.5 text-xs text-white">
             New
@@ -30,16 +30,15 @@ export default function MembershipHero() {
             />
           </svg>
         </a>
-        <h1 className="mb-4 text-4xl font-extrabold leading-none tracking-tight text-gray-900 md:text-5xl lg:text-6xl dark:text-white">
+        <h1 className="mb-4 text-4xl font-extrabold leading-none tracking-tight text-gray-900 md:text-5xl lg:text-6xl ">
           Our Members Get The Best Benefits
         </h1>
         <p className="mb-8 text-lg font-normal text-gray-500 sm:px-16 lg:px-48 lg:text-xl dark:text-gray-200">
-          Here at 480Airlines we believe in giving our members the best
+          Here at 480 Airlines we believe in giving our members the best
           benefits. Sign up now for free!
         </p>
-        {/* <MembershipRegistrationControl></MembershipRegistrationControl> */}
+        <CurrentMembershipDetails />
       </div>
-      <div className="absolute left-0 top-0 z-0 h-full w-full bg-gradient-to-b from-blue-50 to-transparent dark:from-blue-900"></div>
     </section>
   );
 }
