@@ -197,6 +197,13 @@ async function seedTransactions(
   const transactions = await Promise.all(transactionPromises);
   return transactions;
 }
+
+/** generates tickets for customers
+ * @param numTickets number of tickets to generate this is multiplied by 5
+ * @param customers list of customers to assign tickets to
+ * @param flights list of flights to assign tickets to
+ * @description Race conditions when selecting seats with promise.all
+ */
 async function seedTickets(
   numTickets: number,
   customers: Prisma.UserGetPayload<{
@@ -205,12 +212,16 @@ async function seedTickets(
   flights: Flight[],
 ) {
   const ticketPromises = Array.from({
-    length: numTickets,
+    length: numTickets * 5,
   }).map(async () => {
     const flight = faker.helpers.arrayElement(flights);
     const aircraft = await db.aircraft.findUniqueOrThrow({
       where: { id: flight.aircraftId },
-      include: { seats: true },
+      include: {
+        seats: {
+          where: { available: true },
+        },
+      },
     });
     const possibleSeats = aircraft.seats;
     const bookedSeat = faker.helpers.arrayElement(possibleSeats);
