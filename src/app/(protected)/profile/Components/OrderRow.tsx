@@ -65,7 +65,7 @@ export default function OrderRow({
           </p>
         </section>
         <section className="flex flex-col text-end ">
-          <p>Seat Type: {transaction.seatType}</p>
+          <p>{transaction.seatType}</p>
           <p className=" font-light">Seat Code: {transaction.seatCode}</p>
         </section>
         <section className="flex items-center justify-center">
