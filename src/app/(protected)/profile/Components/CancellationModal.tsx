@@ -11,7 +11,6 @@ import { useTransaction } from "./TransactionContext";
 
 export default function CancellationModal() {
   const { isModalOpen, setIsModalOpen, transaction } = useTransaction();
-  const transactionID = transaction?.id;
   const handleCancelFlight = async () => {
     try {
       // Call the API to cancel the flight
@@ -20,48 +19,143 @@ export default function CancellationModal() {
       console.error("Error cancelling flight", error);
     }
   };
-  return (
-    <>
-      <Dialog
-        open={isModalOpen}
-        fullWidth
-        maxWidth="md"
-        onClose={() => setIsModalOpen(false)}
-      >
-        <DialogTitle id="alert-dialog-title">
-          Cancel Flight {transactionID}
-        </DialogTitle>
-        <DialogContent>
-          <DialogContentText className="flex flex-col items-center justify-center">
-            <p className="p-2 text-xl font-bold">
-              Are you sure you want to cancel your flight?
-            </p>
-            <div className="">Transaction Details</div>
-            <div className=" flex w-full items-center justify-center gap-4">
-              <Button
-                onClick={() => {
-                  setIsModalOpen(false);
-                }}
-                color="error"
-                variant="outlined"
-                className=" w-1/2 rounded bg-red-500 py-2 text-lg normal-case text-white hover:bg-red-600"
-              >
-                Back to order history
-              </Button>
-
-              <Button
-                type="submit"
-                variant="outlined"
-                color="success"
-                onClick={handleCancelFlight}
-                className=" w-1/2 rounded bg-green-500 py-2 text-lg normal-case text-white hover:bg-green-600"
-              >
-                Cancel Flight
-              </Button>
+  if (transaction) {
+    const {
+      price,
+      seatType,
+      seatCode,
+      updatedAt,
+      arrivalAirportCode,
+      departureAirportCode,
+      arrivalCity,
+      departureCity,
+      departureTime,
+      arrivalTime,
+    } = transaction;
+    const formattedUpdateDate = new Date(updatedAt).toLocaleDateString(
+      "en-US",
+      {
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+        hour: "numeric",
+        minute: "numeric",
+      },
+    );
+    const formattedDepartureTime = new Date(departureTime).toLocaleDateString(
+      "en-US",
+      {
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+        hour: "numeric",
+        minute: "numeric",
+      },
+    );
+    const formattedArrivalTime = new Date(arrivalTime).toLocaleDateString(
+      "en-US",
+      {
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+        hour: "numeric",
+        minute: "numeric",
+      },
+    );
+    const taxesAndFees = price * 0.05;
+    const total = price + taxesAndFees;
+    return (
+      <>
+        <Dialog
+          open={isModalOpen}
+          fullWidth
+          maxWidth="md"
+          onClose={() => setIsModalOpen(false)}
+        >
+          <DialogTitle id="alert-dialog-title">
+            <div className="flex flex-1 text-2xl font-bold">
+              Transaction Details
             </div>
-          </DialogContentText>
-        </DialogContent>
-      </Dialog>
-    </>
-  );
+          </DialogTitle>
+          <DialogContent>
+            <DialogContentText className="flex flex-col items-center justify-center gap-4">
+              <div className="flex flex-col gap-4 text-black">
+                <div className="flex flex-row gap-4 rounded-lg bg-gradient-to-l from-white to-yellow-200 p-3 text-lg ">
+                  <div className=" flex flex-col gap-4 font-bold ">
+                    <div className="flex flex-col">
+                      <div className="">Seat Code:</div>
+                      <div className="">Seat Class:</div>
+                      <div className="">Airline:</div>
+                      <div className="">Booked on:</div>
+                    </div>
+
+                    <div className="flex flex-col">
+                      <div className="">Flight Number:</div>
+                      <div className="">Flight Origin:</div>
+                      <div className="">Flight Destination:</div>
+                      <div className="">Flight Departure Time:</div>
+                      <div className="">Flight Arrival Time:</div>
+                    </div>
+                  </div>
+                  <div className=" flex flex-col gap-4 ">
+                    <div className="flex flex-col">
+                      <div className="">{seatCode}</div>
+                      <div className="">{seatType} Class</div>
+                      <div className="">Hawaiian Airlines</div>
+                      <div className="">{formattedUpdateDate}</div>
+                    </div>
+                    <div className="flex flex-col">
+                      <div className="">14</div>
+                      <div className="">
+                        {departureAirportCode}, {departureCity}
+                      </div>
+                      <div className="">
+                        {arrivalAirportCode}, {arrivalCity}
+                      </div>
+                      <div className="">{formattedDepartureTime}</div>
+                      <div className="">{formattedArrivalTime}</div>
+                    </div>
+                  </div>
+                </div>
+                <div className="flex flex-row justify-end gap-2">
+                  <div className="flex flex-col items-end gap-1">
+                    <p>Subtotal:</p>
+                    <p>Taxes and Fees:</p>
+                    <p>Total:</p>
+                  </div>
+                  <div className="flex flex-col items-end gap-1">
+                    <p>${price}</p>
+                    <p>${taxesAndFees.toFixed(2)}</p>
+                    <p>${total.toFixed(2)}</p>
+                  </div>
+                </div>
+              </div>
+              <div className=" flex w-full items-center justify-center gap-4">
+                <Button
+                  onClick={() => {
+                    setIsModalOpen(false);
+                  }}
+                  color="error"
+                  variant="outlined"
+                  className=" w-1/2 rounded bg-red-500 py-2 text-lg normal-case text-white hover:bg-red-600"
+                >
+                  Back to order history
+                </Button>
+
+                <Button
+                  type="submit"
+                  variant="outlined"
+                  color="success"
+                  onClick={handleCancelFlight}
+                  className=" w-1/2 rounded bg-green-500 py-2 text-lg normal-case text-white hover:bg-green-600"
+                >
+                  Cancel Flight
+                </Button>
+              </div>
+            </DialogContentText>
+          </DialogContent>
+        </Dialog>
+      </>
+    );
+  }
 }
