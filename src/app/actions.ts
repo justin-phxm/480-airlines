@@ -98,42 +98,28 @@ export async function bookFlight({
   }>[];
 }> {
   try {
-    console.log({ seatIDs, userID, flightCoupon, flightID });
-    // Get Customer
-    const customer = await db.customer.findUnique({
+    const customer = await db.customer.findUniqueOrThrow({
       where: { userId: userID },
     });
-    if (!customer) {
-      return { success: false, message: "User not found" };
+    if (flightCoupon && !customer.flightCoupon) {
+      throw new Error("User does not have a flight coupon");
     }
 
-    // Check if seats are available
-    for (const seatID of seatIDs) {
-      const seat = await db.seat.findUnique({ where: { id: seatID } });
-      if (!seat?.available) {
-        return { success: false, message: `Seat ${seatID} not available` };
+    const seatPromises = seatIDs.map((seatID) =>
+      db.seat.findUniqueOrThrow({ where: { id: seatID } }),
+    );
+    let seats = await Promise.all(seatPromises);
+    for (const seat of seats) {
+      if (!seat.available) {
+        throw new Error(`Seat ${seat.id} not available`);
       }
     }
-
-    if (flightCoupon && !customer.flightCoupon) {
-      return { success: false, message: "User does not have a flight coupon" };
-    }
-
-    // Create tickets, set seat availability, and add tickets to user and flight
-    const tickets: Prisma.TicketGetPayload<{
-      include: {
-        customer: true;
-        seat: true;
-        flight: true;
-      };
-    }>[] = [];
-    for (const seatID of seatIDs) {
-      const seat = await db.seat.update({
-        where: { id: seatID },
-        data: { available: false },
-      });
-
-      const ticket = await db.ticket.create({
+    const seatUpdatePromises = seatIDs.map((seatID) =>
+      db.seat.update({ where: { id: seatID }, data: { available: false } }),
+    );
+    seats = await Promise.all(seatUpdatePromises);
+    const ticketPromises = seats.map((seat) =>
+      db.ticket.create({
         data: {
           customerUserId: userID,
           seatId: seat.id,
@@ -144,16 +130,9 @@ export async function bookFlight({
           seat: true,
           flight: true,
         },
-      });
-
-      tickets.push(ticket);
-
-      // Add the ticket to the flight
-      await db.flight.update({
-        where: { id: flightID },
-        data: { tickets: { connect: { id: ticket.id } } },
-      });
-    }
+      }),
+    );
+    const tickets = await Promise.all(ticketPromises);
 
     return { success: true, message: "Booking successful", tickets: tickets };
   } catch (error) {
