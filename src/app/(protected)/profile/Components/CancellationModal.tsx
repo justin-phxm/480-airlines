@@ -8,18 +8,22 @@ import {
   DialogTitle,
 } from "@mui/material";
 import { useTransaction } from "./TransactionContext";
-
+import { toast } from "react-toastify";
+import { TicketColor } from "~/app/booking/[id]/components/BookingOverview";
+import { twMerge } from "tailwind-merge";
 export default function CancellationModal() {
   const { isModalOpen, setIsModalOpen, transaction } = useTransaction();
   const handleCancelFlight = async () => {
     try {
-      // Call the API to cancel the flight
+      // void toast.promise();
       setIsModalOpen(false);
     } catch (error) {
       console.error("Error cancelling flight", error);
     }
   };
-  if (transaction) {
+  if (!transaction) {
+    return <div className="">Error loading. Please try again later</div>;
+  } else {
     const {
       price,
       seatType,
@@ -64,6 +68,7 @@ export default function CancellationModal() {
     );
     const taxesAndFees = price * 0.05;
     const total = price + taxesAndFees;
+    const ticketColor = TicketColor[seatType];
     return (
       <>
         <Dialog
@@ -80,7 +85,11 @@ export default function CancellationModal() {
           <DialogContent>
             <DialogContentText className="flex flex-col items-center justify-center gap-4">
               <div className="flex flex-col gap-4 text-black">
-                <div className="flex flex-row gap-4 rounded-lg bg-gradient-to-l from-white to-yellow-200 p-3 text-lg ">
+                <div
+                  className={twMerge(
+                    `flex flex-row gap-4 rounded-lg bg-gradient-to-l p-3 text-lg ${ticketColor} from-white`,
+                  )}
+                >
                   <div className=" flex flex-col gap-4 font-bold ">
                     <div className="flex flex-col">
                       <div className="">Seat Code:</div>
@@ -100,7 +109,7 @@ export default function CancellationModal() {
                   <div className=" flex flex-col gap-4 ">
                     <div className="flex flex-col">
                       <div className="">{seatCode}</div>
-                      <div className="">{seatType} Class</div>
+                      <div className="capitalize">{seatType} Class</div>
                       <div className="">Hawaiian Airlines</div>
                       <div className="">{formattedUpdateDate}</div>
                     </div>
