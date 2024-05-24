@@ -1,8 +1,12 @@
-export default function CurrentMembershipDetails() {
+import { signupMembership } from "~/app/actions";
+import { getServerAuthSession } from "~/server/auth";
+
+export default async function CurrentMembershipDetails() {
+  const session = await getServerAuthSession();
   const MailImage = () => (
     <div className="pointer-events-none flex items-center bg-slate-300 p-4">
       <svg
-        className="h-4 w-4 text-gray-500 dark:text-gray-400"
+        className=" size-6 text-gray-500 dark:text-gray-400"
         aria-hidden="true"
         xmlns="http://www.w3.org/2000/svg"
         fill="currentColor"
@@ -13,18 +17,48 @@ export default function CurrentMembershipDetails() {
       </svg>
     </div>
   );
-
+  const handleSubmit = async (formData: FormData) => {
+    "use server";
+    let userID = formData.get("userID");
+    if (!userID) {
+      console.error("No user ID found");
+      return;
+    }
+    userID = String(userID);
+    await signupMembership({ userID: userID });
+  };
+  let email, isMember, userID;
+  if (session?.user.email) {
+    email = session.user.email;
+  }
+  if (session?.user.customerInformation.isMember) {
+    isMember = session.user.customerInformation.isMember;
+  }
+  if (session?.user.id) {
+    userID = session.user.id;
+  }
   return (
-    <div className="flex max-w-md rounded outline outline-slate-400 ">
+    <div className="flex w-full max-w-lg flex-1 flex-row rounded outline outline-slate-400 ">
       <label htmlFor="email">
         <MailImage />
       </label>
       <input
         id="email"
         type="text"
-        placeholder="Bonnie Green"
-        className="px-2 focus:outline-blue-500"
+        placeholder={email ? email : "Please make sure you are logged in"}
+        className={`flex-1 truncate px-2 focus:outline-blue-500 `}
+        disabled
       />
+      <form action={handleSubmit} className="p-2">
+        <input type="text" className="hidden" name="userID" value={userID} />
+        <button
+          type="submit"
+          // disabled={session?.user.customerInformation.isMember}
+          className={` rounded-lg p-2 text-white ${isMember ? "bg-gradient-to-l from-yellow-300 to-yellow-400" : "bg-blue-700"}`}
+        >
+          {isMember ? "🌟" : "Sign up"}
+        </button>
+      </form>
     </div>
   );
 }

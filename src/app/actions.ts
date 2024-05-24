@@ -4,6 +4,18 @@ import { z } from "zod";
 import { db } from "~/server/db";
 import { type SearchParams } from "./flights/page";
 import type { Prisma } from "@prisma/client";
+import { revalidatePath } from "next/cache";
+export async function signupMembership({ userID }: { userID: string }) {
+  try {
+    await db.customer.update({
+      where: { userId: userID },
+      data: { isMember: true },
+    });
+    revalidatePath("/membership");
+  } catch (error) {
+    console.error("Error signing up for membership:", error);
+  }
+}
 export async function searchFlights({
   searchParams,
 }: {

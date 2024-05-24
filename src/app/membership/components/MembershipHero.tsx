@@ -1,4 +1,7 @@
+import { Suspense } from "react";
+import CurrentMembership from "./CurrentMembership";
 import CurrentMembershipDetails from "./CurrentMembershipDetails";
+import { Skeleton } from "@mui/material";
 
 export default function MembershipHero() {
   return (
@@ -37,7 +40,12 @@ export default function MembershipHero() {
           Here at 480 Airlines we believe in giving our members the best
           benefits. Sign up now for free!
         </p>
-        <CurrentMembershipDetails />
+        <div className="flex w-full flex-col items-center gap-4">
+          <Suspense fallback={<Skeleton />}>
+            <CurrentMembershipDetails />
+          </Suspense>
+          <CurrentMembership />
+        </div>
       </div>
     </section>
   );
