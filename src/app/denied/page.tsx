@@ -4,7 +4,9 @@ export default function page() {
   return (
     <div className="flex flex-1 flex-col items-center justify-around bg-gradient-to-t from-indigo-300 to-white text-3xl">
       <p className="flex flex-col items-center gap-4">
-        You do not have permission to view this page.
+        <h1 className="font-bold">
+          You do not have permission to view this page.
+        </h1>
         <p className="text-base">
           If you think this is a mistake, please contact support.
         </p>
