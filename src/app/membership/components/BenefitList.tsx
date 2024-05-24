@@ -1,23 +1,63 @@
+import { upgradeMembership } from "~/app/actions";
 import { getServerAuthSession } from "~/server/auth";
-
+export type BenefitParams = {
+  userID: string;
+  benefit: string;
+};
 export default async function BenefitList() {
   const session = await getServerAuthSession();
   if (!session) return null;
   const { isMember, flightCoupon, loungeDiscount, newsletter } =
     session.user.customerInformation;
   if (!isMember) return null;
-  const SignupButton = () => {
+  const handleSubmit = async (formData: FormData) => {
+    "use server";
+    const formFields = Object.fromEntries(
+      formData.entries(),
+    ) as unknown as BenefitParams;
+    console.log(formFields);
+    await upgradeMembership(formFields);
+  };
+
+  const SignupButton = ({ name }: { name: string }) => {
     return (
-      <button className="rounded-lg bg-blue-700 p-1 text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 ">
-        Sign up
-      </button>
+      <form action={handleSubmit}>
+        <input
+          type="text"
+          name="userID"
+          value={session.user.id}
+          className="hidden"
+        />
+        <input type="text" name="benefit" value={name} className="hidden" />
+        <button className="rounded-lg bg-blue-700 p-1 text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 ">
+          Sign up
+        </button>
+      </form>
     );
   };
-  const membershipFields = [
-    { benefit: "Free Annual Companion Ticket", value: flightCoupon },
-    { benefit: "Monthly Promotion Newsletter", value: newsletter },
-    { benefit: "Lounge Discount", value: loungeDiscount },
-    { benefit: "Company Credit Card", value: false },
+  type MembershipField = {
+    benefit: string;
+    benefitValue: boolean;
+    name: string;
+  };
+  const membershipFields: MembershipField[] = [
+    {
+      benefit: "Free Annual Companion Ticket",
+      benefitValue: flightCoupon,
+      name: "flightCoupon",
+    },
+    {
+      benefit: "Monthly Promotion Newsletter",
+      benefitValue: newsletter,
+      name: "newsletter",
+    },
+    {
+      benefit: "Lounge Discount",
+      benefitValue: loungeDiscount,
+      name: "loungeDiscount",
+    },
+    // TODO: update company credit card to be a benefit
+    // { benefit: "Company Credit Card", benefitValue: false, name: "creditCard" },
   ];
   return (
     <div className="w-full max-w-md rounded-xl border border-slate-400 p-2">
@@ -29,7 +69,13 @@ export default async function BenefitList() {
             className="flex w-full flex-row items-center justify-between gap-4"
           >
             <p className=" italic">{field.benefit}</p>
-            {!field.value ? <SignupButton /> : null}
+            {!field.benefitValue ? (
+              <SignupButton name={field.name} />
+            ) : (
+              <button className="rounded-lg bg-blue-700 p-1 text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 ">
+                Claimed!
+              </button>
+            )}
           </li>
         ))}
       </ul>

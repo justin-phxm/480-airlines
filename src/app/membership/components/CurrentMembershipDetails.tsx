@@ -53,7 +53,7 @@ export default async function CurrentMembershipDetails() {
         <input type="text" className="hidden" name="userID" value={userID} />
         <button
           type="submit"
-          // disabled={session?.user.customerInformation.isMember}
+          disabled={session?.user.customerInformation.isMember}
           className={` rounded-lg p-2 text-white ${isMember ? "bg-gradient-to-l from-yellow-300 to-yellow-400" : "bg-blue-700"}`}
         >
           {isMember ? "🌟" : "Sign up"}

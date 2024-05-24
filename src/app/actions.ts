@@ -5,6 +5,7 @@ import { db } from "~/server/db";
 import { type SearchParams } from "./flights/page";
 import type { Prisma } from "@prisma/client";
 import { revalidatePath } from "next/cache";
+import type { BenefitParams } from "./membership/components/BenefitList";
 export async function signupMembership({ userID }: { userID: string }) {
   try {
     await db.customer.update({
@@ -14,6 +15,27 @@ export async function signupMembership({ userID }: { userID: string }) {
     revalidatePath("/membership");
   } catch (error) {
     console.error("Error signing up for membership:", error);
+  }
+}
+export async function upgradeMembership(formData: BenefitParams) {
+  const userIDValidator = z.object({
+    userID: z.string(),
+    benefit: z.string(),
+  });
+  const validatedForm = userIDValidator.safeParse(formData);
+  if (!validatedForm.success) return;
+  const benefitField: Record<string, boolean> = {
+    [validatedForm.data.benefit]: true,
+  };
+  console.log(benefitField);
+  try {
+    await db.customer.update({
+      where: { userId: validatedForm.data?.userID },
+      data: benefitField,
+    });
+    revalidatePath("/membership");
+  } catch (error) {
+    console.error("Error upgrading membership:", error);
   }
 }
 export async function searchFlights({
