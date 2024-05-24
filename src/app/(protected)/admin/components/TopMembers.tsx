@@ -1,4 +1,11 @@
 import MemberRow from "./MemberRow";
+import {
+  Table,
+  TableBody,
+  TableHead,
+  TableHeadCell,
+  TableRow,
+} from "flowbite-react";
 
 interface Member {
   username: string;
@@ -67,14 +74,20 @@ export default function TopMembers() {
           <span className=" font-medium text-indigo-600">See all</span>
         </div>
       </div>
-      <div className=" flex justify-between font-medium text-slate-400">
-        <div>Name</div>
-        <div>Flights</div>
-        <div>Class</div>
-      </div>
-      {members.map((member, index) => (
-        <MemberRow key={index} {...member} />
-      ))}
+      <Table>
+        <TableHead className="text-left">
+          <TableHeadCell>Name</TableHeadCell>
+          <TableHeadCell>Flights</TableHeadCell>
+          <TableHeadCell>Classes</TableHeadCell>
+        </TableHead>
+        <TableBody>
+          {members.map((member, index) => (
+            <TableRow key={index}>
+              <MemberRow {...member} />
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
     </div>
   );
 }
