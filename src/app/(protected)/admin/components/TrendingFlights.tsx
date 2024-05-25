@@ -71,7 +71,7 @@ function Card({ imageSrc, title, creator, currentBid }: CardProps) {
   );
 }
 
-const TrendingFlights: React.FC = () => {
+export default function TrendingFlights() {
   const flights = [
     {
       imageSrc: "https://via.placeholder.com/396x238",
@@ -93,7 +93,7 @@ const TrendingFlights: React.FC = () => {
     },
   ];
   return (
-    <div className=" flex w-full flex-col items-start justify-start">
+    <div className=" flex w-full flex-col items-start justify-start rounded-2xl bg-white p-4">
       <div className="text-2xl font-bold">Trending Flights</div>
       <div className="flex w-full items-end justify-start gap-5">
         {flights.map((flight, index) => (
@@ -108,6 +108,4 @@ const TrendingFlights: React.FC = () => {
       </div>
     </div>
   );
-};
-
-export default TrendingFlights;
+}
