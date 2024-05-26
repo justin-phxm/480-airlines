@@ -33,7 +33,7 @@ const HistoryCard = ({
       />
       <div className="flex flex-col">
         <div className=" text-base font-bold text-black">{route}</div>
-        <div className=" text-sm font-normal text-slate-400">{name}</div>
+        <div className=" text-sm font-normal italic text-slate-800">{name}</div>
       </div>
     </div>
     <div className=" font-bold text-indigo-900">${amount}</div>

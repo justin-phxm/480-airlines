@@ -1,3 +1,4 @@
+import { searchCustomers } from "~/app/actions";
 import MemberRow from "./MemberRow";
 import {
   Table,
@@ -6,6 +7,7 @@ import {
   TableHeadCell,
   TableRow,
 } from "flowbite-react";
+import { SeatType } from "@prisma/client";
 
 interface Member {
   username: string;
@@ -14,58 +16,31 @@ interface Member {
   imageUrl: string;
 }
 
-export default function TopMembers() {
-  const members: Member[] = [
-    {
-      username: "@Mark Benjamin",
-      flights: 9821,
-      classPercentage: [40, 30, 30],
-      imageUrl: "https://via.placeholder.com/30x30",
-    },
-    {
-      username: "@karl.will02",
-      flights: 7032,
-      classPercentage: [60, 30, 10],
-      imageUrl: "https://via.placeholder.com/30x30",
-    },
-    {
-      username: "@andreea.1z",
-      flights: 5204,
-      classPercentage: [50, 40, 10],
-      imageUrl: "https://via.placeholder.com/30x30",
-    },
-    {
-      username: "@abraham47.y",
-      flights: 4309,
-      classPercentage: [70, 20, 10],
-      imageUrl: "https://via.placeholder.com/30x30",
-    },
-    {
-      username: "@simmmple.web",
-      flights: 3871,
-      classPercentage: [55, 30, 15],
-      imageUrl: "https://via.placeholder.com/30x30",
-    },
-    {
-      username: "@venus.sys",
-      flights: 3152,
-      classPercentage: [65, 20, 15],
-      imageUrl: "https://via.placeholder.com/30x30",
-    },
-    {
-      username: "@ape.vpp8",
-      flights: 2907,
-      classPercentage: [80, 20],
-      imageUrl: "https://via.placeholder.com/30x30",
-    },
-    {
-      username: "@leon_pwrr",
-      flights: 2309,
-      classPercentage: [85, 15],
-      imageUrl: "https://via.placeholder.com/30x30",
-    },
-  ];
+export default async function TopMembers() {
+  const paginatedCustomers = await searchCustomers({});
+  const members: Member[] = paginatedCustomers.map((customer) => {
+    const totalFlights = customer.transactions.length;
+    const firstClass = customer.transactions.filter(
+      (transaction) => transaction.seatType === SeatType.FIRST,
+    ).length;
+    const businessClass = customer.transactions.filter(
+      (transaction) => transaction.seatType === SeatType.BUSINESS,
+    ).length;
+    const economyClass = customer.transactions.filter(
+      (transaction) => transaction.seatType === SeatType.ECONOMY,
+    ).length;
 
+    return {
+      username: customer.user.name,
+      flights: customer.transactions.length,
+      classPercentage: [
+        (economyClass / totalFlights) * 100,
+        (firstClass / totalFlights) * 100,
+        (businessClass / totalFlights) * 100,
+      ],
+      imageUrl: customer.user.image,
+    };
+  });
   return (
     <div className="flex flex-col gap-4 rounded-2xl bg-white p-4 text-sm shadow">
       <div className="flex items-center justify-between">

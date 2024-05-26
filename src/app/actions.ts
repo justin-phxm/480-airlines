@@ -113,6 +113,17 @@ export async function searchTransactions({ page }: { page?: number }) {
       : null;
   return { transactions, nextCursor };
 }
+export async function searchCustomers({ skip }: { skip?: number }) {
+  const customers = await db.customer.findMany({
+    take: 10,
+    skip: skip ?? 0,
+    include: {
+      user: true,
+      transactions: true,
+    },
+  });
+  return customers;
+}
 /* 
 Check if seat is available
 Check if customer has companion ticket
