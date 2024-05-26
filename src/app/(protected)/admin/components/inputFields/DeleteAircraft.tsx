@@ -1,5 +1,7 @@
 import { TextField } from "@mui/material";
-
+export type DeleteAircraftPayload = {
+  aircraftID: string;
+};
 export default function DeleteAircraft() {
   return (
     <TextField
@@ -7,6 +9,7 @@ export default function DeleteAircraft() {
       id="outlined-basic"
       label="Aircraft ID"
       variant="outlined"
+      name="aircraftID"
     />
   );
 }

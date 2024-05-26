@@ -1,6 +1,12 @@
 import { TextField } from "@mui/material";
 import React from "react";
-
+export type EditAircraftPayload = {
+  aircraftID: string;
+  aircraftName: string;
+  businessClassSeats: number;
+  firstClassSeats: number;
+  economyClassSeats: number;
+};
 export default function EditAircraft() {
   return (
     <div className=" grid grid-cols-4 gap-4">
@@ -10,12 +16,14 @@ export default function EditAircraft() {
           id="outlined-basic"
           label="Aircraft ID"
           variant="outlined"
+          name="aircraftID"
         />
         <TextField
           className="w-full"
           id="outlined-basic"
           label="Aircraft Name"
           variant="outlined"
+          name="aircraftName"
         />
         <TextField
           className="w-full"
@@ -23,6 +31,7 @@ export default function EditAircraft() {
           label="# of Business Class Seats"
           type="number"
           variant="outlined"
+          name="businessClassSeats"
         />
       </div>
       <div className="col-span-2 grid h-fit gap-2">
@@ -32,6 +41,7 @@ export default function EditAircraft() {
           label="# First Class Seats"
           variant="outlined"
           type="number"
+          name="firstClassSeats"
         />
         <TextField
           className="w-full"
@@ -39,6 +49,7 @@ export default function EditAircraft() {
           type="number"
           label="# Economy Class Seats"
           variant="outlined"
+          name="economyClassSeats"
         />
       </div>
     </div>
