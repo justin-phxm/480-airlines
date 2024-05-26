@@ -6,9 +6,11 @@ import { CiCircleList } from "react-icons/ci";
 import { CiEdit } from "react-icons/ci";
 import { FaRegTrashAlt } from "react-icons/fa";
 import { IoCreateOutline } from "react-icons/io5";
-
-import React, { useState } from "react";
-import InputField from "./inputFields/InputField";
+import { type CreateAircraftPayload } from "./inputFields/CreateAircraft";
+import React, { type FormEvent, useState } from "react";
+import InputField, { type Fields } from "./inputFields/InputField";
+import { type EditAircraftPayload } from "./inputFields/EditAircraft";
+import { type DeleteAircraftPayload } from "./inputFields/DeleteAircraft";
 export enum ModificationMode {
   CREATE = "Create",
   EDIT = "Edit",
@@ -71,18 +73,21 @@ function EntityTypeCard({
 function ActionButton({
   text,
   primary = false,
+  submit,
 }: {
   text: string;
   primary?: boolean;
+  submit?: boolean;
 }) {
   return (
-    <div
+    <button
+      type={submit ? "submit" : "button"}
       className={`w-${primary ? "20" : "24"} flex items-center justify-center p-2 ${primary ? "bg-blue-600" : "border border-zinc-200 bg-white"} rounded`}
     >
       <div className={`${primary ? "text-white" : "text-blue-600"}`}>
         {text}
       </div>
-    </div>
+    </button>
   );
 }
 type EntitiesSelection = {
@@ -114,6 +119,31 @@ function CreateNewEntityForm() {
       src: <FaRegTrashAlt size={18} />,
     },
   ];
+
+  function handleFormSubmission(event: FormEvent<HTMLFormElement>): void {
+    event.preventDefault();
+    const formData = new FormData(event.currentTarget);
+    let formFields = Object.fromEntries(formData.entries()) as unknown;
+    switch (selectedType) {
+      case Entities.AIRCRAFT:
+        switch (modificationMode) {
+          case ModificationMode.CREATE:
+            formFields = formFields as CreateAircraftPayload;
+            console.log("Creating Aircraft:", formFields);
+            break;
+          case ModificationMode.EDIT:
+            formFields = formFields as EditAircraftPayload;
+            console.log("Editing Aircraft:", formFields);
+            break;
+          case ModificationMode.DELETE:
+            formFields = formFields as DeleteAircraftPayload;
+            console.log("Deleting Aircraft:", formFields);
+            break;
+        }
+    }
+    throw new Error("Function not implemented.");
+  }
+
   return (
     <div className="flex w-full flex-col gap-4 rounded-lg bg-white p-5">
       <div className="flex flex-row justify-between gap-4">
@@ -153,14 +183,17 @@ function CreateNewEntityForm() {
             );
           })}
         </div>
-        <InputField
-          selectedType={selectedType}
-          modificationMode={modificationMode}
-        />
-        <div className="flex justify-end gap-4">
-          <ActionButton text="Cancel" />
-          <ActionButton text="Save" primary />
-        </div>
+        <form className="flex flex-col gap-4" onSubmit={handleFormSubmission}>
+          <InputField
+            renderedField={
+              (modificationMode + selectedType) as keyof typeof Fields
+            }
+          />
+          <div className="flex justify-end gap-4">
+            <ActionButton text="Cancel" />
+            <ActionButton submit text="Save" primary />
+          </div>
+        </form>
       </div>
     </div>
   );

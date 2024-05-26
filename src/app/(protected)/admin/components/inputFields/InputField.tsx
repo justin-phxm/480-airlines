@@ -1,61 +1,18 @@
 import dynamic from "next/dynamic";
-import { Entities, ModificationMode } from "../CreateNewEntityForm";
-const CreateAircraft = dynamic(() => import("./CreateAircraft"));
-const EditAircraft = dynamic(() => import("./EditAircraft"));
-const CreateFlight = dynamic(() => import("./CreateFlight"));
-const DeleteAircraft = dynamic(() => import("./DeleteAircraft"));
-const EditFlight = dynamic(() => import("./EditFlight"));
-const DeleteFlight = dynamic(() => import("./DeleteFlight"));
+export const Fields = {
+  CreateAircraft: dynamic(() => import("./CreateAircraft")),
+  EditAircraft: dynamic(() => import("./EditAircraft")),
+  CreateFlight: dynamic(() => import("./CreateFlight")),
+  DeleteAircraft: dynamic(() => import("./DeleteAircraft")),
+  EditFlight: dynamic(() => import("./EditFlight")),
+  DeleteFlight: dynamic(() => import("./DeleteFlight")),
+};
 export default function InputField({
-  selectedType,
-  modificationMode,
+  renderedField,
 }: {
-  selectedType: Entities;
-  modificationMode: ModificationMode;
+  renderedField: keyof typeof Fields;
 }) {
-  let RenderedInputField = CreateAircraft;
-  switch (selectedType) {
-    case Entities.AIRCRAFT:
-      switch (modificationMode) {
-        case ModificationMode.CREATE:
-          RenderedInputField = CreateAircraft;
-          break;
-        case ModificationMode.EDIT:
-          RenderedInputField = EditAircraft;
-          break;
-        case ModificationMode.DELETE:
-          RenderedInputField = DeleteAircraft;
-          break;
-      }
-      break;
-    case Entities.FLIGHT:
-      switch (modificationMode) {
-        case ModificationMode.CREATE:
-          RenderedInputField = CreateFlight;
-          break;
-        case ModificationMode.EDIT:
-          RenderedInputField = EditFlight;
-          break;
-        case ModificationMode.DELETE:
-          RenderedInputField = DeleteFlight;
-          break;
-      }
-      break;
-    case Entities.NEWSLETTER:
-      switch (modificationMode) {
-        case ModificationMode.CREATE:
-          RenderedInputField = CreateAircraft;
-          break;
-        case ModificationMode.EDIT:
-          RenderedInputField = CreateAircraft;
-          break;
-        case ModificationMode.DELETE:
-          RenderedInputField = CreateAircraft;
-          break;
-      }
-      break;
-    default:
-      RenderedInputField = CreateAircraft;
-  }
+  const RenderedInputField = Fields[renderedField];
+  if (!RenderedInputField) return null;
   return <RenderedInputField />;
 }
