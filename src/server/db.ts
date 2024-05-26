@@ -13,7 +13,14 @@ const globalForPrisma = globalThis as unknown as {
 };
 
 export const db = globalForPrisma.prisma ?? createPrismaClient();
-
+export const getUserBasicInfo = async (id: string) =>
+  db.user.findUniqueOrThrow({
+    where: { id },
+    include: {
+      employee: true,
+      customerInformation: true,
+    },
+  });
 export const getUserByID = async (id: string) =>
   db.user.findUniqueOrThrow({
     where: { id },
@@ -31,6 +38,19 @@ export const getUserByID = async (id: string) =>
               createdAt: "desc",
             },
           },
+        },
+      },
+    },
+  });
+export const getCustomerWithTransactions = async (id: string) =>
+  db.customer.findUnique({
+    where: {
+      userId: id,
+    },
+    include: {
+      transactions: {
+        orderBy: {
+          createdAt: "desc",
         },
       },
     },

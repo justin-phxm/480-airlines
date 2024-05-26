@@ -2,9 +2,14 @@ import OrderRow from "./OrderRow";
 import CancellationModal from "./CancellationModal";
 import { getServerAuthSession } from "~/server/auth";
 import OrderHistoryClient from "./OrderHistoryClient";
+import { getCustomerWithTransactions } from "~/server/db";
 export default async function OrderHistory() {
   const session = await getServerAuthSession();
-  const transactions = session?.user.customerInformation.transactions;
+  if (!session) {
+    return <div>Not authenticated</div>;
+  }
+  const user = await getCustomerWithTransactions(session.user.id);
+  const transactions = user?.transactions;
   if (!transactions || transactions.length === 0) {
     return <div>No orders found</div>;
   }
