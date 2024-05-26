@@ -2,6 +2,9 @@
 
 - [x] Create Profile View -> convert Navbar to a client component -> use Flowbite components
 - [x] Add Toasts
+- [ ] Add Receipt/Congratulations page
+- [ ] Add sort for order history
+- [ ] Add pagination for order history
 - [ ] Create Admin Login
 - [ ] Create Employee Login
 - [ ] Create Admin view
@@ -9,7 +12,7 @@
 - [ ] Update Membership Logic
 - [x] Add search feature
 - [x] Update Seat selection Feature
-- [x] Update payment Feature
+- [ ] Update payment Feature
 - [x] Figure out how to move from SSR->SSG
 - [x] Add Zod validation
 
