@@ -1,9 +1,22 @@
 import { TextField } from "@mui/material";
+import React from "react";
 
-export default function CreateFlight() {
+export default function EditFlight() {
   return (
     <div className=" grid grid-cols-4 gap-4">
-      <div className="col-span-2 grid h-fit gap-2">
+      <div className=" col-span-2 grid gap-2">
+        <TextField
+          className="w-full"
+          id="outlined-basic"
+          label="Aircraft ID"
+          variant="outlined"
+        />
+        <TextField
+          className="w-full"
+          id="outlined-basic"
+          label="Aircraft Name"
+          variant="outlined"
+        />
         <TextField
           className="w-full"
           id="outlined-basic"
@@ -37,9 +50,9 @@ export default function CreateFlight() {
           variant="outlined"
         />
         <TextField
+          className="w-full"
           id="outlined-basic"
           type="number"
-          className="w-full"
           label="# Economy Class Seats"
           variant="outlined"
         />
