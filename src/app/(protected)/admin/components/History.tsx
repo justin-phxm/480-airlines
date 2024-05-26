@@ -1,9 +1,11 @@
 import Image from "next/image";
 import React from "react";
+import { searchTransactions } from "~/app/actions";
+import { SeatColor } from "~/app/booking/[id]/components/PlaneSeat";
 
 interface HistoryCardProps {
   gradient: string;
-  amount: string;
+  amount: number;
   timeAgo: string;
   route: string;
   name: string;
@@ -19,7 +21,7 @@ const HistoryCard = ({
   imageUrl,
 }: HistoryCardProps) => (
   <div
-    className={`p-4 ${gradient} flex flex-row items-center justify-between gap-4 rounded-2xl shadow`}
+    className={`p-4 ${gradient} flex flex-row items-center justify-between gap-4 rounded-2xl bg-gradient-to-l shadow`}
   >
     <div className="flex flex-row items-center gap-2">
       <Image
@@ -39,42 +41,23 @@ const HistoryCard = ({
   </div>
 );
 
-export default function History() {
-  const historyItems: HistoryCardProps[] = [
-    {
-      gradient: "bg-gradient-to-r from-yellow-200 to-white",
-      amount: "1300.00",
-      timeAgo: "30s ago",
-      route: "YYC -> YVR",
-      name: "Mark Benjamin",
-      imageUrl: "https://via.placeholder.com/66x66",
-    },
-    {
-      gradient: "bg-violet-100",
-      amount: "1300.00",
-      timeAgo: "30s ago",
-      route: "YYC -> YVR",
-      name: "Mark Benjamin",
-      imageUrl: "https://via.placeholder.com/66x66",
-    },
-    {
-      gradient: "bg-gradient-to-r from-green-300 to-white",
-      amount: "1300.00",
-      timeAgo: "30s ago",
-      route: "YYC -> YVR",
-      name: "Mark Benjamin",
-      imageUrl: "https://via.placeholder.com/66x66",
-    },
-    {
-      gradient: "bg-gradient-to-r from-yellow-200 to-white",
-      amount: "1300.00",
-      timeAgo: "30s ago",
-      route: "YYC -> YVR",
-      name: "Mark Benjamin",
-      imageUrl: "https://via.placeholder.com/66x66",
-    },
-  ];
-
+export default async function History() {
+  const searchPaginatedTransactions = await searchTransactions({});
+  const { transactions, nextCursor } = searchPaginatedTransactions;
+  const historyItems: HistoryCardProps[] = transactions.map((transaction) => {
+    const seatType = transaction.seatType as keyof typeof SeatColor; // Ensure seatType is a valid key for SeatColor
+    const gradient = SeatColor[seatType]; // Assign the corresponding value to gradient
+    const timeAgo = transaction.createdAt.getHours() + "h ago";
+    const route = `${transaction.departureAirportCode} -> ${transaction.arrivalAirportCode}`;
+    return {
+      gradient, // Use the gradient variable
+      amount: transaction.price,
+      timeAgo,
+      route,
+      name: transaction.customer.user.name,
+      imageUrl: transaction.customer.user.image,
+    };
+  });
   return (
     <div className="flex flex-col gap-7 rounded-2xl bg-white p-4">
       <div className="flex items-center justify-between">

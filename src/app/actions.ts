@@ -97,7 +97,22 @@ export async function searchFlights({
 
   return { flights, nextCursor };
 }
-
+export async function searchTransactions({ page }: { page?: number }) {
+  const transactions = await db.transaction.findMany({
+    take: 4,
+    skip: page ? 1 : 0,
+    cursor: page ? { id: page } : undefined,
+    orderBy: { createdAt: "desc" },
+    include: {
+      customer: { include: { user: true } },
+    },
+  });
+  const nextCursor =
+    transactions.length === 4
+      ? transactions[transactions.length - 1]?.id
+      : null;
+  return { transactions, nextCursor };
+}
 /* 
 Check if seat is available
 Check if customer has companion ticket

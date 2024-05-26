@@ -4,6 +4,7 @@ import SeatUnit from "./SeatUnit";
 export enum SeatColor {
   SELECTED = "from-indigo-300 to-indigo-500",
   AVAILABLE = "from-emerald-300 to-teal-500",
+  ECONOMY = "from-blue-300 to-blue-400",
   FIRST = "from-yellow-300 to-yellow-500",
   UNAVAILABLE = "from-violet-100 to-violet-100",
 }
