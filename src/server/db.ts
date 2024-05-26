@@ -55,6 +55,24 @@ export const getCustomerWithTransactions = async (id: string) =>
       },
     },
   });
+export const getCustomerWithTickets = async (id: string) =>
+  db.customer.findUnique({
+    where: {
+      userId: id,
+    },
+    include: {
+      tickets: {
+        include: {
+          flight: true,
+          seat: true,
+        },
+
+        orderBy: {
+          createdAt: "desc",
+        },
+      },
+    },
+  });
 export const createCustomer = async (userID: string) => {
   try {
     const res = await db.customer.upsert({

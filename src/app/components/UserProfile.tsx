@@ -21,9 +21,13 @@ export default function UserProfile({ session }: { session: Session }) {
         <div className="font-bold capitalize">{session.user?.name}</div>
         <div> {session.user?.email}</div>
       </DropdownHeader>
-
       <Link href="/profile">
         <DropdownItem className=" hover:bg-slate-200/50">Profile</DropdownItem>
+      </Link>
+      <Link href="/upcomingFlights">
+        <DropdownItem className=" hover:bg-slate-200/50">
+          Upcoming Flights
+        </DropdownItem>
       </Link>
       <Link href="/api/auth/signout">
         <DropdownItem className="text-red-500 hover:bg-slate-200/50">
