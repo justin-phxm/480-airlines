@@ -8,12 +8,18 @@ import { FaRegTrashAlt } from "react-icons/fa";
 import { IoCreateOutline } from "react-icons/io5";
 
 import React, { useState } from "react";
-enum ModificationMode {
+import InputField from "./inputFields/InputField";
+export enum ModificationMode {
   CREATE = "Create",
   EDIT = "Edit",
   DELETE = "Delete",
 }
-
+export enum Entities {
+  AIRCRAFT = "Aircraft",
+  FLIGHT = "Flight",
+  NEWSLETTER = "Newsletter",
+  OTHER = "...",
+}
 function IconButton({
   src,
   setModificationMode,
@@ -43,9 +49,9 @@ function EntityTypeCard({
 }: {
   src?: React.ReactNode;
   alt: string;
-  text: string;
+  text: Entities;
   isSelected?: boolean;
-  setSelectedType: React.Dispatch<React.SetStateAction<string>>;
+  setSelectedType: React.Dispatch<React.SetStateAction<Entities>>;
 }) {
   return (
     <button
@@ -59,24 +65,6 @@ function EntityTypeCard({
         {text}
       </div>
     </button>
-  );
-}
-function InputField({
-  label,
-  placeholder,
-}: {
-  label: string;
-  placeholder: string;
-}) {
-  return (
-    <div className="flex w-full flex-col gap-1">
-      <div className=" text-sm text-gray-500">{label}</div>
-      <input
-        placeholder={placeholder}
-        type="text"
-        className="flex items-center rounded border border-slate-200 p-2 text-slate-400 focus:outline-blue-500"
-      />
-    </div>
   );
 }
 
@@ -97,14 +85,17 @@ function ActionButton({
     </div>
   );
 }
-
+type EntitiesSelection = {
+  name: Entities;
+  logo: React.ReactNode;
+};
 function CreateNewEntityForm() {
-  const [selectedType, setSelectedType] = useState("Aircraft");
-  const entities = [
-    { name: "Aircraft", logo: <BsAirplane size={24} /> },
-    { name: "Flight", logo: <PiAirplaneTakeoffLight size={24} /> },
-    { name: "Newsletter", logo: <MdEmail size={24} /> },
-    { name: "...", logo: <CiCircleList size={24} /> },
+  const [selectedType, setSelectedType] = useState(Entities.AIRCRAFT);
+  const entities: EntitiesSelection[] = [
+    { name: Entities.AIRCRAFT, logo: <BsAirplane size={24} /> },
+    { name: Entities.FLIGHT, logo: <PiAirplaneTakeoffLight size={24} /> },
+    { name: Entities.NEWSLETTER, logo: <MdEmail size={24} /> },
+    { name: Entities.OTHER, logo: <CiCircleList size={24} /> },
   ];
   const [modificationMode, setModificationMode] = useState(
     ModificationMode.CREATE,
@@ -162,25 +153,10 @@ function CreateNewEntityForm() {
             );
           })}
         </div>
-        <div className=" grid grid-cols-4 gap-4">
-          <div className=" col-span-2">
-            <InputField label="Aircraft Name" placeholder="Amount" />
-            <InputField
-              label="Business Class Seats"
-              placeholder="Amount of uses"
-            />
-          </div>
-          <div className=" col-span-2">
-            <InputField
-              label="First Class Seats"
-              placeholder="Amount of uses"
-            />
-            <InputField
-              label="Economy Class Seats"
-              placeholder="Amount of uses"
-            />
-          </div>
-        </div>
+        <InputField
+          selectedType={selectedType}
+          modificationMode={modificationMode}
+        />
         <div className="flex justify-end gap-4">
           <ActionButton text="Cancel" />
           <ActionButton text="Save" primary />
