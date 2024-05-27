@@ -74,15 +74,18 @@ function EntityTypeCard({
 
 function ActionButton({
   text,
+  onClick,
   primary = false,
   submit,
 }: {
   text: string;
+  onClick?: () => void;
   primary?: boolean;
   submit?: boolean;
 }) {
   return (
     <button
+      onClick={onClick}
       type={submit ? "submit" : "button"}
       className={`w-${primary ? "20" : "24"} flex items-center justify-center p-2 ${primary ? "bg-blue-600" : "border border-zinc-200 bg-white"} rounded`}
     >
@@ -216,9 +219,13 @@ function CreateNewEntityForm() {
         break;
     }
   }
+  const [rerender, setRerender] = useState(false);
+  const handleCancelClick = () => {
+    setRerender(!rerender);
+  };
 
   return (
-    <div className="flex w-full flex-col gap-4 rounded-lg bg-white p-5">
+    <div className="flex w-full flex-1 flex-col gap-4 rounded-lg bg-white p-5">
       <div className="flex flex-row justify-between gap-4">
         <div className="flex flex-col gap-1">
           <h1 className=" text-base font-bold text-gray-900">
@@ -240,7 +247,7 @@ function CreateNewEntityForm() {
           ))}
         </div>
       </div>
-      <div className="flex flex-col gap-4">
+      <div className="flex flex-1 flex-col gap-4">
         <div className="flex justify-around gap-2.5">
           {entities.map((entity) => {
             const { name } = entity;
@@ -256,14 +263,18 @@ function CreateNewEntityForm() {
             );
           })}
         </div>
-        <form className="flex flex-col gap-4" onSubmit={handleFormSubmission}>
+        <form
+          className="relative flex flex-1 flex-col gap-4"
+          onSubmit={handleFormSubmission}
+        >
           <InputField
+            key={rerender.toString()}
             renderedField={
               (modificationMode + selectedType) as keyof typeof Fields
             }
           />
-          <div className="flex justify-end gap-4">
-            <ActionButton text="Cancel" />
+          <div className="absolute bottom-0 right-0 flex justify-end gap-4">
+            <ActionButton onClick={handleCancelClick} text="Cancel" />
             <ActionButton submit text="Save" primary />
           </div>
         </form>
