@@ -119,7 +119,7 @@ model Seat {
     seatCode   String
     available  Boolean  @default(true)
     seatType   SeatType
-    aircraft   Aircraft @relation(fields: [aircraftId], references: [id])
+    aircraft   Aircraft @relation(fields: [aircraftId], references: [id], onDelete: Cascade)
     aircraftId String
     tickets    Ticket[]
 }
