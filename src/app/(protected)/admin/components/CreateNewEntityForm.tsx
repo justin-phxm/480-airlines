@@ -11,6 +11,8 @@ import React, { type FormEvent, useState } from "react";
 import InputField, { type Fields } from "./inputFields/InputField";
 import { type EditAircraftPayload } from "./inputFields/EditAircraft";
 import { type DeleteAircraftPayload } from "./inputFields/DeleteAircraft";
+import { createAircraft, deleteAircraft, modifyAircraft } from "~/app/actions";
+import { toast } from "react-toastify";
 export enum ModificationMode {
   CREATE = "Create",
   EDIT = "Edit",
@@ -120,28 +122,99 @@ function CreateNewEntityForm() {
     },
   ];
 
-  function handleFormSubmission(event: FormEvent<HTMLFormElement>): void {
+  async function handleFormSubmission(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const formData = new FormData(event.currentTarget);
-    let formFields = Object.fromEntries(formData.entries()) as unknown;
+    const formFields = Object.fromEntries(formData.entries()) as unknown;
     switch (selectedType) {
       case Entities.AIRCRAFT:
         switch (modificationMode) {
           case ModificationMode.CREATE:
-            formFields = formFields as CreateAircraftPayload;
-            console.log("Creating Aircraft:", formFields);
+            const aircraft = await toast.promise(
+              createAircraft(formFields as CreateAircraftPayload),
+              {
+                pending: "Creating Aircraft...",
+                success: {
+                  render({ data }) {
+                    return data.message;
+                  },
+                },
+                error: "Error creating Aircraft",
+              },
+            );
+            console.log(aircraft);
             break;
           case ModificationMode.EDIT:
-            formFields = formFields as EditAircraftPayload;
-            console.log("Editing Aircraft:", formFields);
+            const editAircraft = await toast.promise(
+              modifyAircraft(formFields as EditAircraftPayload),
+              {
+                pending: "Modifying Aircraft...",
+                success: {
+                  render({ data }) {
+                    return data.message;
+                  },
+                },
+                error: "Error modifying Aircraft",
+              },
+            );
+            console.log(editAircraft);
             break;
           case ModificationMode.DELETE:
-            formFields = formFields as DeleteAircraftPayload;
-            console.log("Deleting Aircraft:", formFields);
+            await toast.promise(
+              deleteAircraft(formFields as DeleteAircraftPayload),
+              {
+                pending: "Deleting Aircraft...",
+                success: {
+                  render({ data }) {
+                    return data.message;
+                  },
+                },
+                error: "Error deleting Aircraft",
+              },
+            );
             break;
         }
+        break;
+      case Entities.FLIGHT:
+        switch (modificationMode) {
+          case ModificationMode.CREATE:
+            console.log("Creating Flight:", formFields);
+            break;
+          case ModificationMode.EDIT:
+            console.log("Editing Flight:", formFields);
+            break;
+          case ModificationMode.DELETE:
+            console.log("Deleting Flight:", formFields);
+            break;
+        }
+        break;
+      case Entities.NEWSLETTER:
+        switch (modificationMode) {
+          case ModificationMode.CREATE:
+            console.log("Creating Newsletter:", formFields);
+            break;
+          case ModificationMode.EDIT:
+            console.log("Editing Newsletter:", formFields);
+            break;
+          case ModificationMode.DELETE:
+            console.log("Deleting Newsletter:", formFields);
+            break;
+        }
+        break;
+      case Entities.OTHER:
+        switch (modificationMode) {
+          case ModificationMode.CREATE:
+            console.log("Creating Other:", formFields);
+            break;
+          case ModificationMode.EDIT:
+            console.log("Editing Other:", formFields);
+            break;
+          case ModificationMode.DELETE:
+            console.log("Deleting Other:", formFields);
+            break;
+        }
+        break;
     }
-    throw new Error("Function not implemented.");
   }
 
   return (

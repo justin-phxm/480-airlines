@@ -20,7 +20,7 @@ export default function CreateAircraft() {
         <TextField
           className="w-full"
           id="outlined-basic"
-          label="# of Business Class Seats"
+          label="# of Business Class Seat Rows"
           type="number"
           variant="outlined"
           name="businessClassSeats"
@@ -30,7 +30,7 @@ export default function CreateAircraft() {
         <TextField
           className="w-full"
           id="outlined-basic"
-          label="# First Class Seats"
+          label="# of First Class Seats Rows"
           variant="outlined"
           type="number"
           name="firstClassSeats"
@@ -39,7 +39,7 @@ export default function CreateAircraft() {
           id="outlined-basic"
           type="number"
           className="w-full"
-          label="# Economy Class Seats"
+          label="# of Economy Class Seats Rows"
           variant="outlined"
           name="economyClassSeats"
         />

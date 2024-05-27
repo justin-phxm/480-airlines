@@ -1,9 +1,8 @@
 "use server";
-
 import { z } from "zod";
 import { db } from "~/server/db";
 import { type SearchParams } from "./flights/page";
-import type { Prisma } from "@prisma/client";
+import { type Prisma, SeatType } from "@prisma/client";
 import { revalidatePath } from "next/cache";
 import type { BenefitParams } from "./membership/components/BenefitList";
 export async function signupMembership({ userID }: { userID: string }) {
@@ -283,6 +282,149 @@ export async function cancelFlight({
     return {
       success: false,
       message: "An error occurred while cancelling flight",
+    };
+  }
+}
+export async function createAircraft({
+  aircraftName,
+  businessClassSeats,
+  firstClassSeats,
+  economyClassSeats,
+}: {
+  aircraftName: string;
+  businessClassSeats: number;
+  firstClassSeats: number;
+  economyClassSeats: number;
+}) {
+  try {
+    const aircraft = await db.aircraft.create({
+      data: {
+        name: aircraftName,
+        seats: {
+          create: generateSeatCodes(
+            firstClassSeats,
+            businessClassSeats,
+            economyClassSeats,
+          ),
+        },
+      },
+      include: {
+        seats: true,
+      },
+    });
+    return { success: true, message: `Aircraft created ID: ${aircraft.id}` };
+  } catch (error) {
+    console.error("Error creating aircraft:", error);
+    return {
+      success: false,
+      message: "An error occurred while creating aircraft",
+    };
+  }
+}
+type Seats = { seatCode: string; seatType: SeatType }[];
+/** generate seats for num people
+ * @param firstPassengerRows number of first class rows in the plane
+ * @param businessPassengerRows number of business rows in the plane
+ * @param economyPassengerRows number of economy rows in the plane
+ * @param startChar starting character for seat code
+ * @param firstClassRange number of seats in a first class row
+ * @param businessClassRange number of seats in a business class row
+ * @param economyClassRange number of seats in an economy class row
+ * @example generateSeatCodes(6, 7, 10)
+ * (126)[{seatCode: "A1", seatClass: "FIRST"}, {seatCode: "A2", seatClass: "FIRST"}]
+ * Ratios should be around 20/30/50 for first/business/economy
+ **/
+function generateSeatCodes(
+  firstPassengerRows: number,
+  businessPassengerRows: number,
+  economyPassengerRows: number,
+  startChar = "A",
+  firstClassRange = 4,
+  businessClassRange = 6,
+  economyClassRange = 6,
+) {
+  const seats: Seats = [];
+  for (let i = 0; i < firstPassengerRows; i++) {
+    const charCode = startChar.charCodeAt(0) + i;
+    const letter = String.fromCharCode(charCode);
+    for (let number = 1; number <= firstClassRange; number++) {
+      seats.push({
+        seatCode: letter + number.toString(),
+        seatType: SeatType.FIRST,
+      });
+    }
+  }
+  for (let i = 0; i < businessPassengerRows; i++) {
+    const charCode = startChar.charCodeAt(0) + i + firstPassengerRows;
+    const letter = String.fromCharCode(charCode);
+    for (let number = 1; number <= businessClassRange; number++) {
+      seats.push({
+        seatCode: letter + number.toString(),
+        seatType: SeatType.BUSINESS,
+      });
+    }
+  }
+  for (let i = 0; i < economyPassengerRows; i++) {
+    const charCode =
+      startChar.charCodeAt(0) + i + firstPassengerRows + businessPassengerRows;
+    const letter = String.fromCharCode(charCode);
+    for (let number = 1; number <= economyClassRange; number++) {
+      seats.push({
+        seatCode: letter + number.toString(),
+        seatType: SeatType.ECONOMY,
+      });
+    }
+  }
+  return seats;
+}
+export async function modifyAircraft({
+  aircraftID,
+  aircraftName,
+  businessClassSeats,
+  firstClassSeats,
+  economyClassSeats,
+}: {
+  aircraftID: string;
+  aircraftName: string;
+  businessClassSeats: number;
+  firstClassSeats: number;
+  economyClassSeats: number;
+}) {
+  try {
+    const aircraft = await db.aircraft.update({
+      where: { id: aircraftID },
+      data: {
+        name: aircraftName,
+        seats: {
+          create: generateSeatCodes(
+            firstClassSeats,
+            businessClassSeats,
+            economyClassSeats,
+          ),
+        },
+      },
+      include: {
+        seats: true,
+      },
+    });
+    return { success: true, message: `Aircraft updated ${aircraft.id}` };
+  } catch (error) {
+    console.error("Error updating aircraft:", error);
+    return {
+      success: false,
+      message: "An error occurred while updating aircraft",
+    };
+  }
+}
+export async function deleteAircraft({ aircraftID }: { aircraftID: string }) {
+  try {
+    await db.aircraft.delete({ where: { id: aircraftID } });
+    return { success: true, message: `Aircraft deleted ID: ${aircraftID}` };
+  } catch (error) {
+    console.error("Error deleting aircraft:", error);
+    return {
+      success: false,
+      message: "An error occurred while deleting aircraft",
     };
   }
 }
