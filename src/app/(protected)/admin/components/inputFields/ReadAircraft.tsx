@@ -1,44 +1,43 @@
-import { TextField } from "@mui/material";
+import { type Aircraft } from "@prisma/client";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeadCell,
+  TableRow,
+} from "flowbite-react";
+import { readAircrafts } from "~/app/actions";
 
-export default function ReadAircraft() {
+function AircraftCard({ aircraft }: { aircraft: Aircraft }) {
   return (
-    <div className=" grid grid-cols-4 gap-4">
-      <div className=" col-span-2 grid gap-2">
-        <TextField
-          className="w-full"
-          id="outlined-basic"
-          label="Aircraft Name"
-          variant="outlined"
-          name="aircraftName"
-        />
-
-        <TextField
-          className="w-full"
-          id="outlined-basic"
-          label="# of Business Class Seat Rows"
-          type="number"
-          variant="outlined"
-          name="businessClassSeats"
-        />
-      </div>
-      <div className="col-span-2 grid gap-2">
-        <TextField
-          className="w-full"
-          id="outlined-basic"
-          label="# of First Class Seats Rows"
-          variant="outlined"
-          type="number"
-          name="firstClassSeats"
-        />
-        <TextField
-          id="outlined-basic"
-          type="number"
-          className="w-full"
-          label="# of Economy Class Seats Rows"
-          variant="outlined"
-          name="economyClassSeats"
-        />
-      </div>
+    <>
+      <TableCell>
+        <h1>{aircraft.name}</h1>
+      </TableCell>
+      <TableCell>
+        <p>{aircraft.id}</p>
+      </TableCell>
+    </>
+  );
+}
+export default async function ReadAircraft() {
+  const aircrafts = await readAircrafts();
+  return (
+    <div className="max-h-96 overflow-y-auto">
+      <Table>
+        <TableHead>
+          <TableHeadCell>Name</TableHeadCell>
+          <TableHeadCell>ID</TableHeadCell>
+        </TableHead>
+        <TableBody>
+          {aircrafts.map((aircraft) => (
+            <TableRow key={aircraft.id}>
+              <AircraftCard key={aircraft.id} aircraft={aircraft} />
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
     </div>
   );
 }

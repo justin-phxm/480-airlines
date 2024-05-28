@@ -500,3 +500,7 @@ export async function getTrendingFlights() {
   });
   return flights;
 }
+export async function readAircrafts() {
+  const aircrafts = await db.aircraft.findMany({});
+  return aircrafts;
+}
