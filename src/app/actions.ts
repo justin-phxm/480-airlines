@@ -322,6 +322,42 @@ export async function createAircraft({
     };
   }
 }
+export async function createFlight({
+  aircraftName,
+  businessClassSeats,
+  firstClassSeats,
+  economyClassSeats,
+}: {
+  aircraftName: string;
+  businessClassSeats: number;
+  firstClassSeats: number;
+  economyClassSeats: number;
+}) {
+  try {
+    const aircraft = await db.aircraft.create({
+      data: {
+        name: aircraftName,
+        seats: {
+          create: generateSeatCodes(
+            firstClassSeats,
+            businessClassSeats,
+            economyClassSeats,
+          ),
+        },
+      },
+      include: {
+        seats: true,
+      },
+    });
+    return { success: true, message: `Aircraft created ID: ${aircraft.id}` };
+  } catch (error) {
+    console.error("Error creating aircraft:", error);
+    return {
+      success: false,
+      message: "An error occurred while creating aircraft",
+    };
+  }
+}
 type Seats = { seatCode: string; seatType: SeatType }[];
 /** generate seats for num people
  * @param firstPassengerRows number of first class rows in the plane

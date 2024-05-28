@@ -20,27 +20,55 @@ export default function CreateFlight() {
           type="date"
           InputLabelProps={{ shrink: true }}
         />
+        <TextField
+          className="w-full"
+          id="outlined-basic"
+          label="Base Price"
+          variant="outlined"
+          type="number"
+        />
+        <TextField
+          className="w-full"
+          id="outlined-basic"
+          label="Aircraft ID"
+          type="text"
+          variant="outlined"
+        />
+        <TextField
+          className="w-full"
+          id="outlined-basic"
+          label="Airline"
+          type="text"
+          variant="outlined"
+        />
       </div>
       <div className="col-span-2 grid h-fit gap-2">
         <TextField
-          className="w-full"
           id="outlined-basic"
-          label="# First Class Seats"
-          variant="outlined"
-          type="number"
-        />
-        <TextField
+          type="text"
           className="w-full"
-          id="outlined-basic"
-          label="# of Business Class Seats"
-          type="number"
+          label="Arrival Airport Code"
           variant="outlined"
         />
         <TextField
           id="outlined-basic"
-          type="number"
+          type="text"
           className="w-full"
-          label="# Economy Class Seats"
+          label="Departure Airport Code"
+          variant="outlined"
+        />
+        <TextField
+          id="outlined-basic"
+          type="text"
+          className="w-full"
+          label="Arrival City"
+          variant="outlined"
+        />
+        <TextField
+          id="outlined-basic"
+          type="text"
+          className="w-full"
+          label="Departure City"
           variant="outlined"
         />
       </div>
