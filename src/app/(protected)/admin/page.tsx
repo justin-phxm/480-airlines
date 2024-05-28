@@ -4,7 +4,7 @@ import History from "./components/History";
 import TopMembers from "./components/TopMembers";
 import TrendingFlights from "./components/TrendingFlights";
 import { Skeleton } from "@mui/material";
-
+export const revalidate = 300;
 export default function page() {
   return (
     <section className="flex flex-1 bg-gradient-to-t from-indigo-300 to-white p-4">

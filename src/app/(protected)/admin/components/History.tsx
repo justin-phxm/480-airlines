@@ -1,3 +1,4 @@
+import { revalidatePath } from "next/cache";
 import Image from "next/image";
 import React from "react";
 import { searchTransactions } from "~/app/actions";
@@ -43,7 +44,7 @@ const HistoryCard = ({
 
 export default async function History() {
   const searchPaginatedTransactions = await searchTransactions({});
-  const { transactions, nextCursor } = searchPaginatedTransactions;
+  const { transactions } = searchPaginatedTransactions;
   const historyItems: HistoryCardProps[] = transactions.map((transaction) => {
     const seatType = transaction.seatType as keyof typeof SeatColor; // Ensure seatType is a valid key for SeatColor
     const gradient = SeatColor[seatType]; // Assign the corresponding value to gradient
@@ -58,13 +59,28 @@ export default async function History() {
       imageUrl: transaction.customer.user.image,
     };
   });
+  const handleRevalidation = async () => {
+    "use server";
+    revalidatePath("/admin");
+  };
   return (
     <div className="flex flex-col gap-7 rounded-2xl bg-white p-4 shadow">
       <div className="flex items-center justify-between">
         <div className=" text-xl font-bold text-blue-950">History</div>
-        <button className=" rounded-3xl bg-violet-50 px-4 py-2">
-          <span className=" text-sm font-medium text-indigo-600">See all</span>
-        </button>
+        <form
+          action={handleRevalidation}
+          className="flex flex-row items-center gap-4"
+        >
+          <div className=" font-light italic">
+            Last updated: {new Date().toLocaleTimeString()}
+          </div>
+          <button
+            type="submit"
+            className="rounded-3xl bg-violet-50 p-2 font-medium text-indigo-600"
+          >
+            Refresh
+          </button>
+        </form>
       </div>
       <div className="flex flex-col gap-4">
         {historyItems.map((item, index) => (

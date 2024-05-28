@@ -8,6 +8,7 @@ import {
   TableRow,
 } from "flowbite-react";
 import { SeatType } from "@prisma/client";
+import { revalidatePath } from "next/cache";
 
 interface Member {
   username: string;
@@ -41,13 +42,28 @@ export default async function TopMembers() {
       imageUrl: customer.user.image,
     };
   });
+  const handleRevalidation = async () => {
+    "use server";
+    revalidatePath("/admin");
+  };
   return (
     <div className="flex flex-col gap-4 rounded-2xl bg-white p-4 text-sm shadow">
       <div className="flex items-center justify-between">
         <div className="text-xl font-bold text-blue-950">Top Members</div>
-        <div className="cursor-pointer rounded-3xl bg-violet-50 px-4 py-2">
-          <span className=" font-medium text-indigo-600">See all</span>
-        </div>
+        <form
+          action={handleRevalidation}
+          className="flex flex-row items-center gap-4"
+        >
+          <div className=" font-light italic">
+            Last updated: {new Date().toLocaleTimeString()}
+          </div>
+          <button
+            type="submit"
+            className="rounded-3xl bg-violet-50 p-2 font-medium text-indigo-600"
+          >
+            Refresh
+          </button>
+        </form>
       </div>
       <Table>
         <TableHead className="text-left">
