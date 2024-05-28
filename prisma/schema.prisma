@@ -99,13 +99,13 @@ model Flight {
     arrivalTime          DateTime
     arrivalCity          String
     departureCity        String
+    price                Float
+    airline              String
+    tickets              Ticket[]
     aircraft             Aircraft @relation(fields: [aircraftId], references: [id])
     aircraftId           String
     createdAt            DateTime @default(now())
     updatedAt            DateTime @updatedAt
-    tickets              Ticket[]
-    airline              String
-    price                Float
 }
 
 enum SeatType {

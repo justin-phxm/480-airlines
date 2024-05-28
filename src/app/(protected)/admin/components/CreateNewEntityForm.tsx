@@ -1,5 +1,8 @@
 "use client";
 import { BsAirplane } from "react-icons/bs";
+import { FaUser } from "react-icons/fa";
+import { IoMdSearch } from "react-icons/io";
+
 import { PiAirplaneTakeoffLight } from "react-icons/pi";
 import { MdEmail } from "react-icons/md";
 import { CiCircleList } from "react-icons/ci";
@@ -15,6 +18,7 @@ import { createAircraft, deleteAircraft, modifyAircraft } from "~/app/actions";
 import { toast } from "react-toastify";
 export enum ModificationMode {
   CREATE = "Create",
+  READ = "Read",
   EDIT = "Edit",
   DELETE = "Delete",
 }
@@ -22,6 +26,7 @@ export enum Entities {
   AIRCRAFT = "Aircraft",
   FLIGHT = "Flight",
   NEWSLETTER = "Newsletter",
+  USER = "User",
   OTHER = "...",
 }
 function IconButton({
@@ -105,12 +110,17 @@ function CreateNewEntityForm() {
     { name: Entities.AIRCRAFT, logo: <BsAirplane size={24} /> },
     { name: Entities.FLIGHT, logo: <PiAirplaneTakeoffLight size={24} /> },
     { name: Entities.NEWSLETTER, logo: <MdEmail size={24} /> },
+    { name: Entities.USER, logo: <FaUser size={24} /> },
     { name: Entities.OTHER, logo: <CiCircleList size={24} /> },
   ];
   const [modificationMode, setModificationMode] = useState(
     ModificationMode.CREATE,
   );
   const modificationModes = [
+    {
+      name: ModificationMode.READ,
+      src: <IoMdSearch size={18} />,
+    },
     {
       name: ModificationMode.CREATE,
       src: <IoCreateOutline size={18} />,
@@ -133,7 +143,7 @@ function CreateNewEntityForm() {
       case Entities.AIRCRAFT:
         switch (modificationMode) {
           case ModificationMode.CREATE:
-            const aircraft = await toast.promise(
+            await toast.promise(
               createAircraft(formFields as CreateAircraftPayload),
               {
                 pending: "Creating Aircraft...",
@@ -145,10 +155,9 @@ function CreateNewEntityForm() {
                 error: "Error creating Aircraft",
               },
             );
-            console.log(aircraft);
             break;
           case ModificationMode.EDIT:
-            const editAircraft = await toast.promise(
+            await toast.promise(
               modifyAircraft(formFields as EditAircraftPayload),
               {
                 pending: "Modifying Aircraft...",
@@ -160,7 +169,6 @@ function CreateNewEntityForm() {
                 error: "Error modifying Aircraft",
               },
             );
-            console.log(editAircraft);
             break;
           case ModificationMode.DELETE:
             await toast.promise(

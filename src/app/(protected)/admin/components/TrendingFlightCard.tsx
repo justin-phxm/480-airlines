@@ -17,7 +17,7 @@ interface CardProps {
   imageSrc: string | JSX.Element;
   title: string;
   departureTime: string;
-  currentBid: string;
+  price: string;
   customerImages: string[];
   flightID: number;
 }
@@ -25,7 +25,7 @@ export default function TrendingFlightCard({
   imageSrc,
   title,
   departureTime,
-  currentBid,
+  price,
   customerImages,
   flightID,
 }: CardProps) {
@@ -54,7 +54,7 @@ export default function TrendingFlightCard({
         <p className="truncate text-sm text-slate-400">{departureTime}</p>
       </div>
       <div className="flex w-full items-center justify-between">
-        <p className="text-sm font-bold text-indigo-600">{currentBid}</p>
+        <p className="text-sm font-bold text-indigo-600">{price}</p>
         <Link
           href={`/booking/${flightID}`}
           className=" rounded-3xl bg-violet-950 px-4 text-white"
