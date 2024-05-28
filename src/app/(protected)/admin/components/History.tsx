@@ -59,7 +59,7 @@ export default async function History() {
     };
   });
   return (
-    <div className="flex flex-col gap-7 rounded-2xl bg-white p-4">
+    <div className="flex flex-col gap-7 rounded-2xl bg-white p-4 shadow">
       <div className="flex items-center justify-between">
         <div className=" text-xl font-bold text-blue-950">History</div>
         <button className=" rounded-3xl bg-violet-50 px-4 py-2">

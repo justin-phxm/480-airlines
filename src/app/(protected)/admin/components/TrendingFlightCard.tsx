@@ -1,6 +1,7 @@
 import { Avatar } from "@mui/material";
 import Image from "next/image";
 import AvatarGroup from "@mui/material/AvatarGroup";
+import Link from "next/link";
 
 function Avatars({ customerImages }: { customerImages: string[] }) {
   return (
@@ -18,6 +19,7 @@ interface CardProps {
   departureTime: string;
   currentBid: string;
   customerImages: string[];
+  flightID: number;
 }
 export default function TrendingFlightCard({
   imageSrc,
@@ -25,10 +27,14 @@ export default function TrendingFlightCard({
   departureTime,
   currentBid,
   customerImages,
+  flightID,
 }: CardProps) {
   return (
     <div className="flex flex-col items-start justify-between rounded-2xl p-4">
-      <div className=" flex size-48 items-center justify-center rounded-2xl border border-slate-400 bg-slate-300 ">
+      <Link
+        href={`/booking/${flightID}`}
+        className=" flex size-48 items-center justify-center rounded-2xl border border-slate-400 bg-slate-300 "
+      >
         {typeof imageSrc === "string" ? (
           <Image
             className="size-48 rounded-2xl"
@@ -42,16 +48,19 @@ export default function TrendingFlightCard({
             {imageSrc}
           </div>
         )}
-      </div>
+      </Link>
       <div className="flex flex-col">
         <p className="text-lg font-bold leading-loose">{title}</p>
         <p className="truncate text-sm text-slate-400">{departureTime}</p>
       </div>
       <div className="flex w-full items-center justify-between">
         <p className="text-sm font-bold text-indigo-600">{currentBid}</p>
-        <button className=" rounded-3xl bg-violet-950 px-4 text-white">
+        <Link
+          href={`/booking/${flightID}`}
+          className=" rounded-3xl bg-violet-950 px-4 text-white"
+        >
           Book Flight
-        </button>
+        </Link>
       </div>
       <Avatars customerImages={customerImages} />
     </div>

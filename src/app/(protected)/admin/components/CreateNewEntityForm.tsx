@@ -225,7 +225,7 @@ function CreateNewEntityForm() {
   };
 
   return (
-    <div className="flex w-full flex-1 flex-col gap-4 rounded-lg bg-white p-5">
+    <div className="flex w-full flex-1 flex-col gap-4 rounded-lg bg-white p-5 shadow">
       <div className="flex flex-row justify-between gap-4">
         <div className="flex flex-col gap-1">
           <h1 className=" text-base font-bold text-gray-900">

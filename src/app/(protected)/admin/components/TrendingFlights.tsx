@@ -25,9 +25,9 @@ export default async function TrendingFlights() {
     }),
   }));
   return (
-    <div className=" flex w-full flex-col items-start justify-start rounded-2xl bg-white p-4">
+    <div className="flex w-full flex-col items-start justify-start rounded-2xl bg-white p-4 shadow">
       <h1 className="text-2xl font-bold">Trending Flights</h1>
-      <div className="flex gap-5">
+      <div className="flex w-full flex-row justify-around gap-5">
         {flights.map((flight, index) => (
           <TrendingFlightCard
             customerImages={flight.tickets.map(
@@ -42,6 +42,7 @@ export default async function TrendingFlights() {
               formattedFlightTimes[index]?.departureTime ?? "unknown time"
             }
             currentBid={"$" + flight.price}
+            flightID={flight.id}
           />
         ))}
       </div>
