@@ -5,8 +5,6 @@
 - [ ] Add Receipt/Congratulations page
 - [ ] Add sort for order history
 - [ ] Add pagination for order history
-- [ ] Create Admin Login
-- [ ] Create Employee Login
 - [ ] Create Admin view
 - [ ] Create Employee View
 - [ ] Update Membership Logic
