@@ -1,15 +1,17 @@
 import { TextField } from "@mui/material";
-import React from "react";
-import { type EditFlightParams } from "~/app/actions";
+import { type Prisma } from "@prisma/client";
 export default function EditFlight() {
-  const defaultFlightParams: EditFlightParams = {
-    flightID: 0,
+  const defaultFlightParams: Prisma.FlightUpdateInput = {
     departureAirportCode: "",
     departureTime: new Date(),
     arrivalAirportCode: "",
     arrivalTime: new Date(),
     departureCity: "",
-    aircraftID: "",
+    aircraft: {
+      connect: {
+        id: "",
+      },
+    },
     arrivalCity: "",
     price: 0,
   };
@@ -19,13 +21,20 @@ export default function EditFlight() {
         Edit the fields you wish to change, empty fields will remain the same
       </div>
       <div className="grid grid-cols-2 gap-4">
+        <TextField
+          className="w-full"
+          label="flightID"
+          variant="outlined"
+          type="number"
+          name="flightID"
+        />
         {Object.entries(defaultFlightParams).map(([key, value]) => (
           <TextField
             key={key}
             className="w-full"
-            id="outlined-basic"
             label={key}
             variant="outlined"
+            defaultValue={null}
             type={
               typeof value === "number"
                 ? "number"
@@ -33,7 +42,9 @@ export default function EditFlight() {
                   ? "datetime-local"
                   : "text"
             }
-            InputLabelProps={{ shrink: value instanceof Date }}
+            InputLabelProps={
+              value instanceof Date ? { shrink: true } : undefined
+            }
             name={key}
           />
         ))}

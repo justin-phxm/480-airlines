@@ -100,7 +100,7 @@ type EntitiesSelection = {
   name: Entities;
   logo: React.ReactNode;
 };
-function CreateNewEntityForm() {
+export default function ModifyEntityForm() {
   const [selectedType, setSelectedType] = useState(Entities.AIRCRAFT);
   const entities: EntitiesSelection[] = [
     { name: Entities.AIRCRAFT, logo: <BsAirplane size={24} /> },
@@ -196,5 +196,3 @@ function CreateNewEntityForm() {
     </div>
   );
 }
-
-export default CreateNewEntityForm;

@@ -508,21 +508,16 @@ export async function readFlights() {
   const flights = await db.flight.findMany({});
   return flights;
 }
-export type EditFlightParams = {
+export async function editFlight({
+  flightID,
+  props,
+}: {
   flightID: number;
-  departureAirportCode?: string;
-  aircraftID?: string;
-  arrivalAirportCode?: string;
-  departureCity?: string;
-  arrivalCity?: string;
-  departureTime?: Date;
-  arrivalTime?: Date;
-  price?: number;
-};
-export async function editFlight(props: EditFlightParams) {
+  props: Prisma.FlightUpdateInput;
+}) {
   try {
     const flight = await db.flight.update({
-      where: { id: props.flightID },
+      where: { id: flightID },
       data: props,
     });
     return { success: true, message: `Flight updated ${flight.id}` };

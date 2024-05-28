@@ -1,5 +1,5 @@
 import { Suspense } from "react";
-import CreateNewEntityForm from "./components/CreateNewEntityForm";
+import CreateNewEntityForm from "./components/ModifyEntityForm";
 import History from "./components/History";
 import TopMembers from "./components/TopMembers";
 import TrendingFlights from "./components/TrendingFlights";
