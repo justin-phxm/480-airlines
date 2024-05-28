@@ -508,3 +508,29 @@ export async function readFlights() {
   const flights = await db.flight.findMany({});
   return flights;
 }
+export type EditFlightParams = {
+  flightID: number;
+  departureAirportCode?: string;
+  aircraftID?: string;
+  arrivalAirportCode?: string;
+  departureCity?: string;
+  arrivalCity?: string;
+  departureTime?: Date;
+  arrivalTime?: Date;
+  price?: number;
+};
+export async function editFlight(props: EditFlightParams) {
+  try {
+    const flight = await db.flight.update({
+      where: { id: props.flightID },
+      data: props,
+    });
+    return { success: true, message: `Flight updated ${flight.id}` };
+  } catch (error) {
+    console.error("Error updating flight:", error);
+    return {
+      success: false,
+      message: "An error occurred while updating flight",
+    };
+  }
+}
