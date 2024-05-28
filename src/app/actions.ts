@@ -120,6 +120,7 @@ export async function searchCustomers({ skip }: { skip?: number }) {
       user: true,
       transactions: true,
     },
+    orderBy: { transactions: { _count: "desc" } },
   });
   return customers;
 }
@@ -427,4 +428,39 @@ export async function deleteAircraft({ aircraftID }: { aircraftID: string }) {
       message: "An error occurred while deleting aircraft",
     };
   }
+}
+
+export async function getTrendingFlights() {
+  const flights: Prisma.FlightGetPayload<{
+    include: {
+      tickets: {
+        select: {
+          customer: {
+            select: {
+              user: { select: { image: true } };
+            };
+          };
+        };
+      };
+    };
+  }>[] = await db.flight.findMany({
+    take: 5,
+    orderBy: {
+      tickets: {
+        _count: "desc",
+      },
+    },
+    include: {
+      tickets: {
+        select: {
+          customer: {
+            select: {
+              user: { select: { image: true } },
+            },
+          },
+        },
+      },
+    },
+  });
+  return flights;
 }
