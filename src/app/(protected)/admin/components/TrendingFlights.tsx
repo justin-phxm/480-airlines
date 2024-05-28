@@ -1,6 +1,7 @@
 import { type Prisma } from "@prisma/client";
 import { getTrendingFlights } from "~/app/actions";
 import TrendingFlightCard from "./TrendingFlightCard";
+import RandomAirlineImage from "~/app/components/RandomAirlineImage";
 
 export default async function TrendingFlights() {
   const flights: Prisma.FlightGetPayload<{
@@ -33,9 +34,9 @@ export default async function TrendingFlights() {
               (ticket) => ticket.customer.user.image,
             )}
             key={index}
-            imageSrc={"https://via.placeholder.com/208x126"}
+            imageSrc={<RandomAirlineImage />}
             title={
-              flight.departureAirportCode + " -> " + flight.arrivalAirportCode
+              flight.departureAirportCode + " to " + flight.arrivalAirportCode
             }
             departureTime={
               formattedFlightTimes[index]?.departureTime ?? "unknown time"

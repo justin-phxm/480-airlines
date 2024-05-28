@@ -13,7 +13,7 @@ function Avatars({ customerImages }: { customerImages: string[] }) {
 }
 
 interface CardProps {
-  imageSrc: string;
+  imageSrc: string | JSX.Element;
   title: string;
   departureTime: string;
   currentBid: string;
@@ -28,13 +28,21 @@ export default function TrendingFlightCard({
 }: CardProps) {
   return (
     <div className="flex flex-col items-start justify-between rounded-2xl p-4">
-      <Image
-        className="size-48 rounded-2xl"
-        src={imageSrc}
-        alt={title}
-        width={208}
-        height={126}
-      />
+      <div className=" flex size-48 items-center justify-center rounded-2xl border border-slate-400 bg-slate-300 ">
+        {typeof imageSrc === "string" ? (
+          <Image
+            className="size-48 rounded-2xl"
+            src={imageSrc}
+            alt={title}
+            width={208}
+            height={126}
+          />
+        ) : (
+          <div className="size-18 relative rounded-xl border border-blue-500 p-8">
+            {imageSrc}
+          </div>
+        )}
+      </div>
       <div className="flex flex-col">
         <p className="text-lg font-bold leading-loose">{title}</p>
         <p className="truncate text-sm text-slate-400">{departureTime}</p>

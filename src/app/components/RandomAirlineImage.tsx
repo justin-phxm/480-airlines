@@ -1,6 +1,12 @@
 import airlineImages from "@/components/airlineImage";
 import Image from "next/image";
-export default function RandomAirlineImage() {
+export default function RandomAirlineImage({
+  none,
+  className,
+}: {
+  none?: boolean;
+  className?: string;
+}) {
   const planeIcon = (
     <div className="my-auto flex h-10 w-10 items-center">
       <svg
@@ -19,16 +25,18 @@ export default function RandomAirlineImage() {
       </svg>
     </div>
   );
-  const randomAirlineImage =
-    airlineImages[Math.floor(Math.random() * airlineImages.length)];
+  const randomAirlineImage = none
+    ? null
+    : airlineImages[Math.floor(Math.random() * airlineImages.length)];
   return (
     <>
       {randomAirlineImage ? (
         <Image
           src={randomAirlineImage}
           alt={""}
-          className="object-contain"
+          className={"object-contain " + className}
           placeholder="blur"
+          fill
         />
       ) : (
         <div className=" w-1/5">{planeIcon}</div>
