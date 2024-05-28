@@ -33,7 +33,7 @@ export default function TrendingFlightCard({
     <div className="flex flex-col items-start justify-between rounded-2xl p-4">
       <Link
         href={`/booking/${flightID}`}
-        className=" flex size-48 items-center justify-center rounded-2xl border border-slate-400 bg-slate-300 "
+        className="flex size-48 items-center justify-center rounded-2xl border border-slate-400 bg-slate-50 p-4 transition duration-300 hover:bg-indigo-400"
       >
         {typeof imageSrc === "string" ? (
           <Image
