@@ -9,13 +9,9 @@ import { CiCircleList } from "react-icons/ci";
 import { CiEdit } from "react-icons/ci";
 import { FaRegTrashAlt } from "react-icons/fa";
 import { IoCreateOutline } from "react-icons/io5";
-import { type CreateAircraftPayload } from "./inputFields/CreateAircraft";
-import React, { type FormEvent, useState } from "react";
+import React, { useState } from "react";
 import InputField, { type Fields } from "./inputFields/InputField";
-import { type EditAircraftPayload } from "./inputFields/EditAircraft";
-import { type DeleteAircraftPayload } from "./inputFields/DeleteAircraft";
-import { createAircraft, deleteAircraft, modifyAircraft } from "~/app/actions";
-import { toast } from "react-toastify";
+import handleFormSubmission from "./formLogic";
 export enum ModificationMode {
   CREATE = "Create",
   READ = "Read",
@@ -135,98 +131,6 @@ function CreateNewEntityForm() {
     },
   ];
 
-  async function handleFormSubmission(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-    const formData = new FormData(event.currentTarget);
-    const formFields = Object.fromEntries(formData.entries()) as unknown;
-    switch (selectedType) {
-      case Entities.AIRCRAFT:
-        switch (modificationMode) {
-          case ModificationMode.CREATE:
-            await toast.promise(
-              createAircraft(formFields as CreateAircraftPayload),
-              {
-                pending: "Creating Aircraft...",
-                success: {
-                  render({ data }) {
-                    return data.message;
-                  },
-                },
-                error: "Error creating Aircraft",
-              },
-            );
-            break;
-          case ModificationMode.EDIT:
-            await toast.promise(
-              modifyAircraft(formFields as EditAircraftPayload),
-              {
-                pending: "Modifying Aircraft...",
-                success: {
-                  render({ data }) {
-                    return data.message;
-                  },
-                },
-                error: "Error modifying Aircraft",
-              },
-            );
-            break;
-          case ModificationMode.DELETE:
-            await toast.promise(
-              deleteAircraft(formFields as DeleteAircraftPayload),
-              {
-                pending: "Deleting Aircraft...",
-                success: {
-                  render({ data }) {
-                    return data.message;
-                  },
-                },
-                error: "Error deleting Aircraft",
-              },
-            );
-            break;
-        }
-        break;
-      case Entities.FLIGHT:
-        switch (modificationMode) {
-          case ModificationMode.CREATE:
-            console.log("Creating Flight:", formFields);
-            break;
-          case ModificationMode.EDIT:
-            console.log("Editing Flight:", formFields);
-            break;
-          case ModificationMode.DELETE:
-            console.log("Deleting Flight:", formFields);
-            break;
-        }
-        break;
-      case Entities.NEWSLETTER:
-        switch (modificationMode) {
-          case ModificationMode.CREATE:
-            console.log("Creating Newsletter:", formFields);
-            break;
-          case ModificationMode.EDIT:
-            console.log("Editing Newsletter:", formFields);
-            break;
-          case ModificationMode.DELETE:
-            console.log("Deleting Newsletter:", formFields);
-            break;
-        }
-        break;
-      case Entities.OTHER:
-        switch (modificationMode) {
-          case ModificationMode.CREATE:
-            console.log("Creating Other:", formFields);
-            break;
-          case ModificationMode.EDIT:
-            console.log("Editing Other:", formFields);
-            break;
-          case ModificationMode.DELETE:
-            console.log("Deleting Other:", formFields);
-            break;
-        }
-        break;
-    }
-  }
   const [rerender, setRerender] = useState(false);
   const handleCancelClick = () => {
     setRerender(!rerender);
@@ -273,7 +177,9 @@ function CreateNewEntityForm() {
         </div>
         <form
           className="relative flex flex-1 flex-col gap-4"
-          onSubmit={handleFormSubmission}
+          onSubmit={(e) =>
+            handleFormSubmission({ event: e, selectedType, modificationMode })
+          }
         >
           <InputField
             key={rerender.toString()}

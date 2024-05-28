@@ -6,7 +6,7 @@ import withAuth, { type NextRequestWithAuth } from "next-auth/middleware";
 import { NextResponse } from "next/server";
 
 export const config = {
-  matcher: ["/admin", "/employee", "/profile"],
+  matcher: ["/admin", "/employee", "/profile", "/upcomingFlights"],
 };
 
 /* Protect routes based on role */
