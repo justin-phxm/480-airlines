@@ -1,12 +1,13 @@
 import dynamic from "next/dynamic";
 export const Fields = {
-  CreateAircraft: dynamic(() => import("./CreateAircraft")),
-  ReadAircraft: dynamic(() => import("./ReadAircraft")),
-  EditAircraft: dynamic(() => import("./EditAircraft")),
-  CreateFlight: dynamic(() => import("./CreateFlight")),
-  DeleteAircraft: dynamic(() => import("./DeleteAircraft")),
-  EditFlight: dynamic(() => import("./EditFlight")),
-  DeleteFlight: dynamic(() => import("./DeleteFlight")),
+  CreateAircraft: dynamic(() => import("./Create/CreateAircraft")),
+  CreateFlight: dynamic(() => import("./Create/CreateFlight")),
+  ReadAircraft: dynamic(() => import("./Read/ReadAircraft")),
+  ReadFlight: dynamic(() => import("./Read/ReadFlight")),
+  EditAircraft: dynamic(() => import("./Edit/EditAircraft")),
+  EditFlight: dynamic(() => import("./Edit/EditFlight")),
+  DeleteAircraft: dynamic(() => import("./Delete/DeleteAircraft")),
+  DeleteFlight: dynamic(() => import("./Delete/DeleteFlight")),
 };
 export default function InputField({
   renderedField,

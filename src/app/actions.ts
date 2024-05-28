@@ -504,3 +504,7 @@ export async function readAircrafts() {
   const aircrafts = await db.aircraft.findMany({});
   return aircrafts;
 }
+export async function readFlights() {
+  const flights = await db.flight.findMany({});
+  return flights;
+}

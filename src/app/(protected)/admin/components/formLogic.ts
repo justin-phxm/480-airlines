@@ -1,10 +1,10 @@
 import { type FormEvent } from "react";
 import { Entities, ModificationMode } from "./CreateNewEntityForm";
-import { type CreateAircraftPayload } from "./inputFields/CreateAircraft";
-import { type EditAircraftPayload } from "./inputFields/EditAircraft";
+import { type CreateAircraftPayload } from "./inputFields/Create/CreateAircraft";
+import { type EditAircraftPayload } from "./inputFields/Edit/EditAircraft";
 import { toast } from "react-toastify";
 import { createAircraft, deleteAircraft, modifyAircraft } from "~/app/actions";
-import { type DeleteAircraftPayload } from "./inputFields/DeleteAircraft";
+import { type DeleteAircraftPayload } from "./inputFields/Delete/DeleteAircraft";
 
 export default async function handleFormSubmission({
   event,
