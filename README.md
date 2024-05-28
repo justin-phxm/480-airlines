@@ -6,14 +6,19 @@
 - [ ] Add sort for order history
 - [ ] Add pagination for order history
 - [ ] Create Admin view
+
 - - [ ] Update form modification component
+
 - [ ] Create Employee View
+
 - - [ ] READ and UPDATE flights
   - [ ] READ and UPDATE users
+
 - [ ] Update Membership Logic
 - [x] Add search feature
 - [x] Update Seat selection Feature
 - [ ] Update payment Feature
+- [ ] Update Login Page
 - [x] Figure out how to move from SSR->SSG
 - [x] Add Zod validation
 
