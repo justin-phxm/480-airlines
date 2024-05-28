@@ -16,8 +16,9 @@ export default function UserProfile({ session }: { session: Session }) {
           className="rounded-full text-sm"
         />
       }
+      className="z-50"
     >
-      <DropdownHeader>
+      <DropdownHeader className="z-50">
         <div className="font-bold capitalize">{session.user?.name}</div>
         <div> {session.user?.email}</div>
       </DropdownHeader>

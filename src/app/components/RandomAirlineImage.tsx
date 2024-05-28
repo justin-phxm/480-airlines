@@ -31,13 +31,15 @@ export default function RandomAirlineImage({
   return (
     <>
       {randomAirlineImage ? (
-        <Image
-          src={randomAirlineImage}
-          alt={""}
-          className={"object-contain " + className}
-          placeholder="blur"
-          fill
-        />
+        <div className="relative size-12">
+          <Image
+            src={randomAirlineImage}
+            alt={""}
+            className={"object-contain " + className}
+            placeholder="blur"
+            fill
+          />
+        </div>
       ) : (
         <div className=" w-1/5">{planeIcon}</div>
       )}
