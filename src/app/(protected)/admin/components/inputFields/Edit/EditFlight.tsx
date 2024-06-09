@@ -17,10 +17,7 @@ export default function EditFlight() {
   };
   return (
     <>
-      <div className=" font-bold">
-        Edit the fields you wish to change, empty fields will remain the same
-      </div>
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid w-full grid-cols-2 gap-4">
         <TextField
           className="w-full"
           label="flightID"

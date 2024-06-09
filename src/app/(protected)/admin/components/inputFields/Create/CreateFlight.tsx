@@ -2,7 +2,7 @@ import { TextField } from "@mui/material";
 
 export default function CreateFlight() {
   return (
-    <div className=" grid grid-cols-4 gap-4">
+    <div className=" grid w-full grid-cols-4 gap-4">
       <div className="col-span-2 grid h-fit gap-2">
         <TextField
           className="w-full"

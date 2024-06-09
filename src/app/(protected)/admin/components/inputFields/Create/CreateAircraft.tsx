@@ -7,7 +7,7 @@ export type CreateAircraftPayload = {
 };
 export default function CreateAircraft() {
   return (
-    <div className=" grid grid-cols-4 gap-4">
+    <div className=" grid h-fit w-full grid-cols-4 gap-4">
       <div className=" col-span-2 grid gap-2">
         <TextField
           className="w-full"

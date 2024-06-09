@@ -24,7 +24,7 @@ function AircraftCard({ aircraft }: { aircraft: Aircraft }) {
 export default async function ReadAircraft() {
   const aircrafts = await readAircrafts();
   return (
-    <div className="max-h-96 overflow-y-auto">
+    <div className="max-h-96 w-full overflow-y-auto">
       <Table>
         <TableHead>
           <TableHeadCell>Name</TableHeadCell>

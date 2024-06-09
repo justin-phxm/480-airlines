@@ -9,13 +9,19 @@ import {
 } from "flowbite-react";
 import { readFlights } from "~/app/actions";
 
-function AircraftCard({ flight }: { flight: Flight }) {
+function FlightCard({ flight }: { flight: Flight }) {
   const fields = Object.values(flight);
   return (
     <>
       {fields.map((field, index) => (
         <TableCell key={index}>
-          <h1>{field instanceof Date ? field.toDateString() : field}</h1>
+          <h1>
+            {field instanceof Date
+              ? field.toDateString()
+              : typeof field === "number"
+                ? `$${field.toFixed(2)}`
+                : field}
+          </h1>
         </TableCell>
       ))}
     </>
@@ -41,7 +47,7 @@ export default async function ReadFlight() {
         <TableBody>
           {flights.map((flight) => (
             <TableRow key={flight.id}>
-              <AircraftCard flight={flight} />
+              <FlightCard flight={flight} />
             </TableRow>
           ))}
         </TableBody>

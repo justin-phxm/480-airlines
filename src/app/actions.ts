@@ -505,8 +505,20 @@ export async function readAircrafts() {
   return aircrafts;
 }
 export async function readFlights() {
-  const flights = await db.flight.findMany({});
+  const flights = await db.flight.findMany({
+    orderBy: {
+      id: "asc",
+    },
+  });
   return flights;
+}
+export async function readUsers() {
+  const users = await db.user.findMany({
+    orderBy: {
+      id: "asc",
+    },
+  });
+  return users;
 }
 export async function editFlight({
   flightID,

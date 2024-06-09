@@ -12,6 +12,7 @@ import { IoCreateOutline } from "react-icons/io5";
 import React, { useState } from "react";
 import InputField, { type Fields } from "./inputFields/InputField";
 import handleFormSubmission from "./formLogic";
+import Skeleton from "@mui/material/Skeleton";
 export enum ModificationMode {
   CREATE = "Create",
   READ = "Read",
@@ -176,18 +177,20 @@ export default function ModifyEntityForm() {
           })}
         </div>
         <form
-          className="relative flex flex-1 flex-col gap-4"
+          className="flex flex-1 flex-col gap-4"
           onSubmit={(e) =>
             handleFormSubmission({ event: e, selectedType, modificationMode })
           }
         >
-          <InputField
-            key={rerender.toString()}
-            renderedField={
-              (modificationMode + selectedType) as keyof typeof Fields
-            }
-          />
-          <div className="absolute bottom-0 right-0 flex justify-end gap-4">
+          <div className="flex flex-1">
+            <InputField
+              key={rerender.toString()}
+              renderedField={
+                (modificationMode + selectedType) as keyof typeof Fields
+              }
+            />
+          </div>
+          <div className=" flex justify-end gap-4">
             <ActionButton onClick={handleCancelClick} text="Cancel" />
             <ActionButton submit text="Save" primary />
           </div>
