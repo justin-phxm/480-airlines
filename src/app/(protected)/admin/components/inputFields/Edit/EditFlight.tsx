@@ -14,6 +14,7 @@ export default function EditFlight() {
     },
     arrivalCity: "",
     price: 0,
+    airline: "",
   };
   return (
     <>

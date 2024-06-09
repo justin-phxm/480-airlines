@@ -12,7 +12,6 @@ import { IoCreateOutline } from "react-icons/io5";
 import React, { useState } from "react";
 import InputField, { type Fields } from "./inputFields/InputField";
 import handleFormSubmission from "./formLogic";
-import Skeleton from "@mui/material/Skeleton";
 export enum ModificationMode {
   CREATE = "Create",
   READ = "Read",

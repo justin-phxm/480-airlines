@@ -14,6 +14,7 @@ export const Fields = {
   ReadUser: dynamic(() => import("./Read/ReadUser"), { loading }),
   EditAircraft: dynamic(() => import("./Edit/EditAircraft"), { loading }),
   EditFlight: dynamic(() => import("./Edit/EditFlight"), { loading }),
+  EditUser: dynamic(() => import("./Edit/EditUser"), { loading }),
   DeleteAircraft: dynamic(() => import("./Delete/DeleteAircraft"), { loading }),
   DeleteFlight: dynamic(() => import("./Delete/DeleteFlight"), { loading }),
 };

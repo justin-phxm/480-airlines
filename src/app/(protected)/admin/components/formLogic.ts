@@ -7,6 +7,7 @@ import {
   createAircraft,
   deleteAircraft,
   editFlight,
+  editUser,
   modifyAircraft,
 } from "~/app/actions";
 import { type DeleteAircraftPayload } from "./inputFields/Delete/DeleteAircraft";
@@ -142,6 +143,23 @@ export default async function handleFormSubmission({
           break;
         case ModificationMode.DELETE:
           console.log("Deleting Newsletter:", formFields);
+          break;
+      }
+      break;
+    case Entities.USER:
+      switch (modificationMode) {
+        case ModificationMode.EDIT:
+          const { id, ...props } = formFields;
+          const userToastID = toast.loading("Updating User...");
+          const editUserReq = await editUser({
+            userID: id as string,
+            props: props,
+          });
+          toast.update(userToastID, {
+            render: `User updated ${editUserReq.success ? "successfully" : "unsuccessfully"}`,
+            type: editUserReq.success ? "success" : "error",
+            ...toastOptions,
+          });
           break;
       }
       break;

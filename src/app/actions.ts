@@ -541,3 +541,24 @@ export async function editFlight({
     };
   }
 }
+export async function editUser({
+  userID,
+  props,
+}: {
+  userID: string;
+  props: Prisma.UserUpdateInput;
+}) {
+  try {
+    const user = await db.user.update({
+      where: { id: userID },
+      data: props,
+    });
+    return { success: true, message: `User updated ${user.id}` };
+  } catch (error) {
+    console.error("Error updating user:", error);
+    return {
+      success: false,
+      message: "An error occurred while updating user",
+    };
+  }
+}
