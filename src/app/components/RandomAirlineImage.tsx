@@ -38,6 +38,7 @@ export default function RandomAirlineImage({
             className={"object-contain " + className}
             placeholder="blur"
             fill
+            sizes="10vw"
           />
         </div>
       ) : (
