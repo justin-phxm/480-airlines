@@ -31,7 +31,6 @@ export default async function CreateFlight() {
     uniqueAirlines.add(faker.airline.airline().name);
   }
   const airlines = Array.from(uniqueAirlines);
-  console.log(Object.entries(defaultFlightParams));
   const excludedKeys = ["aircraft", "airline"];
   return (
     <div className=" grid h-fit w-full grid-cols-2 gap-4">

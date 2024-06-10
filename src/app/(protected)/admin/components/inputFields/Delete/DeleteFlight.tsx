@@ -1,15 +1,24 @@
-import { TextField } from "@mui/material";
-export type DeleteFlightPayload = {
-  flightID: string;
-};
-export default function DeleteFlight() {
+import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
+import { readFlights } from "~/app/actions";
+export default async function DeleteFlight() {
+  const flights = await readFlights();
   return (
-    <TextField
-      className="w-full"
-      id="outlined-basic"
-      label="Flight ID"
-      variant="outlined"
-      name="flightID"
-    />
+    <div className="grid w-full">
+      <FormControl>
+        <InputLabel id="flight">Flight</InputLabel>
+        <Select
+          required
+          name="deleteFlightID"
+          labelId="deleteFlightID"
+          label="deleteFlightID"
+        >
+          {flights.map((flight) => (
+            <MenuItem key={flight.id} value={flight.id}>
+              {flight.id}: {flight.departureCity} to {flight.arrivalCity}
+            </MenuItem>
+          ))}
+        </Select>
+      </FormControl>
+    </div>
   );
 }

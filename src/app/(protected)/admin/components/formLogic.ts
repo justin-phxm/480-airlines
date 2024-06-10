@@ -7,6 +7,7 @@ import {
   createAircraft,
   createFlight,
   deleteAircraft,
+  deleteFlight,
   editFlight,
   editUser,
   modifyAircraft,
@@ -135,7 +136,16 @@ export default async function handleFormSubmission({
           });
           break;
         case ModificationMode.DELETE:
-          console.log("Deleting Flight:", formFields);
+          const { deleteFlightID } = formFields;
+          const deleteFlightToast = toast.loading("Cancelling Flight...");
+          const deleteFlightReq = await deleteFlight({
+            flightID: deleteFlightID as number,
+          });
+          toast.update(deleteFlightToast, {
+            render: `Flight cancelled ${deleteFlightReq.success ? "successfully" : "unsuccessfully"}`,
+            type: deleteFlightReq.success ? "success" : "error",
+            ...toastOptions,
+          });
           break;
       }
       break;

@@ -455,7 +455,18 @@ export async function deleteAircraft({ aircraftID }: { aircraftID: string }) {
     };
   }
 }
-
+export async function deleteFlight({ flightID }: { flightID: number }) {
+  try {
+    await db.flight.delete({ where: { id: flightID } });
+    return { success: true, message: `Flight deleted ID: ${flightID}` };
+  } catch (error) {
+    console.error("Error deleting flight:", error);
+    return {
+      success: false,
+      message: "An error occurred while deleting flight",
+    };
+  }
+}
 export async function getTrendingFlights() {
   const flights: Prisma.FlightGetPayload<{
     include: {
