@@ -323,38 +323,28 @@ export async function createAircraft({
   }
 }
 export async function createFlight({
-  aircraftName,
-  businessClassSeats,
-  firstClassSeats,
-  economyClassSeats,
+  aircraftID,
+  props,
 }: {
-  aircraftName: string;
-  businessClassSeats: number;
-  firstClassSeats: number;
-  economyClassSeats: number;
+  aircraftID: string;
+  props: Prisma.FlightCreateInput;
 }) {
   try {
-    const aircraft = await db.aircraft.create({
-      data: {
-        name: aircraftName,
-        seats: {
-          create: generateSeatCodes(
-            firstClassSeats,
-            businessClassSeats,
-            economyClassSeats,
-          ),
-        },
+    const flightInput: Prisma.FlightCreateInput = {
+      ...props,
+      aircraft: {
+        connect: { id: aircraftID },
       },
-      include: {
-        seats: true,
-      },
+    };
+    const flight = await db.flight.create({
+      data: flightInput,
     });
-    return { success: true, message: `Aircraft created ID: ${aircraft.id}` };
+    return { success: true, message: `Flight created ID: ${flight.id}` };
   } catch (error) {
-    console.error("Error creating aircraft:", error);
+    console.error("Error creating flight:", error);
     return {
       success: false,
-      message: "An error occurred while creating aircraft",
+      message: "An error occurred while creating flight",
     };
   }
 }

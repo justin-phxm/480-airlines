@@ -10,17 +10,16 @@ import {
 import { readFlights } from "~/app/actions";
 
 function FlightCard({ flight }: { flight: Flight }) {
-  const fields = Object.values(flight);
   return (
     <>
-      {fields.map((field, index) => (
-        <TableCell key={index}>
+      {Object.entries(flight).map(([key, value]) => (
+        <TableCell key={key}>
           <h1>
-            {field instanceof Date
-              ? field.toDateString()
-              : typeof field === "number"
-                ? `$${field.toFixed(2)}`
-                : field}
+            {value instanceof Date
+              ? value.toDateString()
+              : key === "price" && typeof value === "number"
+                ? `$${value.toFixed(2)}`
+                : value}
           </h1>
         </TableCell>
       ))}

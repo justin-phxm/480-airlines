@@ -5,6 +5,7 @@ import { type EditAircraftPayload } from "./inputFields/Edit/EditAircraft";
 import { toast } from "react-toastify";
 import {
   createAircraft,
+  createFlight,
   deleteAircraft,
   editFlight,
   editUser,
@@ -12,6 +13,7 @@ import {
 } from "~/app/actions";
 import { type DeleteAircraftPayload } from "./inputFields/Delete/DeleteAircraft";
 import toastOptions from "~/styles/toastOptions";
+import { type Prisma } from "@prisma/client";
 function parseFormData(data: Record<string, FormDataEntryValue>) {
   const parsedData: Record<string, string | number | Date> = {};
 
@@ -101,19 +103,23 @@ export default async function handleFormSubmission({
     case Entities.FLIGHT:
       switch (modificationMode) {
         case ModificationMode.CREATE:
-          // const createFlight = await toast.promise(
-          //   createFlight(formFields as ),
-          //   {
-          //     pending: "Creating Flight...",
-          //     success: {
-          //       render({ data }) {
-          //         return data.message;
-          //       },
-          //     },
-          //     error: "Error creating Flight",
-          //   },
-          // );
-          // console.log(createFlight);
+          const { aircraftID, ...createFlightProps } = formFields;
+          const createFlightReq = await toast.promise(
+            createFlight({
+              aircraftID: aircraftID as string,
+              props: createFlightProps as unknown as Prisma.FlightCreateInput,
+            }),
+            {
+              pending: "Creating Flight...",
+              success: {
+                render({ data }) {
+                  return data.message;
+                },
+              },
+              error: "Error creating Flight",
+            },
+          );
+          console.log(createFlightReq);
           break;
         case ModificationMode.EDIT:
           const { flightID, ...props } = formFields;
