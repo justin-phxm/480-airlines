@@ -1,8 +1,8 @@
 import { Suspense } from "react";
-import CreateNewEntityForm from "./components/ModifyEntityForm";
-import History from "./components/History";
-import TopMembers from "./components/TopMembers";
-import TrendingFlights from "./components/TrendingFlights";
+import ModifyEntityForm from "@/(protected)/components/ModifyEntityForm";
+import History from "@/(protected)/components/History";
+import TopMembers from "@/(protected)/components/TopMembers";
+import TrendingFlights from "@/(protected)/components/TrendingFlights";
 import { Skeleton } from "@mui/material";
 export const revalidate = 300;
 export default function page() {
@@ -11,7 +11,7 @@ export default function page() {
       <div className=" grid w-full grid-cols-3 gap-4">
         <div className=" col-span-2 flex flex-col gap-4">
           <Suspense fallback={<Skeleton />}>
-            <CreateNewEntityForm />
+            <ModifyEntityForm />
           </Suspense>
           <Suspense fallback={<Skeleton />}>
             <TrendingFlights />

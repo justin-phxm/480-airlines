@@ -36,7 +36,7 @@ export default async function ReadFlight() {
     flightKeys[index] = addSpacesBeforeCapitals(key);
   });
   return (
-    <div className="max-h-96 overflow-y-auto">
+    <div className="h-full max-h-96 w-full overflow-y-auto">
       <Table>
         <TableHead>
           {flightKeys.map((key, index) => (

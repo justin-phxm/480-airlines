@@ -1,10 +1,11 @@
 "use client";
+import { CiUser } from "react-icons/ci";
+
 import { BsAirplane } from "react-icons/bs";
-import { FaUser } from "react-icons/fa";
 import { IoMdSearch } from "react-icons/io";
+import { CiMail } from "react-icons/ci";
 
 import { PiAirplaneTakeoffLight } from "react-icons/pi";
-import { MdEmail } from "react-icons/md";
 import { CiCircleList } from "react-icons/ci";
 import { CiEdit } from "react-icons/ci";
 import { FaRegTrashAlt } from "react-icons/fa";
@@ -12,6 +13,7 @@ import { IoCreateOutline } from "react-icons/io5";
 import React, { useState } from "react";
 import InputField, { type Fields } from "./inputFields/InputField";
 import handleFormSubmission from "./formLogic";
+import { Role } from "@prisma/client";
 export enum ModificationMode {
   CREATE = "Create",
   READ = "Read",
@@ -100,19 +102,26 @@ type EntitiesSelection = {
   name: Entities;
   logo: React.ReactNode;
 };
-export default function ModifyEntityForm() {
+export default function ModifyEntityForm({
+  permission = Role.ADMIN,
+}: {
+  permission?: Role;
+}) {
   const [selectedType, setSelectedType] = useState(Entities.AIRCRAFT);
   const entities: EntitiesSelection[] = [
     { name: Entities.AIRCRAFT, logo: <BsAirplane size={24} /> },
     { name: Entities.FLIGHT, logo: <PiAirplaneTakeoffLight size={24} /> },
-    { name: Entities.NEWSLETTER, logo: <MdEmail size={24} /> },
-    { name: Entities.USER, logo: <FaUser size={24} /> },
+    { name: Entities.USER, logo: <CiUser size={24} /> },
+    { name: Entities.NEWSLETTER, logo: <CiMail size={24} /> },
     { name: Entities.OTHER, logo: <CiCircleList size={24} /> },
   ];
   const [modificationMode, setModificationMode] = useState(
     ModificationMode.CREATE,
   );
-  const modificationModes = [
+  const modificationModes: {
+    name: ModificationMode;
+    src: React.JSX.Element;
+  }[] = [
     {
       name: ModificationMode.READ,
       src: <IoMdSearch size={18} />,
@@ -125,10 +134,14 @@ export default function ModifyEntityForm() {
       name: ModificationMode.EDIT,
       src: <CiEdit size={18} />,
     },
-    {
-      name: ModificationMode.DELETE,
-      src: <FaRegTrashAlt size={18} />,
-    },
+    ...(permission === Role.ADMIN
+      ? [
+          {
+            name: ModificationMode.DELETE,
+            src: <FaRegTrashAlt size={18} />,
+          },
+        ]
+      : []),
   ];
 
   const [rerender, setRerender] = useState(false);
