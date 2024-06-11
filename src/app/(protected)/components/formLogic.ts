@@ -1,7 +1,9 @@
 import { type FormEvent } from "react";
-import { Entities, ModificationMode } from "./ModifyEntityForm";
-import { type CreateAircraftPayload } from "../admin/components/inputFields/Create/CreateAircraft";
-import { type EditAircraftPayload } from "../admin/components/inputFields/Edit/EditAircraft";
+import { Entities } from "./EntityFields";
+import { ModificationMode } from "./ModificationModeFields";
+import { type CreateAircraftPayload } from "@/components/inputFields/Create/CreateAircraft";
+import { type EditAircraftPayload } from "@/components/inputFields/Edit/EditAircraft";
+import { type DeleteAircraftPayload } from "@/components/inputFields/Delete/DeleteAircraft";
 import { toast } from "react-toastify";
 import {
   createAircraft,
@@ -13,7 +15,6 @@ import {
   editUser,
   modifyAircraft,
 } from "~/app/actions";
-import { type DeleteAircraftPayload } from "../admin/components/inputFields/Delete/DeleteAircraft";
 import toastOptions from "~/styles/toastOptions";
 import { type Prisma } from "@prisma/client";
 function parseFormData(data: Record<string, FormDataEntryValue>) {

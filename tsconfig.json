@@ -36,7 +36,8 @@
       ],
       "@/*": [
         "./src/app/*",
-        "./public/*"
+        "./public/*",
+        "./src/app/(protected)/*"
       ]
     }
   },
