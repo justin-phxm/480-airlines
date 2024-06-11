@@ -8,6 +8,7 @@ import {
   createFlight,
   deleteAircraft,
   deleteFlight,
+  deleteUser,
   editFlight,
   editUser,
   modifyAircraft,
@@ -41,6 +42,113 @@ function parseFormData(data: Record<string, FormDataEntryValue>) {
 
   return parsedData;
 }
+type ActionResult = {
+  success: boolean;
+  message: string;
+};
+async function adminMutation({
+  entity,
+  mutation,
+  action,
+  fields,
+}: {
+  entity: Entities;
+  mutation: ModificationMode;
+  action: (
+    fields: Record<string, string | number | Date>,
+  ) => Promise<ActionResult>;
+  fields: Record<string, string | number | Date>;
+}) {
+  const id = toast.loading(`${mutation} ${entity}...`);
+  const res = await action(fields);
+  toast.update(id, {
+    render: `${entity} ${mutation} ${res.success ? "successfully" : "unsuccessfully"}`,
+    type: res.success ? "success" : "error",
+    ...toastOptions,
+  });
+}
+type Fields = Record<string, string | number | Date>;
+async function handleAircraft(
+  fields: Fields,
+  modificationMode: ModificationMode,
+): Promise<ActionResult> {
+  switch (modificationMode) {
+    case ModificationMode.CREATE:
+      return await createAircraft(fields as CreateAircraftPayload);
+    case ModificationMode.EDIT:
+      return await modifyAircraft(fields as EditAircraftPayload);
+    case ModificationMode.DELETE:
+      return await deleteAircraft(fields as DeleteAircraftPayload);
+    default:
+      return {
+        success: false,
+        message: "Unknown modification mode for aircraft",
+      };
+  }
+}
+
+async function handleFlight(
+  fields: Fields,
+  modificationMode: ModificationMode,
+): Promise<ActionResult> {
+  switch (modificationMode) {
+    case ModificationMode.CREATE:
+      const { aircraftID, ...createFlightProps } = fields;
+      return await createFlight({
+        aircraftID: aircraftID as string,
+        props: createFlightProps as unknown as Prisma.FlightCreateInput,
+      });
+    case ModificationMode.EDIT:
+      const { flightID, ...props } = fields;
+      return await editFlight({
+        flightID: flightID as number,
+        props: props,
+      });
+    case ModificationMode.DELETE:
+      return await deleteFlight({ flightID: fields.deleteFlightID as number });
+    default:
+      return {
+        success: false,
+        message: "Unknown modification mode for flight",
+      };
+  }
+}
+
+async function handleUser(
+  fields: Fields,
+  modificationMode: ModificationMode,
+): Promise<ActionResult> {
+  if (modificationMode === ModificationMode.EDIT) {
+    const { id, ...props } = fields;
+    return await editUser({
+      userID: id as string,
+      props: props,
+    });
+  }
+  if (modificationMode === ModificationMode.DELETE) {
+    return await deleteUser({
+      userID: fields.deleteUserID as string,
+    });
+  }
+  return { success: false, message: "Unknown modification mode for user" };
+}
+async function entityDispatcher(
+  entity: Entities,
+  mutation: ModificationMode,
+  fields: Fields,
+): Promise<ActionResult> {
+  switch (entity) {
+    case Entities.AIRCRAFT:
+      return handleAircraft(fields, mutation);
+    case Entities.FLIGHT:
+      return handleFlight(fields, mutation);
+    case Entities.USER:
+      return handleUser(fields, mutation);
+    default:
+      return { success: false, message: "Unknown entity" };
+  }
+}
+
 export default async function handleFormSubmission({
   event,
   selectedType,
@@ -54,143 +162,12 @@ export default async function handleFormSubmission({
   const formData = new FormData(event.currentTarget);
   const uncleanFormFields = Object.fromEntries(formData.entries());
   const formFields = parseFormData(uncleanFormFields);
-  switch (selectedType) {
-    case Entities.AIRCRAFT:
-      switch (modificationMode) {
-        case ModificationMode.CREATE:
-          await toast.promise(
-            createAircraft(formFields as CreateAircraftPayload),
-            {
-              pending: "Creating Aircraft...",
-              success: {
-                render({ data }) {
-                  return data.message;
-                },
-              },
-              error: "Error creating Aircraft",
-            },
-          );
-          break;
-        case ModificationMode.EDIT:
-          await toast.promise(
-            modifyAircraft(formFields as EditAircraftPayload),
-            {
-              pending: "Modifying Aircraft...",
-              success: {
-                render({ data }) {
-                  return data.message;
-                },
-              },
-              error: "Error modifying Aircraft",
-            },
-          );
-          break;
-        case ModificationMode.DELETE:
-          await toast.promise(
-            deleteAircraft(formFields as DeleteAircraftPayload),
-            {
-              pending: "Deleting Aircraft...",
-              success: {
-                render({ data }) {
-                  return data.message;
-                },
-              },
-              error: "Error deleting Aircraft",
-            },
-          );
-          break;
-      }
-      break;
-    case Entities.FLIGHT:
-      switch (modificationMode) {
-        case ModificationMode.CREATE:
-          const { aircraftID, ...createFlightProps } = formFields;
-          const createFlightReq = await toast.promise(
-            createFlight({
-              aircraftID: aircraftID as string,
-              props: createFlightProps as unknown as Prisma.FlightCreateInput,
-            }),
-            {
-              pending: "Creating Flight...",
-              success: {
-                render({ data }) {
-                  return data.message;
-                },
-              },
-              error: "Error creating Flight",
-            },
-          );
-          console.log(createFlightReq);
-          break;
-        case ModificationMode.EDIT:
-          const { flightID, ...props } = formFields;
-          const id = toast.loading("Updating Flight...");
-          const editFlightReq = await editFlight({
-            flightID: flightID as number,
-            props: props,
-          });
-          toast.update(id, {
-            render: `Flight updated ${editFlightReq.success ? "successfully" : "unsuccessfully"}`,
-            type: editFlightReq.success ? "success" : "error",
-            ...toastOptions,
-          });
-          break;
-        case ModificationMode.DELETE:
-          const { deleteFlightID } = formFields;
-          const deleteFlightToast = toast.loading("Cancelling Flight...");
-          const deleteFlightReq = await deleteFlight({
-            flightID: deleteFlightID as number,
-          });
-          toast.update(deleteFlightToast, {
-            render: `Flight cancelled ${deleteFlightReq.success ? "successfully" : "unsuccessfully"}`,
-            type: deleteFlightReq.success ? "success" : "error",
-            ...toastOptions,
-          });
-          break;
-      }
-      break;
-    case Entities.NEWSLETTER:
-      switch (modificationMode) {
-        case ModificationMode.CREATE:
-          console.log("Creating Newsletter:", formFields);
-          break;
-        case ModificationMode.EDIT:
-          console.log("Editing Newsletter:", formFields);
-          break;
-        case ModificationMode.DELETE:
-          console.log("Deleting Newsletter:", formFields);
-          break;
-      }
-      break;
-    case Entities.USER:
-      switch (modificationMode) {
-        case ModificationMode.EDIT:
-          const { id, ...props } = formFields;
-          const userToastID = toast.loading("Updating User...");
-          const editUserReq = await editUser({
-            userID: id as string,
-            props: props,
-          });
-          toast.update(userToastID, {
-            render: `User updated ${editUserReq.success ? "successfully" : "unsuccessfully"}`,
-            type: editUserReq.success ? "success" : "error",
-            ...toastOptions,
-          });
-          break;
-      }
-      break;
-    case Entities.OTHER:
-      switch (modificationMode) {
-        case ModificationMode.CREATE:
-          console.log("Creating Other:", formFields);
-          break;
-        case ModificationMode.EDIT:
-          console.log("Editing Other:", formFields);
-          break;
-        case ModificationMode.DELETE:
-          console.log("Deleting Other:", formFields);
-          break;
-      }
-      break;
-  }
+  const res = await adminMutation({
+    entity: selectedType,
+    mutation: modificationMode,
+    action: async (fields) =>
+      entityDispatcher(selectedType, modificationMode, fields),
+    fields: formFields,
+  });
+  console.log(res);
 }

@@ -17,6 +17,7 @@ export const Fields = {
   EditUser: dynamic(() => import("./Edit/EditUser"), { loading }),
   DeleteAircraft: dynamic(() => import("./Delete/DeleteAircraft"), { loading }),
   DeleteFlight: dynamic(() => import("./Delete/DeleteFlight"), { loading }),
+  DeleteUser: dynamic(() => import("./Delete/DeleteUser"), { loading }),
 };
 export default function InputField({
   renderedField,

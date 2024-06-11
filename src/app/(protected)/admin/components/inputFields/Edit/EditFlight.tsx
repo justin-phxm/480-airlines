@@ -18,7 +18,7 @@ export default function EditFlight() {
   };
   return (
     <>
-      <div className="grid w-full grid-cols-2 gap-4">
+      <div className="grid h-fit w-full grid-cols-2 gap-4">
         <TextField
           className="w-full"
           label="flightID"
