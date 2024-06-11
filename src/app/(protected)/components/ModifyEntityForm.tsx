@@ -63,7 +63,7 @@ function EntityTypeCard({
   return (
     <button
       onClick={() => setSelectedType(text)}
-      className={`h-28 w-60 ${isSelected ? "border-2 border-blue-600" : "border border-zinc-200"} flex flex-col items-center justify-center gap-1 rounded bg-white`}
+      className={` aspect-video max-h-40 w-full ${isSelected ? "border-2 border-blue-600" : "border border-zinc-200"} flex flex-col items-center justify-center gap-1 rounded bg-white`}
     >
       {src}
       <div
