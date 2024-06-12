@@ -4,12 +4,7 @@ import Link from "next/link";
 import FlightSummary from "./components/FlightSummary";
 import PriceBreakdown from "./components/PriceBreakdown";
 import PaymentMethod from "./components/PaymentMethod";
-export async function generateStaticParams() {
-  const flights = await db.flight.findMany();
-  return flights.map((flight) => ({
-    params: { id: flight.id.toString() },
-  }));
-}
+
 export default async function page({ params }: { params: { id: string } }) {
   const { id } = params;
   const transactionID = parseInt(id);
