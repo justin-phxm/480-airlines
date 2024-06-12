@@ -1,6 +1,7 @@
 import { type Prisma } from "@prisma/client";
 import React from "react";
 import RandomAirlineImage from "~/app/components/RandomAirlineImage";
+import { formattedArrivalTime, formattedDepartureTime } from "~/lib/utils";
 
 export default function TicketRow({
   ticket,
@@ -13,20 +14,6 @@ export default function TicketRow({
   }>;
 }) {
   const { flight, seat } = ticket;
-  const formattedArrivalTime = flight.arrivalTime.toLocaleString("en-US", {
-    year: "numeric",
-    month: "short",
-    day: "numeric",
-    hour: "numeric",
-    minute: "2-digit",
-  });
-  const formattedDepartureTime = flight.departureTime.toLocaleString("en-US", {
-    year: "numeric",
-    month: "short",
-    day: "numeric",
-    hour: "numeric",
-    minute: "2-digit",
-  });
   return (
     <li className="flex flex-col gap-2 border-b-2 border-violet-500 p-4 shadow transition duration-300 ease-in hover:-translate-y-1 hover:bg-indigo-200">
       <div className=" grid w-full auto-cols-auto grid-flow-col gap-2 py-2 ">
@@ -43,8 +30,12 @@ export default function TicketRow({
             <div className=" text-nowrap">Arrival Date:</div>
           </div>
           <div className="flex w-3/5 flex-col">
-            <div className="truncate">{formattedDepartureTime}</div>
-            <div className="truncate">{formattedArrivalTime}</div>
+            <div className="truncate">
+              {formattedArrivalTime(flight.arrivalTime)}
+            </div>
+            <div className="truncate">
+              {formattedDepartureTime(flight.departureTime)}
+            </div>
           </div>
         </section>
         <section className="flex w-auto flex-col ">

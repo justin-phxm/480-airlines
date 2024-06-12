@@ -6,7 +6,7 @@ import Skeleton from "@mui/material/Skeleton";
 export default function page() {
   return (
     <div className="flex flex-1 flex-col items-center bg-gradient-to-t from-indigo-300 to-white py-12">
-      <div className="flex w-full max-w-7xl flex-col gap-4">
+      <div className="flex w-full max-w-7xl flex-col gap-4 px-4">
         <Suspense fallback={<h1 className=" text-xl font-bold">Welcome</h1>}>
           <Heading />
         </Suspense>
