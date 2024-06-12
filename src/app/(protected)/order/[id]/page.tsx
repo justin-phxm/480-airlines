@@ -3,6 +3,7 @@ import AlertComponent from "./components/AlertComponent";
 import Link from "next/link";
 import FlightSummary from "./components/FlightSummary";
 import PriceBreakdown from "./components/PriceBreakdown";
+import PaymentMethod from "./components/PaymentMethod";
 export async function generateStaticParams() {
   const flights = await db.flight.findMany();
   return flights.map((flight) => ({
@@ -43,27 +44,16 @@ export default async function page({ params }: { params: { id: string } }) {
         </div>
 
         <FlightSummary transaction={transaction} />
-        <PriceBreakdown transaction={transaction} />
-        <div className="text-2xl font-bold text-slate-500">Payment method</div>
-        <div className="relative h-48 w-72 rounded-2xl bg-gradient-to-b from-pink-500 to-red-400 shadow-inner">
-          <div className="absolute left-[24px] top-[109px] text-lg font-semibold text-violet-50">
-            Sophia Knowles
-          </div>
-          <div className="absolute left-[24px] top-[142px]">
-            <span className="font-['Roboto'] text-base font-medium tracking-widest text-violet-50">
-              ••••••••••••
-            </span>
-            <span className="text-base font-semibold tracking-wide text-violet-50">
-              3456
-            </span>
-          </div>
-          <div className="absolute left-[228px] top-[142px] text-right text-base font-semibold tracking-wide text-violet-50">
-            10/23
-          </div>
-          <div className="absolute left-[24px] top-[28px] h-6 w-20">
-            <div className="absolute left-0 top-[-0px] h-6 w-20"></div>
-          </div>
+        <div className="flex flex-col justify-between gap-4 md:flex-row">
+          <PriceBreakdown transaction={transaction} />
+          <PaymentMethod />
         </div>
+        <Link
+          href={"/profile"}
+          className="w-fit rounded-xl bg-indigo-400 p-4 font-semibold text-white"
+        >
+          View Profile 🏠
+        </Link>
       </div>
     </div>
   );

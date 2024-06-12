@@ -10,7 +10,7 @@ export default function FlightSummary({
     transaction.seatType,
   );
   return (
-    <>
+    <div className="flex w-full flex-col gap-4">
       <div className="text-2xl font-bold text-slate-500">Price breakdown</div>
       <ol className="flex max-w-lg flex-col text-lg text-slate-500">
         <li className="flex justify-between">
@@ -40,6 +40,6 @@ export default function FlightSummary({
           <p>${total.toFixed(2)}</p>
         </li>
       </ol>
-    </>
+    </div>
   );
 }

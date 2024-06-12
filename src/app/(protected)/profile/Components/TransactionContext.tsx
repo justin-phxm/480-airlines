@@ -1,26 +1,32 @@
 "use client";
 
 import { type Transaction } from "@prisma/client";
-import { createContext, useContext, useState } from "react";
+import {
+  createContext,
+  useContext,
+  useState,
+  type ReactNode,
+  type Dispatch,
+  type SetStateAction,
+} from "react";
 
 interface TransactionContextType {
   isModalOpen: boolean;
-  setIsModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  setIsModalOpen: Dispatch<SetStateAction<boolean>>;
   transaction: Transaction | undefined;
-  setTransaction: React.Dispatch<React.SetStateAction<Transaction | undefined>>;
+  setTransaction: Dispatch<SetStateAction<Transaction | undefined>>;
 }
+
 const TransactionContext = createContext<TransactionContextType | undefined>(
   undefined,
 );
-export const TransactionProvider = ({
-  children,
-}: {
-  children: React.ReactNode;
-}) => {
+
+export const TransactionProvider = ({ children }: { children: ReactNode }) => {
   const [transaction, setTransaction] = useState<Transaction | undefined>(
-    {} as Transaction,
+    undefined,
   );
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+
   return (
     <TransactionContext.Provider
       value={{ transaction, setTransaction, isModalOpen, setIsModalOpen }}
