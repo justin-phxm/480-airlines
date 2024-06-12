@@ -40,8 +40,8 @@ export default function BookingConfirmation() {
       },
       error: "Error booking flight. Please try again later.",
     });
-    if (req.success) {
-      router.push("/profile");
+    if (req.success && req.transactions?.[0]) {
+      router.push(`/order/${req.transactions[0].id}`);
     } else {
       toast.error(req.message);
     }

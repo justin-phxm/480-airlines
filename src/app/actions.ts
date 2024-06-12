@@ -2,7 +2,7 @@
 import { z } from "zod";
 import { db } from "~/server/db";
 import { type SearchParams } from "./flights/page";
-import { type Prisma, SeatType } from "@prisma/client";
+import { type Prisma, SeatType, type Transaction } from "@prisma/client";
 import { revalidatePath } from "next/cache";
 import type { BenefitParams } from "./membership/components/BenefitList";
 export async function signupMembership({ userID }: { userID: string }) {
@@ -156,6 +156,7 @@ export async function bookFlight({
       flight: true;
     };
   }>[];
+  transactions?: Transaction[];
 }> {
   try {
     const customer = await db.customer.findUniqueOrThrow({
@@ -193,8 +194,13 @@ export async function bookFlight({
       }),
     );
     const tickets = await Promise.all(ticketPromises);
-    await createTransaction({ tickets });
-    return { success: true, message: "Booking successful", tickets: tickets };
+    const transactions = await createTransaction({ tickets });
+    return {
+      success: true,
+      message: "Booking successful",
+      tickets: tickets,
+      transactions: transactions.transactions,
+    };
   } catch (error) {
     console.error("Error booking flight:", error);
     return { success: false, message: "An error occurred during booking" };
@@ -211,7 +217,11 @@ export async function createTransaction({
     };
   }>[];
   payment?: { amount: number; method: string };
-}): Promise<{ success: boolean; message: string }> {
+}): Promise<{
+  success: boolean;
+  message: string;
+  transactions?: Transaction[];
+}> {
   try {
     // Create a transaction record
     const transactionPromises = tickets.map(async (ticket) => {
@@ -232,12 +242,17 @@ export async function createTransaction({
         flightID: flight.id,
         ticketID: ticket.id,
       };
-      await db.transaction.create({
+      const res = await db.transaction.create({
         data: transaction,
       });
+      return res;
     });
-    await Promise.all(transactionPromises);
-    return { success: true, message: "Transaction successful" };
+    const transactions = await Promise.all(transactionPromises);
+    return {
+      success: true,
+      message: "Transaction successful",
+      transactions: transactions,
+    };
   } catch (error) {
     console.error("Error creating transaction:", error);
     return { success: false, message: "An error occurred during transaction" };
