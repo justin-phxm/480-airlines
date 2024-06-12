@@ -1,20 +1,14 @@
 import { type Transaction } from "@prisma/client";
 import RandomAirlineImage from "~/app/components/RandomAirlineImage";
-import { calculateFlightDuration } from "~/lib/utils";
+import { calculateFlightDuration, formattedTime } from "~/lib/utils";
 
 export default function FlightTicketSummary({
   transaction,
 }: {
   transaction: Transaction;
 }) {
-  const departureTime = transaction.departureTime.toLocaleTimeString("en-US", {
-    hour: "numeric",
-    minute: "2-digit",
-  });
-  const arrivalTime = transaction.arrivalTime.toLocaleTimeString("en-US", {
-    hour: "numeric",
-    minute: "2-digit",
-  });
+  const departureTime = formattedTime(transaction.departureTime);
+  const arrivalTime = formattedTime(transaction.arrivalTime);
   const { flightDurationInHours, flightDurationInMinutes } =
     calculateFlightDuration(transaction.arrivalTime, transaction.departureTime);
   return (
