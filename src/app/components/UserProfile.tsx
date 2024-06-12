@@ -10,8 +10,8 @@ export default function UserProfile({ session }: { session: Session }) {
       label={
         <Image
           src={imageSrc}
-          width={45}
-          height={45}
+          width={30}
+          height={30}
           alt="profile image"
           className="rounded-full text-sm"
         />
