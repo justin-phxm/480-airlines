@@ -1,4 +1,5 @@
 import { SeatType } from "@prisma/client";
+import { SEATMODIFIERS, TAXRATE } from "./constants";
 
 export const formattedDateTime = (dateTime: Date) =>
   dateTime.toLocaleString("en-US", {
@@ -13,6 +14,11 @@ export const formattedDate = (dateTime: Date) =>
     year: "numeric",
     month: "long",
     day: "2-digit",
+  });
+export const formattedTime = (dateTime: Date) =>
+  dateTime.toLocaleString("en-US", {
+    hour: "numeric",
+    minute: "numeric",
   });
 export const calculateFlightDuration = (
   arrivalTime: Date,
@@ -29,4 +35,15 @@ export const checkIsWindowSeat = (seatCode: string, seatType: SeatType) => {
     seatCode.includes("6") ||
     (seatType === SeatType.FIRST && seatCode.includes("4"))
   );
+};
+export const calculatePrice = (
+  basePrice: number,
+  seatClass: SeatType,
+  taxRate = TAXRATE,
+) => {
+  const seatUpcharge = SEATMODIFIERS[seatClass] * basePrice - basePrice;
+  const subTotal = basePrice + seatUpcharge;
+  const taxes = subTotal * taxRate - subTotal;
+  const total = subTotal + taxes;
+  return { basePrice, seatUpcharge, subTotal, taxes, total };
 };
