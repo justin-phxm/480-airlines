@@ -2,7 +2,7 @@ import { db } from "~/server/db";
 import BookingDetails from "./components/BookingDetails";
 import Plane from "./components/Plane";
 import { FlightProvider } from "./FlightContext";
-
+export const revalidate = 0;
 export async function generateStaticParams() {
   const flights = await db.flight.findMany();
   return flights.map((flight) => ({

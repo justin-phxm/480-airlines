@@ -3,7 +3,7 @@ import AlertComponent from "./components/AlertComponent";
 import Link from "next/link";
 import FlightSummary from "./components/FlightSummary";
 import PriceBreakdown from "./components/PriceBreakdown";
-import PaymentMethod from "./components/PaymentMethod";
+import PaymentMethod, { CardHolderName } from "./components/PaymentMethod";
 
 export default async function page({ params }: { params: { id: string } }) {
   const { id } = params;
@@ -19,8 +19,8 @@ export default async function page({ params }: { params: { id: string } }) {
       <div className="flex w-full max-w-7xl flex-col gap-4 p-4">
         <AlertComponent transaction={transaction} />
         <div className=" flex flex-col gap-2 text-lg ">
-          <div className="text-2xl font-bold text-indigo-500">
-            Bon voyage, Sophia!
+          <div className="flex text-2xl font-bold text-indigo-500">
+            Bon voyage, <CardHolderName />!
           </div>
           <div className="text-lg font-semibold text-slate-500">
             Confirmation number: #{transactionID}
