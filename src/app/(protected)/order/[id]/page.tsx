@@ -2,6 +2,7 @@ import { db } from "~/server/db";
 import AlertComponent from "./components/AlertComponent";
 import Link from "next/link";
 import FlightSummary from "./components/FlightSummary";
+import PriceBreakdown from "./components/PriceBreakdown";
 export async function generateStaticParams() {
   const flights = await db.flight.findMany();
   return flights.map((flight) => ({
@@ -40,7 +41,9 @@ export default async function page({ params }: { params: { id: string } }) {
             .
           </div>
         </div>
+
         <FlightSummary transaction={transaction} />
+        <PriceBreakdown transaction={transaction} />
         <div className="text-2xl font-bold text-slate-500">Payment method</div>
         <div className="relative h-48 w-72 rounded-2xl bg-gradient-to-b from-pink-500 to-red-400 shadow-inner">
           <div className="absolute left-[24px] top-[109px] text-lg font-semibold text-violet-50">
