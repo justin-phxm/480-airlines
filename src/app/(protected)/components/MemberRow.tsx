@@ -44,6 +44,7 @@ export default function MemberRow({
                     : "bg-violet-300"
               }
               `}
+              // @ts-expect-error wierd issue
               style={{ width: `${percentage}%` }}
             />
           ))}

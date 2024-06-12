@@ -1,39 +1,16 @@
 import { type Transaction } from "@prisma/client";
 import RandomAirlineImage from "~/app/components/RandomAirlineImage";
 import CancelBookingButton from "./CancelBookingButton";
+import { formattedDateTime } from "~/lib/utils";
 
 export default function OrderRow({
   transaction,
 }: {
   transaction: Transaction;
 }) {
-  const formattedArrivalTime = transaction.arrivalTime.toLocaleString("en-US", {
-    year: "numeric",
-    month: "short",
-    day: "numeric",
-    hour: "numeric",
-    minute: "2-digit",
-  });
-  const formattedDepartureTime = transaction.departureTime.toLocaleString(
-    "en-US",
-    {
-      year: "numeric",
-      month: "short",
-      day: "numeric",
-      hour: "numeric",
-      minute: "2-digit",
-    },
-  );
-  const formattedTransactionTime = transaction.createdAt.toLocaleString(
-    "en-US",
-    {
-      year: "numeric",
-      month: "short",
-      day: "numeric",
-      hour: "numeric",
-      minute: "2-digit",
-    },
-  );
+  const formattedArrivalTime = formattedDateTime(transaction.arrivalTime);
+  const formattedDepartureTime = formattedDateTime(transaction.departureTime);
+  const formattedTransactionTime = formattedDateTime(transaction.createdAt);
   return (
     <li className="flex flex-col gap-2 border-b-2 border-violet-500 p-4 shadow transition duration-300 ease-in hover:-translate-y-1 hover:bg-indigo-200">
       <div className="flex items-center gap-4">

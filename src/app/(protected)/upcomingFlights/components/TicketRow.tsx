@@ -1,7 +1,7 @@
 import { type Prisma } from "@prisma/client";
 import React from "react";
 import RandomAirlineImage from "~/app/components/RandomAirlineImage";
-import { formattedArrivalTime, formattedDepartureTime } from "~/lib/utils";
+import { formattedDateTime } from "~/lib/utils";
 
 export default function TicketRow({
   ticket,
@@ -31,10 +31,10 @@ export default function TicketRow({
           </div>
           <div className="flex w-3/5 flex-col">
             <div className="truncate">
-              {formattedArrivalTime(flight.arrivalTime)}
+              {formattedDateTime(flight.departureTime)}
             </div>
             <div className="truncate">
-              {formattedDepartureTime(flight.departureTime)}
+              {formattedDateTime(flight.arrivalTime)}
             </div>
           </div>
         </section>

@@ -13,6 +13,7 @@ import { TicketColor } from "~/app/booking/[id]/components/BookingOverview";
 import { twMerge } from "tailwind-merge";
 import { cancelTransaction } from "~/app/actions";
 import { useRouter } from "next/navigation";
+import { formattedDateTime } from "~/lib/utils";
 export default function CancellationModal() {
   const { isModalOpen, setIsModalOpen, transaction } = useTransaction();
 
@@ -40,26 +41,8 @@ export default function CancellationModal() {
     hour: "numeric",
     minute: "numeric",
   });
-  const formattedDepartureTime = new Date(departureTime).toLocaleDateString(
-    "en-US",
-    {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-      hour: "numeric",
-      minute: "numeric",
-    },
-  );
-  const formattedArrivalTime = new Date(arrivalTime).toLocaleDateString(
-    "en-US",
-    {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-      hour: "numeric",
-      minute: "numeric",
-    },
-  );
+  const formattedDepartureTime = formattedDateTime(departureTime);
+  const formattedArrivalTime = formattedDateTime(arrivalTime);
   const taxesAndFees = price * 0.05;
   const total = price + taxesAndFees;
   const ticketColor = TicketColor[seatType];
