@@ -47,3 +47,55 @@ export const calculatePrice = (
   const total = subTotal + taxes;
   return { basePrice, seatUpcharge, subTotal, taxes, total };
 };
+export function generateICS(event: EventDetails): string {
+  const { title, description, location, departureDate, arrivalDate } = event;
+
+  const convertToCalgaryTime = (date: Date) => {
+    // Calculate the current timezone offset for Calgary (Mountain Time)
+    const calgaryTimeOffset = -7; // MST (UTC-7)
+    const calgaryDate = new Date(date);
+    const offsetDate = new Date(
+      calgaryDate.setHours(calgaryDate.getHours() + calgaryTimeOffset),
+    );
+    return offsetDate;
+  };
+
+  const formatDate = (date: Date) => {
+    const localDate = convertToCalgaryTime(date);
+    return localDate.toISOString().replace(/[-:]/g, "").split(".")[0] + "Z";
+  };
+
+  return `
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Your Organization//Your Product//EN
+BEGIN:VEVENT
+UID:${new Date().toISOString()}@yourdomain.com
+DTSTAMP:${formatDate(new Date())}
+DTSTART:${formatDate(departureDate)}
+DTEND:${formatDate(arrivalDate)}
+SUMMARY:${title}
+DESCRIPTION:${description}
+LOCATION:${location}
+END:VEVENT
+END:VCALENDAR
+`.trim();
+}
+export function downloadICS(icsContent: string, filename: string): void {
+  const blob = new Blob([icsContent], { type: "text/calendar;charset=utf-8" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = `${filename}.ics`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+export interface EventDetails {
+  title: string;
+  description: string;
+  location: string;
+  departureDate: Date;
+  arrivalDate: Date;
+}

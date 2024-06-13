@@ -14,9 +14,14 @@ export default async function page({ params }: { params: { id: string } }) {
     return <div>Transaction not found</div>;
   }
   return (
-    <Suspense fallback={<Loading />}>
-      <WaitingWrapper transaction={transaction} transactionID={transactionID} />
-    </Suspense>
+    <div className="flex flex-1 flex-col items-center">
+      <Suspense fallback={<Loading />}>
+        <WaitingWrapper
+          transaction={transaction}
+          transactionID={transactionID}
+        />
+      </Suspense>
+    </div>
   );
 }
 

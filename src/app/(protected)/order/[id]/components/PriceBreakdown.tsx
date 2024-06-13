@@ -1,4 +1,5 @@
 import { type Transaction } from "@prisma/client";
+import { TAXRATE } from "~/lib/constants";
 import { calculatePrice } from "~/lib/utils";
 export default function FlightSummary({
   transaction,
@@ -31,7 +32,7 @@ export default function FlightSummary({
           <p>${subTotal.toFixed(2)}</p>
         </li>
         <li className="flex justify-between">
-          <p>Taxes (5.0%)</p>
+          <p>Taxes ({((TAXRATE - 1) * 100).toFixed(2)}%)</p>
           <p>${taxes.toFixed(2)}</p>
         </li>
         <br />
