@@ -21,12 +21,16 @@ export default {
         "100%": { transform: "translateY(0px)" },
       },
       driveOffScreen: {
-        "0%": { transform: "translateX(0vh)" },
-        "100%": { transform: "translateX(100vh)" },
+        "0%": { transform: "translateX(0vh) translateY(0vh) rotate(0deg)" },
+        "100%": {
+          transform: "translateX(100vh) translateY(-40vh) rotate(-40deg)",
+        },
       },
       driveInScreen: {
-        "0%": { transform: "translateX(-100vh)" },
-        "100%": { transform: "translateX(0vh)" },
+        "0%": {
+          transform: "translateX(-100vh) translateY(-40vh) rotate(40deg)",
+        },
+        "100%": { transform: "translateX(0vh) translateY(0vh) rotate(0deg)" },
       },
     },
     extend: {

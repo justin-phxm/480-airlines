@@ -1,5 +1,5 @@
 "use client";
-import { Box, CircularProgress } from "@mui/material";
+import { Box } from "@mui/material";
 import { useEffect, useMemo, useState } from "react";
 import { twMerge } from "tailwind-merge";
 import { IoIosAirplane } from "react-icons/io";
@@ -49,8 +49,7 @@ export default function Loading() {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-white/80 ">
       <Box sx={{ display: "flex", flexDirection: "column" }}>
-        <IoIosAirplane size={48} className={twMerge(planeAnimationClass)} />
-        <CircularProgress />
+        <IoIosAirplane size={96} className={twMerge(planeAnimationClass)} />
       </Box>
     </div>
   );
