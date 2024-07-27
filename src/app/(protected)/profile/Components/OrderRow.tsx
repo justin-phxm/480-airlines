@@ -1,7 +1,7 @@
 import { type Transaction } from "@prisma/client";
-import RandomAirlineImage from "~/app/components/RandomAirlineImage";
 import CancelBookingButton from "./CancelBookingButton";
 import { formattedDateTime } from "~/lib/utils";
+import TicketInformation from "./TicketInformation";
 
 export default function OrderRow({
   transaction,
@@ -18,18 +18,7 @@ export default function OrderRow({
         <p className="font-light">${transaction.price.toFixed(0)}</p>
       </div>
       <div className=" grid w-full auto-cols-auto grid-flow-col gap-2 ">
-        <section className="flex items-center gap-4 text-sm">
-          <RandomAirlineImage />
-          <div className="flex w-3/5 flex-col">
-            <p>
-              <span className="hidden lg:block">Confirmation Number:</span>#
-              {transaction.id}
-            </p>
-            <p className="truncate font-light">
-              Aircraft ID: {transaction.aircraftID}
-            </p>
-          </div>
-        </section>
+        <TicketInformation transaction={transaction} />
         <section className="flex w-auto flex-row gap-4">
           <div className="flex flex-col">
             <div className=" text-nowrap">Departure Date:</div>
