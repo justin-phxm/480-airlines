@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 export default function Footer() {
   const year = new Date().getFullYear();
   return (
@@ -5,10 +7,10 @@ export default function Footer() {
       <div className="mx-auto w-full max-w-screen-xl p-4 md:flex md:items-center md:justify-between">
         <span className="text-sm sm:text-center dark:text-gray-400">
           © {year}{" "}
-          <a href="#" className="hover:underline">
+          <Link href="/" className="hover:underline">
             480Airlines™
-          </a>
-          . All Rights Reserved.
+          </Link>{" "}
+          All Rights Reserved.
         </span>
         <ul className="mt-3 flex flex-wrap items-center text-sm font-medium sm:mt-0 dark:text-gray-400">
           <li>
@@ -17,9 +19,9 @@ export default function Footer() {
             </a>
           </li>
           <li>
-            <a href="#" className="me-4 hover:underline md:me-6">
+            <Link href="/policy" className="me-4 hover:underline md:me-6">
               Privacy Policy
-            </a>
+            </Link>
           </li>
           <li>
             <a href="#" className="me-4 hover:underline md:me-6">
