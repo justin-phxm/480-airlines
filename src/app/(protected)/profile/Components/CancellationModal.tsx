@@ -19,8 +19,7 @@ export default function CancellationModal() {
 
   const router = useRouter();
   if (!transaction) {
-    return <div className="">Error loading. Please try again later</div>;
-  }
+  return }
   const {
     price,
     seatType,
