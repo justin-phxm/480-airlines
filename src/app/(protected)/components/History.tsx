@@ -3,6 +3,7 @@ import Image from "next/image";
 import React from "react";
 import { searchTransactions } from "~/app/actions";
 import { SeatColor } from "~/app/booking/[id]/components/PlaneSeat";
+import LastUpdated from "./LastUpdated";
 
 interface HistoryCardProps {
   gradient: string;
@@ -71,9 +72,7 @@ export default async function History() {
           action={handleRevalidation}
           className="flex flex-row items-center gap-4"
         >
-          <div className=" font-light italic">
-            Last updated: {new Date().toLocaleTimeString()}
-          </div>
+          <LastUpdated />
           <button
             type="submit"
             className="rounded-3xl bg-violet-50 p-2 font-medium text-indigo-600"

@@ -9,6 +9,7 @@ import {
 } from "flowbite-react";
 import { SeatType } from "@prisma/client";
 import { revalidatePath } from "next/cache";
+import LastUpdated from "./LastUpdated";
 
 interface Member {
   username: string;
@@ -54,9 +55,7 @@ export default async function TopMembers() {
           action={handleRevalidation}
           className="flex flex-row items-center gap-4"
         >
-          <div className=" font-light italic">
-            Last updated: {new Date().toLocaleTimeString()}
-          </div>
+          <LastUpdated />
           <button
             type="submit"
             className="rounded-3xl bg-violet-50 p-2 font-medium text-indigo-600"
