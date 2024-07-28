@@ -17,6 +17,7 @@ import {
 } from "~/app/actions";
 import toastOptions from "~/styles/toastOptions";
 import { type Prisma } from "@prisma/client";
+import { type Session } from "next-auth";
 function parseFormData(data: Record<string, FormDataEntryValue>) {
   const parsedData: Record<string, string | number | Date> = {};
 
@@ -63,7 +64,7 @@ async function adminMutation({
   const id = toast.loading(`${mutation} ${entity}...`);
   const res = await action(fields);
   toast.update(id, {
-    render: `${entity} ${mutation} ${res.success ? "successfully" : "unsuccessfully"}`,
+    render: `${entity} - ${mutation}: ${res.message}`,
     type: res.success ? "success" : "error",
     ...toastOptions,
   });
@@ -72,12 +73,13 @@ type Fields = Record<string, string | number | Date>;
 async function handleAircraft(
   fields: Fields,
   modificationMode: ModificationMode,
+  session: Session,
 ): Promise<ActionResult> {
   switch (modificationMode) {
     case ModificationMode.CREATE:
       return await createAircraft(fields as CreateAircraftPayload);
     case ModificationMode.EDIT:
-      return await modifyAircraft(fields as EditAircraftPayload);
+      return await modifyAircraft(fields as EditAircraftPayload, session);
     case ModificationMode.DELETE:
       return await deleteAircraft(fields as DeleteAircraftPayload);
     default:
@@ -91,6 +93,7 @@ async function handleAircraft(
 async function handleFlight(
   fields: Fields,
   modificationMode: ModificationMode,
+  session: Session,
 ): Promise<ActionResult> {
   switch (modificationMode) {
     case ModificationMode.CREATE:
@@ -106,7 +109,10 @@ async function handleFlight(
         props: props,
       });
     case ModificationMode.DELETE:
-      return await deleteFlight({ flightID: fields.deleteFlightID as number });
+      return await deleteFlight({
+        flightID: fields.deleteFlightID as number,
+        session,
+      });
     default:
       return {
         success: false,
@@ -118,17 +124,20 @@ async function handleFlight(
 async function handleUser(
   fields: Fields,
   modificationMode: ModificationMode,
+  session: Session,
 ): Promise<ActionResult> {
   if (modificationMode === ModificationMode.EDIT) {
     const { id, ...props } = fields;
     return await editUser({
       userID: id as string,
-      props: props,
+      props,
+      session,
     });
   }
   if (modificationMode === ModificationMode.DELETE) {
     return await deleteUser({
       userID: fields.deleteUserID as string,
+      session,
     });
   }
   return { success: false, message: "Unknown modification mode for user" };
@@ -137,14 +146,15 @@ async function entityDispatcher(
   entity: Entities,
   mutation: ModificationMode,
   fields: Fields,
+  session: Session,
 ): Promise<ActionResult> {
   switch (entity) {
     case Entities.AIRCRAFT:
-      return handleAircraft(fields, mutation);
+      return handleAircraft(fields, mutation, session);
     case Entities.FLIGHT:
-      return handleFlight(fields, mutation);
+      return handleFlight(fields, mutation, session);
     case Entities.USER:
-      return handleUser(fields, mutation);
+      return handleUser(fields, mutation, session);
     default:
       return { success: false, message: "Unknown entity" };
   }
@@ -154,21 +164,22 @@ export default async function handleFormSubmission({
   event,
   selectedType,
   modificationMode,
+  session,
 }: {
   event: FormEvent<HTMLFormElement>;
   selectedType: Entities;
   modificationMode: ModificationMode;
+  session: Session;
 }) {
   event.preventDefault();
   const formData = new FormData(event.currentTarget);
   const uncleanFormFields = Object.fromEntries(formData.entries());
   const formFields = parseFormData(uncleanFormFields);
-  const res = await adminMutation({
+  await adminMutation({
     entity: selectedType,
     mutation: modificationMode,
     action: async (fields) =>
-      entityDispatcher(selectedType, modificationMode, fields),
+      entityDispatcher(selectedType, modificationMode, fields, session),
     fields: formFields,
   });
-  console.log(res);
 }

@@ -7,6 +7,7 @@ import EntityFields, { Entities } from "./EntityFields";
 import ModificationModeFields, {
   ModificationMode,
 } from "./ModificationModeFields";
+import { useSession } from "next-auth/react";
 
 function ActionButton({
   text,
@@ -45,7 +46,7 @@ export default function ModifyEntityForm({
   const handleCancelClick = () => {
     setRerender(!rerender);
   };
-
+  const { data: session } = useSession();
   return (
     <div className="flex w-full flex-1 flex-col gap-4 rounded-lg bg-white p-5 shadow">
       <div className="flex flex-row justify-between gap-4">
@@ -70,9 +71,15 @@ export default function ModifyEntityForm({
         />
         <form
           className="flex flex-1 flex-col gap-4"
-          onSubmit={(e) =>
-            handleFormSubmission({ event: e, selectedType, modificationMode })
-          }
+          onSubmit={async (e) => {
+            if (!session) return;
+            await handleFormSubmission({
+              event: e,
+              selectedType,
+              modificationMode,
+              session,
+            });
+          }}
         >
           <div className="flex flex-1">
             <InputField
