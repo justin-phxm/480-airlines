@@ -2,9 +2,10 @@
 import { z } from "zod";
 import { db } from "~/server/db";
 import { type SearchParams } from "./flights/page";
-import { type Prisma, SeatType, type Transaction } from "@prisma/client";
+import { type Prisma, SeatType, type Transaction, Role } from "@prisma/client";
 import { revalidatePath } from "next/cache";
 import type { BenefitParams } from "./membership/components/BenefitList";
+import { type Session } from "next-auth";
 export async function signupMembership({ userID }: { userID: string }) {
   try {
     await db.customer.update({
@@ -419,20 +420,29 @@ function generateSeatCodes(
   }
   return seats;
 }
-export async function modifyAircraft({
-  aircraftID,
-  aircraftName,
-  businessClassSeats,
-  firstClassSeats,
-  economyClassSeats,
-}: {
+interface EditAircraftPayload {
   aircraftID: string;
   aircraftName: string;
   businessClassSeats: number;
   firstClassSeats: number;
   economyClassSeats: number;
-}) {
+}
+
+export async function modifyAircraft(
+  fields: EditAircraftPayload,
+  session: Session,
+) {
   try {
+    if (session.user?.role !== Role.ADMIN) {
+      throw new Error("Unauthorized to modify aircraft");
+    }
+    const {
+      aircraftID,
+      aircraftName,
+      businessClassSeats,
+      firstClassSeats,
+      economyClassSeats,
+    } = fields;
     const aircraft = await db.aircraft.update({
       where: { id: aircraftID },
       data: {
@@ -454,7 +464,7 @@ export async function modifyAircraft({
     console.error("Error updating aircraft:", error);
     return {
       success: false,
-      message: "An error occurred while updating aircraft",
+      message: (error as Error).message,
     };
   }
 }
@@ -470,27 +480,45 @@ export async function deleteAircraft({ aircraftID }: { aircraftID: string }) {
     };
   }
 }
-export async function deleteFlight({ flightID }: { flightID: number }) {
+export async function deleteFlight({
+  flightID,
+  session,
+}: {
+  flightID: number;
+  session: Session;
+}) {
   try {
+    if (session.user?.role !== Role.ADMIN) {
+      throw new Error("Unauthorized to delete flight");
+    }
     await db.flight.delete({ where: { id: flightID } });
     return { success: true, message: `Flight deleted ID: ${flightID}` };
   } catch (error) {
     console.error("Error deleting flight:", error);
     return {
       success: false,
-      message: "An error occurred while deleting flight",
+      message: (error as Error).message,
     };
   }
 }
-export async function deleteUser({ userID }: { userID: string }) {
+export async function deleteUser({
+  userID,
+  session,
+}: {
+  userID: string;
+  session: Session;
+}) {
   try {
+    if (session.user?.role !== Role.ADMIN) {
+      throw new Error("Unauthorized to delete user");
+    }
     await db.user.delete({ where: { id: userID } });
     return { success: true, message: `User deleted ID: ${userID}` };
   } catch (error) {
     console.error("Error deleting user:", error);
     return {
       success: false,
-      message: "An error occurred while deleting user",
+      message: (error as Error).message,
     };
   }
 }
@@ -572,21 +600,28 @@ export async function editFlight({
 export async function editUser({
   userID,
   props,
+  session,
 }: {
   userID: string;
   props: Prisma.UserUpdateInput;
+  session: Session;
 }) {
   try {
+    if (session.user?.role !== Role.ADMIN) {
+      if (props.role) {
+        throw new Error("Unauthorized to change role");
+      }
+    }
     const user = await db.user.update({
       where: { id: userID },
       data: props,
     });
     return { success: true, message: `User updated ${user.id}` };
   } catch (error) {
-    console.error("Error updating user:", error);
+    console.error("Error updating user:", (error as Error).message);
     return {
       success: false,
-      message: "An error occurred while updating user",
+      message: (error as Error).message,
     };
   }
 }
