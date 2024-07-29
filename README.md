@@ -2,6 +2,8 @@
 
 ![image](https://github.com/justin-phxm/Fork-ENSF480-Final-Project/assets/113923596/bfd5dc9f-cdb9-4613-8f54-b35464f5e411)
 
+Try it here: [480-airlines.vercel.app](https://480-airlines.vercel.app)
+
 ## Project Overview
 
 Welcome to 480 Airlines, a Flight Reservation Web Application. This web application is designed for use by different type of users, tourism agents, airline agents, and system admins.
