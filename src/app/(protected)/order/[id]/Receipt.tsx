@@ -25,10 +25,16 @@ export default function Receipt({
         </div>
         <div className="text-slate-400">
           Thank you for booking your travel with Tripma! Below is a summary of
-          your trip to {transaction.arrivalAirportCode} airport in{" "}
-          {transaction.arrivalCity}. We’ve sent a copy of your booking
-          confirmation to your email address. You can also find this page again
-          in{" "}
+          your trip to{" "}
+          <span className="text-indigo-500">
+            {transaction.arrivalAirportCode}
+          </span>{" "}
+          airport in
+          <span className="text-indigo-500">
+            {" " + transaction.arrivalCity}
+          </span>
+          . We’ve sent a copy of your booking confirmation to your email
+          address. You can also find this page again in{" "}
           <Link href={"/profile"} className="text-indigo-500">
             My trips
           </Link>

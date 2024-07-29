@@ -2,13 +2,7 @@ import { type Seat } from "@prisma/client";
 import { useFlight } from "../FlightContext";
 import { calculatePrice, formattedTime } from "~/lib/utils";
 import PlaneIcon from "~/app/components/PlaneIcon";
-import { TAXRATE } from "~/lib/constants";
-
-export enum TicketColor {
-  FIRST = "from-yellow-300 to-yellow-500/50",
-  BUSINESS = "from-violet-300 to-violet-100/50",
-  ECONOMY = "from-emerald-300 to-teal-500/50",
-}
+import { TAXRATE, TicketColor } from "~/lib/constants";
 
 export default function BookingOverview() {
   const { chosenSeats, flight } = useFlight();

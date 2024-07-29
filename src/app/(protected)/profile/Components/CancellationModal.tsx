@@ -9,19 +9,18 @@ import {
 } from "@mui/material";
 import { useTransaction } from "./TransactionContext";
 import { toast } from "react-toastify";
-import { TicketColor } from "~/app/booking/[id]/components/BookingOverview";
-import { twMerge } from "tailwind-merge";
 import { cancelTransaction } from "~/app/actions";
 import { useRouter } from "next/navigation";
-import { formattedDateTime } from "~/lib/utils";
+import { calculatePrice, formattedDateTime } from "~/lib/utils";
+import { ColorOfTicket, TAXRATE } from "~/lib/constants";
 export default function CancellationModal() {
   const { isModalOpen, setIsModalOpen, transaction } = useTransaction();
 
   const router = useRouter();
   if (!transaction) {
-  return }
+    return;
+  }
   const {
-    price,
     seatType,
     seatCode,
     updatedAt,
@@ -33,18 +32,14 @@ export default function CancellationModal() {
     arrivalTime,
     airline,
   } = transaction;
-  const formattedUpdateDate = new Date(updatedAt).toLocaleDateString("en-US", {
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-    hour: "numeric",
-    minute: "numeric",
-  });
+  const formattedUpdateDate = formattedDateTime(updatedAt);
   const formattedDepartureTime = formattedDateTime(departureTime);
   const formattedArrivalTime = formattedDateTime(arrivalTime);
-  const taxesAndFees = price * 0.05;
-  const total = price + taxesAndFees;
-  const ticketColor = TicketColor[seatType];
+  const ticketColor = `decoration-${ColorOfTicket[seatType]}`;
+  const { basePrice, seatUpcharge, subTotal, taxes, total } = calculatePrice(
+    transaction.price,
+    transaction.seatType,
+  );
   const handleCancelFlight = async () => {
     const cancellationReq = await toast.promise(
       cancelTransaction({ transactionID: transaction.id }),
@@ -79,12 +74,8 @@ export default function CancellationModal() {
         </DialogTitle>
         <DialogContent>
           <DialogContentText className="flex flex-col items-center justify-center gap-4">
-            <div className="flex flex-col gap-4 text-black">
-              <div
-                className={twMerge(
-                  `flex flex-row gap-4 rounded-lg bg-gradient-to-l p-3 text-lg ${ticketColor} from-white`,
-                )}
-              >
+            <div className="flex w-full items-center justify-between gap-4 text-black">
+              <div className={`flex flex-row gap-4 rounded-lg p-3 text-lg`}>
                 <div className=" flex flex-col gap-4 font-bold ">
                   <div className="flex flex-col">
                     <div className="">Seat Code:</div>
@@ -104,12 +95,16 @@ export default function CancellationModal() {
                 <div className=" flex flex-col gap-4 ">
                   <div className="flex flex-col">
                     <div className="">{seatCode}</div>
-                    <div className="capitalize">{seatType} Class</div>
+                    <div
+                      className={`rounded-lg capitalize underline ${ticketColor} decoration-4 `}
+                    >
+                      {seatType} Class
+                    </div>
                     <div className="">{airline}</div>
                     <div className="">{formattedUpdateDate}</div>
                   </div>
                   <div className="flex flex-col">
-                    <div className="">14</div>
+                    <div className="">{transaction.flightID}</div>
                     <div className="">
                       {departureAirportCode}, {departureCity}
                     </div>
@@ -121,18 +116,34 @@ export default function CancellationModal() {
                   </div>
                 </div>
               </div>
-              <div className="flex flex-row justify-end gap-2">
-                <div className="flex flex-col items-end gap-1">
-                  <p>Subtotal:</p>
-                  <p>Taxes and Fees:</p>
-                  <p>Total:</p>
-                </div>
-                <div className="flex flex-col items-end gap-1">
-                  <p>${price}</p>
-                  <p>${taxesAndFees.toFixed(2)}</p>
+              <ol className="flex max-w-lg flex-1 flex-col text-lg text-slate-500">
+                <li className="flex justify-between">
+                  <p>Departing Flight</p>
+                  <p>${basePrice.toFixed(2)}</p>
+                </li>
+                <li className="flex justify-between">
+                  <p>Seat upgrade </p>
+                  <p>${seatUpcharge.toFixed(2)}</p>
+                </li>
+                <li className="flex justify-between">
+                  <p>Baggage Fees</p>
+                  <p>$0.00</p>
+                </li>
+                <br />
+                <li className="flex justify-between">
+                  <p>Subtotal</p>
+                  <p>${subTotal.toFixed(2)}</p>
+                </li>
+                <li className="flex justify-between">
+                  <p>Taxes ({((TAXRATE - 1) * 100).toFixed(2)}%)</p>
+                  <p>${taxes.toFixed(2)}</p>
+                </li>
+                <br />
+                <li className="flex justify-between border-y border-slate-400 py-2">
+                  <p>Amount paid</p>
                   <p>${total.toFixed(2)}</p>
-                </div>
-              </div>
+                </li>
+              </ol>
             </div>
             <div className=" flex w-full items-center justify-center gap-4">
               <Button
