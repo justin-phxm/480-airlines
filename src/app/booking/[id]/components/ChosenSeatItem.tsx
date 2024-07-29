@@ -1,6 +1,7 @@
-import { type Seat } from "@prisma/client";
+import { SeatType, type Seat } from "@prisma/client";
 import { useFlight } from "../FlightContext";
 import { Button } from "@mui/material";
+import { SEATMODIFIERS } from "~/lib/constants";
 
 export default function ChosenSeatItem({
   seat,
@@ -10,7 +11,11 @@ export default function ChosenSeatItem({
   index: number;
 }) {
   const priceMultiplier =
-    seat.seatType === "FIRST" ? 1.5 : seat.seatType === "BUSINESS" ? 1.25 : 1;
+    seat.seatType === SeatType.FIRST
+      ? SEATMODIFIERS.FIRST
+      : seat.seatType === SeatType.BUSINESS
+        ? SEATMODIFIERS.BUSINESS
+        : SEATMODIFIERS.ECONOMY;
   const { flight, setChosenSeats } = useFlight();
   const seatPrice = flight.price * priceMultiplier;
   return (

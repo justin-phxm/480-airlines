@@ -12,7 +12,7 @@ import { toast } from "react-toastify";
 import { cancelTransaction } from "~/app/actions";
 import { useRouter } from "next/navigation";
 import { calculatePrice, formattedDateTime } from "~/lib/utils";
-import { ColorOfTicket, TAXRATE } from "~/lib/constants";
+import { TAXRATE } from "~/lib/constants";
 export default function CancellationModal() {
   const { isModalOpen, setIsModalOpen, transaction } = useTransaction();
 
@@ -35,7 +35,12 @@ export default function CancellationModal() {
   const formattedUpdateDate = formattedDateTime(updatedAt);
   const formattedDepartureTime = formattedDateTime(departureTime);
   const formattedArrivalTime = formattedDateTime(arrivalTime);
-  const ticketColor = `decoration-${ColorOfTicket[seatType]}`;
+  enum TicketDecorationColor {
+    FIRST = "decoration-yellow-300 ",
+    BUSINESS = "decoration-violet-300 ",
+    ECONOMY = "decoration-emerald-300",
+  }
+  const ticketColor = TicketDecorationColor[seatType];
   const { basePrice, seatUpcharge, subTotal, taxes, total } = calculatePrice(
     transaction.price,
     transaction.seatType,
@@ -96,7 +101,7 @@ export default function CancellationModal() {
                   <div className="flex flex-col">
                     <div className="">{seatCode}</div>
                     <div
-                      className={`rounded-lg capitalize underline ${ticketColor} decoration-4 `}
+                      className={`rounded-lg capitalize underline decoration-4 ${ticketColor} `}
                     >
                       {seatType} Class
                     </div>
