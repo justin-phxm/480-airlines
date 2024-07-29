@@ -1,51 +1,111 @@
-# TODO:
+## 480Airlines - Flight Reservation Web Application
 
-- [x] Create Profile View -> convert Navbar to a client component -> use Flowbite components
-- [x] Add Toasts
-- [ ] Add Receipt/Congratulations page
-- [ ] Add sort for order history
-- [ ] Add pagination for order history
-- [ ] Create Admin view
+![image](https://github.com/justin-phxm/Fork-ENSF480-Final-Project/assets/113923596/bfd5dc9f-cdb9-4613-8f54-b35464f5e411)
 
-- - [ ] Update form modification component
+## Project Overview
 
-- [ ] Create Employee View
+Welcome to 480 Airlines, a Flight Reservation Web Application. This web application is designed for use by different type of users, tourism agents, airline agents, and system admins.
 
-- - [ ] READ and UPDATE flights
-  - [ ] READ and UPDATE users
+---
+## Features
 
-- [ ] Update Membership Logic
-- [x] Add search feature
-- [x] Update Seat selection Feature
-- [ ] Update payment Feature
-- [ ] Update Login Page
-- [x] Figure out how to move from SSR->SSG
-- [x] Add Zod validation
+- Browse available flights
+- Book flights online
+- Manage bookings
+- User authentication and authorization
 
-# Create T3 App
+---
 
-This is a [T3 Stack](https://create.t3.gg/) project bootstrapped with `create-t3-app`.
+## Tech Stack
 
-## What's next? How do I make an app with this?
+- **Frontend:**
+  - [Next.js](https://nextjs.org/) - A React framework for server-side rendering and generating static websites.
+  - [Tailwind CSS](https://tailwindcss.com/) - A utility-first CSS framework for rapid UI development.
 
-We try to keep this project as simple as possible, so you can start with just the scaffolding we set up for you, and add additional things later when they become necessary.
+- **Backend:**
+  - [PostgreSQL](https://www.postgresql.org/) - A powerful, open-source object-relational database system.
+  - [Supabase](https://supabase.io/) - An open-source Firebase alternative that offers a seamless integration with PostgreSQL.
+  - [NextAuth.js](https://next-auth.js.org/) - Authentication for Next.js applications.
+  - [Prisma](https://www.prisma.io/) - A next-generation ORM that simplifies database access.
 
-If you are not familiar with the different technologies used in this project, please refer to the respective docs. If you still are in the wind, please join our [Discord](https://t3.gg/discord) and ask for help.
+---
 
-- [Next.js](https://nextjs.org)
-- [NextAuth.js](https://next-auth.js.org)
-- [Prisma](https://prisma.io)
-- [Tailwind CSS](https://tailwindcss.com)
+## Installation
 
-## Learn More
+### Prerequisites
 
-To learn more about the [T3 Stack](https://create.t3.gg/), take a look at the following resources:
+Before you begin, ensure you have met the following requirements:
 
-- [Documentation](https://create.t3.gg/)
-- [Learn the T3 Stack](https://create.t3.gg/en/faq#what-learning-resources-are-currently-available) — Check out these awesome tutorials
+- Node.js (v14.x or later)
+- npm or yarn
+- PostgreSQL database
 
-You can check out the [create-t3-app GitHub repository](https://github.com/t3-oss/create-t3-app) — your feedback and contributions are welcome!
+### Installation
 
-## How do I deploy this?
+1. Clone the repository:
 
-Follow our deployment guides for [Vercel](https://create.t3.gg/en/deployment/vercel), [Netlify](https://create.t3.gg/en/deployment/netlify) and [Docker](https://create.t3.gg/en/deployment/docker) for more information.
+    ```bash
+    git clone https://github.com/your-username/480Airlines.git
+    cd 480Airlines
+    ```
+
+2. Install dependencies:
+
+    ```bash
+    npm install
+    ```
+
+    or
+
+    ```bash
+    yarn install
+    ```
+
+3. Set up environment variables:
+
+    Create a `.env` file in the root of your project and add the necessary environment variables:
+
+    ```env
+    DATABASE_URL=your-database-url
+    NEXTAUTH_URL=your-nextauth-url
+    SUPABASE_URL=your-supabase-url
+    SUPABASE_ANON_KEY=your-supabase-anon-key
+    ```
+
+4. Run the development server:
+
+    ```bash
+    npm run dev
+    ```
+
+    or
+
+    ```bash
+    yarn dev
+    ```
+
+    Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+
+## Usage
+
+- To browse available flights, navigate to the flights section.
+- To book a flight, select your desired flight and follow the booking process.
+- To manage your bookings, log in to your account and navigate to the bookings section.
+
+## Contributing
+
+Contributions are always welcome! Please feel free to submit a Pull Request.
+
+1. Fork the Project
+2. Create your Feature Branch (`git checkout -b feature/YourFeature`)
+3. Commit your Changes (`git commit -m 'Add some feature'`)
+4. Push to the Branch (`git push origin feature/YourFeature`)
+5. Open a Pull Request
+
+---
+
+## Contact
+
+- **Author:** Justin Pham
+- **Project Link:** [480Airlines Repository](https://github.com/justin-phxm/480-airlines)
+
