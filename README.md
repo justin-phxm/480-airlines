@@ -13,8 +13,18 @@ Welcome to 480 Airlines, a Flight Reservation Web Application. This web applicat
 
 - Browse available flights
 - Book flights online
-- Manage bookings
+- Manage bookings ( Flight Cancellations)
 - User authentication and authorization
+- Admin dashboard
+- Employee Dashboard
+- Google/Discord SSO
+- Calendar Downloads
+- ##
+- Seed data for testing.
+- Pagination
+- SSR
+- Input validation through Zod
+- Toasts and error handling
 
 ---
 
